@@ -39,7 +39,7 @@ namespace Services.Users
 
         public async Task<(int count, IEnumerable<UserDTOs.Responses.GetAllDT> data)> GetAllDT(DataTableDTOs.UsersDT dto)
         {
-            var filters = _unitOfWork.Repository<User>().GetFilterBuilder;
+            var filters = _unitOfWork.Repository<User>().GetFilter;
 
             if (dto.CustomSearch != null)
             {
@@ -55,7 +55,7 @@ namespace Services.Users
 
             (int count, IEnumerable<User> users) data = await _unitOfWork
                 .Repository<User>()
-                .GetAsync(filters.Build(), skip: dto.skip, take: dto.take);
+                .Find(filters, skip: dto.skip, take: dto.take);
 
             return (data.count, data.users
                 .Select(user => _mapper.Map<UserDTOs.Responses.GetAllDT>(user))

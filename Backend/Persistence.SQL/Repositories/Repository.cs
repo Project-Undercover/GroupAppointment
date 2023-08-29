@@ -4,6 +4,10 @@ using Infrastructure.Entities.Shared;
 using Infrastructure.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Collections.Generic;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using Infrastructure.Entities.Users;
 
 namespace Persistence.SQL.Repositories
 {
@@ -19,56 +23,77 @@ namespace Persistence.SQL.Repositories
             _dbSet = _dbContext.Set<TEntity>();
         }
 
-        public class FilterBuilder : IFilterBuilder<TEntity>
+
+
+
+
+
+
+
+
+
+        public class FilterBuilder : IFilter<TEntity>
         {
-            private readonly List<Expression<Func<TEntity, bool>>> filters;
+            private readonly List<string> _includes;
+            private readonly List<Expression<Func<TEntity, bool>>> _filters;
+
+            public List<string> Includes => _includes;
+            public List<Expression<Func<TEntity, bool>>> Filters => _filters;
+
             public FilterBuilder()
             {
-                filters = new List<Expression<Func<TEntity, bool>>>();
+                _filters = new List<Expression<Func<TEntity, bool>>>();
+                _includes = new List<string>();
             }
 
-            public IFilterBuilder<TEntity> Add(Expression<Func<TEntity, bool>> filter)
+            public IFilter<TEntity> Add(Expression<Func<TEntity, bool>> filter)
             {
-                filters.Add(filter);
+                _filters.Add(filter);
                 return this;
             }
 
-
-            public IEnumerable<Expression<Func<TEntity, bool>>> Build()
+            public IFilter<TEntity> Include(string include)
             {
-                return filters;
+                _includes.Add(include);
+                return this;
             }
         }
 
 
 
-        public IFilterBuilder<TEntity> GetFilterBuilder => new FilterBuilder();
+        public IFilter<TEntity> GetFilter => new FilterBuilder();
 
-        public async Task AddAsync(TEntity entity)
+        public async Task<(int count, IEnumerable<TEntity> data)> Find(Expression<Func<TEntity, bool>>? filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, int skip = 0, int take = -1, params string[] inlcluds)
         {
             _dbContext.Database.EnsureCreated();
-            await _dbSet.AddAsync(entity);
-        }
+            IQueryable<TEntity> query = _dbSet.AsNoTracking();
 
-        public Task DeleteAsync(TEntity entity)
-        {
-            _dbContext.Database.EnsureCreated();
-            _dbSet.Remove(entity);
-            return Task.CompletedTask;
-        }
+            if (filter != null)
+                query.Where(filter);
 
-        public async Task<(int count, IEnumerable<TEntity> data)> GetAsync(IEnumerable<Expression<Func<TEntity, bool>>>? filters = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, int skip = 0, int take = -1, params string[] populate)
-        {
-            _dbContext.Database.EnsureCreated();
-            IQueryable<TEntity> query = _dbSet;
-
-            if (filters != null)
-                foreach (var f in filters)
-                    query = query.Where(f);
-
-            foreach (var includeProperty in populate)
-            {
+            foreach (var includeProperty in inlcluds)
                 query = query.Include(includeProperty);
+
+            int count = await query.CountAsync();
+
+            if (orderBy != null)
+                query = orderBy(query);
+
+            query = query.Skip(skip).Take(take == -1 ? int.MaxValue : take);
+            return (count, await query.ToListAsync());
+        }
+        public async Task<(int count, IEnumerable<TEntity> data)> Find(IFilter<TEntity>? filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, int skip = 0, int take = -1)
+        {
+            _dbContext.Database.EnsureCreated();
+            IQueryable<TEntity> query = _dbSet.AsNoTracking();
+
+            if (filter != null)
+            {
+                foreach (var includeProperty in filter.Includes)
+                    query = query.Include(includeProperty);
+
+                foreach (var f in filter.Filters)
+                    query = query.Where(f);
             }
 
             int count = await query.CountAsync();
@@ -79,21 +104,55 @@ namespace Persistence.SQL.Repositories
             query = query.Skip(skip).Take(take == -1 ? int.MaxValue : take);
             return (count, await query.ToListAsync());
         }
-
-        public async Task<TEntity> GetByIdAsync(Guid id)
+        public async Task<TEntity> GetByAsync(IFilter<TEntity> filter)
         {
-            _dbContext.Database.EnsureCreated();
-            TEntity? data = await _dbSet.FirstOrDefaultAsync(s => s.Id == id);
+            IQueryable<TEntity> query = _dbSet.AsQueryable();
+
+            if (filter != null)
+            {
+                foreach (var includeProperty in filter.Includes)
+                    query = query.Include(includeProperty);
+
+                foreach (var f in filter.Filters)
+                    query = query.Where(f);
+            }
+
+
+            return await query.FirstOrDefaultAsync() ?? throw new NotFoundException("NotFound", typeof(TEntity).Name);
+        }
+        public async Task<TEntity> GetByAsync(Expression<Func<TEntity, bool>> filter, params string[] inlcluds)
+        {
+            IQueryable<TEntity> query = _dbSet.AsQueryable();
+            foreach (var includeProperty in inlcluds)
+                query = query.Include(includeProperty);
+
+            TEntity? data = await query.FirstOrDefaultAsync(filter);
             return data ?? throw new NotFoundException("NotFound", typeof(TEntity).Name);
         }
-
-        public async Task<TEntity> GetByIdAsync<T>(T id)
+        public async Task<TEntity> GetByIdAsync(Guid id, params string[] inlcluds)
         {
             _dbContext.Database.EnsureCreated();
-            TEntity? data = await _dbSet.FindAsync(id);
-            return data ?? throw new NotFoundException("NotFound", typeof(TEntity).Name);
+            IQueryable<TEntity>? query = _dbSet.AsQueryable();
+
+            foreach (var includeProperty in inlcluds)
+                query = query.Include(includeProperty);
+
+            return await query.FirstOrDefaultAsync(s => s.Id == id) ?? throw new NotFoundException("NotFound", typeof(TEntity).Name);
         }
 
+
+
+        public async Task AddAsync(TEntity entity)
+        {
+            _dbContext.Database.EnsureCreated();
+            await _dbSet.AddAsync(entity);
+        }
+        public Task DeleteAsync(TEntity entity)
+        {
+            _dbContext.Database.EnsureCreated();
+            _dbSet.Remove(entity);
+            return Task.CompletedTask;
+        }
         public async Task UpdateAsync(TEntity entity, params string[] exclude)
         {
             _dbContext.Database.EnsureCreated();
@@ -107,19 +166,13 @@ namespace Persistence.SQL.Repositories
             }
             _dbContext.Entry(entity).CurrentValues.SetValues(entity);
         }
-
         public async Task<bool> Exists(Expression<Func<TEntity, bool>> filter)
         {
             IQueryable<TEntity> query = _dbSet;
             return await query.AnyAsync(filter);
         }
 
-        public async Task<TEntity> GetByAsync(Expression<Func<TEntity, bool>> filter)
-        {
-            IQueryable<TEntity> query = _dbSet;
-            TEntity? data = await query.FirstOrDefaultAsync(filter);
-            return data ?? throw new NotFoundException("NotFound", typeof(TEntity).Name);
-        }
+
 
         public async Task<int> CountAsync(Expression<Func<TEntity, bool>> filter)
         {

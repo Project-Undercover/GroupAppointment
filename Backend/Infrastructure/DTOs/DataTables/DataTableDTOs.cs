@@ -6,6 +6,7 @@
         public record Orderable(string? fieldName = null, int? dir = null);
 
         public record UsersDT(Searches.UserDT? CustomSearch) : Paginate;
+        public record SessionDT(Searches.SessionDT? CustomSearch) : Paginate;
 
     }
 }

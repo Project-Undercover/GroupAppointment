@@ -1,3 +1,6 @@
+global using Infrastructure.Entities.Sessions;
+
+
 using API;
 using API.Middlewares;
 using API.Swagger;
@@ -5,6 +8,8 @@ using Infrastructure;
 using Persistence;
 using Services;
 using API.Utils;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 

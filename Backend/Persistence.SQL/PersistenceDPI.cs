@@ -1,8 +1,10 @@
 ﻿using Core.IPersistence;
+using Core.IPersistence.IRepositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.SQL;
+using Persistence.SQL.Repositories;
 
 namespace Persistence
 {
