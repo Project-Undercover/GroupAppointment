@@ -1,108 +1,76 @@
 {
   // Authorization + Authentication
-
   "UnAuthorized": {
-    "EN": "Request was failed, please try again",
-    "HE": "הבקשה לא הצליחה, נסה שנית"
+    "EN": "Request is not authorized, please try again",
+    "HE": "הבקשה לא אומתה, נסה שנית",
+    "AR": "لم يتم التعرف على الطلب"
   },
-
   "InActiveUser": {
     "EN": "You account has been disabled, please try again",
-    "HE": "החשבון שלך כבוי, נסה שנית"
+    "HE": "החשבון שלך כבוי, נסה שנית",
+    "AR": "الحساب غير فعال, قم بالمحاولة مرة اخرى"
   },
-
-
-
-
   "RequestFailed": {
     "EN": "Request was failed, please try again",
-    "HE": "הבקשה לא הצליחה, נסה שנית"
+    "HE": "הבקשה לא הצליחה, נסה שנית",
+    "AR": "الطلب لم ينجح, قم بالمحاولة مرة اخرى"
   },
-
-
   "SuccessFetch": {
     "EN": "fetched successfully",
-    "HE": "השליפה הצלחיה"
+    "HE": "השליפה הצלחיה",
+    "AR": "استرجاع المعلومات نجح"
   },
-
   "NotFound": {
     "EN": "{0} was not found, please try again",
     "HE": "{0} לא נמצאת במערכת, נסה שנית"
   },
-
-  "NotDeleted": {
-    "EN": "{0} was not deleted, please try again",
-    "HE": "{0} לא נמצאת במערכת, נסה שנית"
+  "NotActive": {
+    "EN": "{0} is not active, try again",
+    "HE": "{0} לא פעיל, נסה שנית"
   },
-
-  "NotEdited": {
-    "EN": "{0} was not edited, please try again",
-    "HE": "{0} לא נערך, נסה שנית"
-  },
-
-  "NotCreated": {
-    "EN": "{0} was not created, please try again",
-    "HE": "{0} לא התווסף, נסה שנית"
-  },
-
-
   "AlreadyDeleted": {
     "EN": "{0} already deleted",
     "HE": "{0} כבר נמחק"
   },
 
+
   "NotAdded": {
     "EN": "{0} was not added, please try again",
     "HE": "{0} לא התווסף, נסה שנית"
   },
-
   "AlreadyExists": {
     "EN": "{0} already exists, please try again",
     "HE": "{0} כבר קיים במערכת, נסה שנית"
   },
-
-
   "Created": {
     "EN": "{0} has been created successfully",
     "HE": "{0} נוצר בהצלחה"
   },
-
   "Edited": {
     "EN": "{0} has been edited successfully",
     "HE": "{0} נערך בהצלחה"
   },
-
   "Deleted": {
     "EN": "{0} deleted successfully",
     "HE": "{0} כבר קיים במערכת, נסה שנית"
   },
-
-  "NotActive": {
-    "EN": "{0} is not active, try again",
-    "HE": "{0} לא פעיל, נסה שנית"
-  },
-
+ 
   "MaxVerificationAttempts": {
     "EN": "Maximum verification requests has been reached, please try again in few minutes",
     "HE": "הגעת למספר מקסמלי של בקשות אימות, אנא נסה שוב עוד מעט"
   },
-
   "Success": {
     "EN": "{0} was successfull",
     "HE": "{0} הצליח\\ה"
   },
-
   "LoginNotValid": {
     "EN": "Username or password is invalid, please try agaun",
     "HE": "שם משתמשם או סיסמה אינו תקין, אנא נסה שנית"
   },
-
-
   "SendVerificationAgain": {
     "EN": "Verification request has been send again",
     "HE": "בקשת אמות נשלחה שוב"
   },
-
   "VerificationAlreadyConfirmed": {
     "EN": "Verification request already been confirmed",
     "HE": "בקשת אמות כבר אושרה"
@@ -118,11 +86,16 @@
 
 
 
+
+
+
+
+
+
   "Login": {
     "EN": "Login",
     "HE": "כניסה למערכת"
   },
-
   "Email": {
     "EN": "Email",
     "HE": "מייל"
@@ -131,32 +104,29 @@
     "EN": "User",
     "HE": "משתמש"
   },
-  "Company": {
-    "EN": "Comapny",
-    "HE": "חברה"
+  "Session": {
+    "EN": "Session",
+    "HE": "פעילות",
+    "AR": "جلسة"
   },
   "MobileNumber": {
     "EN": "Mobile Number",
-    "HE": "מספר סלולר"
+    "HE": "מספר סלולר",
+    "AR": "رقم الهاتف"
   },
-
   "VerificationRequest": {
     "EN": "Verification Request",
-    "HE": "בקשת הזדהות"
+    "HE": "בקשת הזדהות",
+    "AR": "طلب التعريف"
   },
-
   "VerifyRequest": {
     "EN": "Verify Request",
-    "HE": "בקשת אמות"
+    "HE": "בקשת אמות",
+    "AR": "طلب التصديق"
   },
-
   "SendVerification": {
     "EN": "Sending verification request",
-    "HE": "שליחת בקשת אימות"
-  },
-
-  "SetPassword": {
-    "EN": "Setting password",
-    "HE": "עריכת סיסמה"
+    "HE": "שליחת בקשת אימות",
+    "AR": "ارسال طلب التعريف"
   }
 }
