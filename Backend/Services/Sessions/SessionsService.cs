@@ -5,7 +5,6 @@ using Infrastructure.DTOs.Sessions;
 using Infrastructure.Entities.DataTables;
 using Infrastructure.Entities.Sessions;
 using Infrastructure.Exceptions;
-using System.Xml;
 
 namespace Services.Appointments
 {

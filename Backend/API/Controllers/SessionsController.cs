@@ -10,7 +10,9 @@ using static Infrastructure.DTOs.Sessions.SessionsDTOs.Responses;
 namespace API.Controllers
 {
 
-
+    [ProducesResponseType(200, Type = typeof(MessageResponse))]
+    [ProducesResponseType(404, Type = typeof(MessageResponse))]
+    [ProducesResponseType(400, Type = typeof(MessageResponse))]
     [Route("/api/[controller]")]
     [ApiController]
     public class SessionsController : ControllerBase
