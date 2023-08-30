@@ -5,6 +5,7 @@ using Infrastructure.DTOs.Sessions;
 using Infrastructure.Entities.DataTables;
 using Infrastructure.Entities.Sessions;
 using Infrastructure.Exceptions;
+using System.Xml;
 
 namespace Services.Appointments
 {
@@ -19,7 +20,6 @@ namespace Services.Appointments
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-
 
 
 
@@ -50,15 +50,14 @@ namespace Services.Appointments
             var mappedData = _mapper.Map<List<SessionsDTOs.Responses.GetAllDT>>(data);
             return (count, mappedData);
         }
-
-
         public async Task<SessionsDTOs.Responses.GetById> GetById(Guid id)
         {
             Session session = await _unitOfWork.Repository<Session>().GetByIdAsync(id, nameof(Session.Participants));
             return _mapper.Map<SessionsDTOs.Responses.GetById>(session);
         }
 
-        public async Task Create(SessionsDTOs.Requests.Create dto)
+
+        public async Task ValidateSession(SessionsDTOs.Requests.Create dto)
         {
             if (dto.endDate <= dto.startDate)
                 throw new ValidationException("EndDateMustBeBiggerThanStartDate");
@@ -66,29 +65,41 @@ namespace Services.Appointments
             if ((dto.endDate - dto.startDate).TotalMinutes < 5)
                 throw new ValidationException("InvalidSessionDuration");
 
-            bool sessionOverLap = await _unitOfWork.Repository<Session>().Exists(s => s.StartDate <= dto.startDate && s.EndDate >= dto.startDate);
+
+
+            bool sessionOverLap;
+            if (dto is SessionsDTOs.Requests.Edit)
+                sessionOverLap = await _unitOfWork
+                    .Repository<Session>()
+                    .Exists(s => s.StartDate <= dto.startDate && s.EndDate >= dto.startDate && s.Id != ((SessionsDTOs.Requests.Edit)dto).id);
+            else
+                sessionOverLap = await _unitOfWork.Repository<Session>().Exists(s => s.StartDate <= dto.startDate && s.EndDate >= dto.startDate);
+
             if (sessionOverLap)
                 throw new ValidationException("SessionsOverlap");
-
+        }
+        public async Task Create(SessionsDTOs.Requests.Create dto)
+        {
+            await ValidateSession(dto);
 
             Session session = _mapper.Map<Session>(dto);
 
             await _unitOfWork.Repository<Session>().AddAsync(session);
             await _unitOfWork.Commit();
         }
-
         public async Task Edit(SessionsDTOs.Requests.Edit dto)
         {
-            Session appointment = await _unitOfWork.Repository<Session>().GetByIdAsync(dto.id);
+            await ValidateSession(dto);
 
-            _mapper.Map(dto, appointment);
+            Session session = await _unitOfWork.Repository<Session>().GetByIdAsync(dto.id);
 
-            await _unitOfWork.Repository<Session>().AddAsync(appointment);
+            if (session.ParticipantsCount > dto.maxParticipants)
+                throw new ValidationException("ParticipantsIsBiggerThanMaxParticipants");
+            _mapper.Map(dto, session);
+
+            await _unitOfWork.Repository<Session>().UpdateAsync(session);
             await _unitOfWork.Commit();
         }
-
-
-
         public async Task Delete(Guid id)
         {
             Session session = await _unitOfWork.Repository<Session>().GetByIdAsync(id);
@@ -101,9 +112,6 @@ namespace Services.Appointments
             await _unitOfWork.Repository<Session>().DeleteAsync(session);
             await _unitOfWork.Commit();
         }
-
-
-
 
 
         public async Task AddParticipant(SessionsDTOs.Requests.AddParticipant dto)
@@ -119,9 +127,6 @@ namespace Services.Appointments
             await _unitOfWork.Repository<Participant>().AddAsync(participant);
             await _unitOfWork.Commit();
         }
-
-
-
         public async Task DeleteParticipant(Guid participantId)
         {
             Participant participant = await _unitOfWork.Repository<Participant>().GetByIdAsync(participantId, includes: new string[] { nameof(Participant.User), nameof(Participant.Session) });
@@ -139,9 +144,6 @@ namespace Services.Appointments
 
 
 
-
-
-
         private async Task SendParticipantsMessage(Guid appointmentId, string message)
         {
             var (count, participants) = await _unitOfWork.Repository<Participant>().Find(s => s.SessionId == appointmentId, includes: nameof(Participant.User));
@@ -151,6 +153,5 @@ namespace Services.Appointments
                 Console.WriteLine(message);
             }
         }
-
     }
 }
