@@ -6,11 +6,11 @@ namespace Persistence.SQL.Repositories.Others
 {
     public class VerificationRequestRepository : Repository<VerificationRequest>, IVerificationRequestRepository
     {
-        private readonly FlySMSDbContext _context;
+        private readonly AppDbContext _context;
         private readonly DbSet<VerificationRequest> _set;
 
 
-        public VerificationRequestRepository(FlySMSDbContext context) : base(context)
+        public VerificationRequestRepository(AppDbContext context) : base(context)
         {
             _context = context;
             _set = context.Set<VerificationRequest>();

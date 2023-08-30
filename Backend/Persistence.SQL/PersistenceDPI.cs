@@ -21,9 +21,9 @@ namespace Persistence
         {
             var connectionString = configuration.GetConnectionString("Default");
 
-            services.AddDbContext<FlySMSDbContext>(options =>
+            services.AddDbContext<AppDbContext>(options =>
                options.UseSqlServer(connectionString,
-                   builder => builder.MigrationsAssembly(typeof(FlySMSDbContext).Assembly.FullName)));
+                   builder => builder.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
         }
 
     }

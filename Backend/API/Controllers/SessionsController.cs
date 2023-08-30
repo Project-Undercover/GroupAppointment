@@ -93,7 +93,7 @@ namespace API.Controllers
 
 
 
-        [HttpPost, Route("AddParticipant/{id}")]
+        [HttpPost, Route("AddParticipant")]
         public async Task<IActionResult> AddParticipant(AddParticipant dto)
         {
             string langKey = Headers.GetLanguage(Request.Headers);

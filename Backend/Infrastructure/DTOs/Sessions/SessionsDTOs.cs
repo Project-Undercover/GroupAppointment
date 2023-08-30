@@ -9,7 +9,7 @@
             {
                 public string? FirstName { get; set; }
                 public string? LastName { get; set; }
-                public Guid AppointmentId { get; set; }
+                public Guid SessionId { get; set; }
                 public Guid UserId { get; set; }
             }
             public record Create
@@ -36,6 +36,7 @@
 
                 public record Participant
                 {
+                    public Guid id { get; set; }
                     public string FirstName { get; set; }
                     public string LastName { get; set; }
                 }

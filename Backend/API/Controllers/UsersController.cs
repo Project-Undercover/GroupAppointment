@@ -53,7 +53,7 @@ namespace Fly.SMS.API.Controllers
 
 
         [HttpPost, Route("Create")]
-        public async Task<IActionResult> Create(UserDTOs.Requsts.Create dto)
+        public async Task<IActionResult> Create(UserDTOs.Requests.Create dto)
         {
             string langKey = Headers.GetLanguage(Request.Headers);
 
@@ -64,7 +64,7 @@ namespace Fly.SMS.API.Controllers
         }
 
         [HttpPost, Route("Edit")]
-        public async Task<IActionResult> Edit(UserDTOs.Requsts.Edit dto)
+        public async Task<IActionResult> Edit(UserDTOs.Requests.Edit dto)
         {
             string langKey = Headers.GetLanguage(Request.Headers);
 
@@ -95,7 +95,7 @@ namespace Fly.SMS.API.Controllers
         [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<UserDTOs.Responses.Login>))]
         [ProducesResponseType(202, Type = typeof(MessageResponseWithObj<UserDTOs.Responses.Login2FA>))]
         [HttpPost, Route("Login")]
-        public async Task<IActionResult> Login(UserDTOs.Requsts.Login dto)
+        public async Task<IActionResult> Login(UserDTOs.Requests.Login dto)
         {
             string langKey = Headers.GetLanguage(Request.Headers);
             UserDTOs.Responses.BaseLogin response = await _userService.Login(dto);
@@ -118,7 +118,7 @@ namespace Fly.SMS.API.Controllers
         /// <returns></returns>
         [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<UserDTOs.Responses.VerifyCode>))]
         [HttpPost, Route("VerifyCode")]
-        public async Task<IActionResult> VerifyCode(UserDTOs.Requsts.VerifiyCode dto)
+        public async Task<IActionResult> VerifyCode(UserDTOs.Requests.VerifiyCode dto)
         {
             string langKey = Headers.GetLanguage(Request.Headers);
             UserDTOs.Responses.VerifyCode? response = await _userService.VerifyCode(dto.requestId, dto.code);
@@ -137,7 +137,7 @@ namespace Fly.SMS.API.Controllers
         /// <returns></returns>
         [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<UserDTOs.Responses.SendVerificationAgain>))]
         [HttpPost, Route("SendVerificationAgain")]
-        public async Task<IActionResult> SendVerificationAgain(UserDTOs.Requsts.SendVerificationCodeAgain dto)
+        public async Task<IActionResult> SendVerificationAgain(UserDTOs.Requests.SendVerificationCodeAgain dto)
         {
             string langKey = Headers.GetLanguage(Request.Headers);
 
@@ -153,7 +153,7 @@ namespace Fly.SMS.API.Controllers
 
         [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<UserDTOs.Responses.SendVerification>))]
         [HttpPost, Route("SendVerification")]
-        public async Task<IActionResult> SendVerification(UserDTOs.Requsts.SendVerification dto)
+        public async Task<IActionResult> SendVerification(UserDTOs.Requests.SendVerification dto)
         {
             string langKey = Headers.GetLanguage(Request.Headers);
 
@@ -168,7 +168,7 @@ namespace Fly.SMS.API.Controllers
 
         [ProducesResponseType(200, Type = typeof(MessageResponse))]
         [HttpPost, Route("SetPassword")]
-        public async Task<IActionResult> SetPassword(UserDTOs.Requsts.SetPassword dto)
+        public async Task<IActionResult> SetPassword(UserDTOs.Requests.SetPassword dto)
         {
             string langKey = Headers.GetLanguage(Request.Headers);
 

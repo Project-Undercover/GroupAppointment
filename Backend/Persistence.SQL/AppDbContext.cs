@@ -1,18 +1,20 @@
 ﻿using Infrastructure.Entities.Others;
+using Infrastructure.Entities.Sessions;
 using Infrastructure.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.SQL
 {
-    public class FlySMSDbContext : DbContext
+    public class AppDbContext : DbContext
     {
-        public FlySMSDbContext(DbContextOptions<FlySMSDbContext> options) : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
 
 
         public virtual DbSet<VerificationRequest> VerificationRequests { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Session> Sessions { get; set; }
 
     }
 }

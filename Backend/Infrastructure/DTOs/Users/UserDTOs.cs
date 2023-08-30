@@ -4,7 +4,7 @@ namespace Infrastructure.DTOs.Users
 {
     public class UserDTOs
     {
-        public class Requsts
+        public class Requests
         {
 
             public record Create 

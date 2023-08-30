@@ -12,11 +12,11 @@ namespace Persistence.SQL
     public class UnitOfWork : IUnitOfWork
     {
 
-        private readonly FlySMSDbContext _context;
+        private readonly AppDbContext _context;
         private Hashtable? _repositories;
 
 
-        public UnitOfWork(FlySMSDbContext dbContext)
+        public UnitOfWork(AppDbContext dbContext)
         {
             _context = dbContext;
         }

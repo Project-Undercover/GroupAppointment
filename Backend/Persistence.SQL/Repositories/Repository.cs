@@ -14,23 +14,28 @@ namespace Persistence.SQL.Repositories
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
     {
 
-        private readonly DbContext _dbContext;
+        private readonly DbContext _context;
         private readonly DbSet<TEntity> _dbSet;
 
         public Repository(DbContext dbContext)
         {
-            _dbContext = dbContext;
-            _dbSet = _dbContext.Set<TEntity>();
+            _context = dbContext;
+            _dbSet = _context.Set<TEntity>();
         }
 
 
 
 
+        private async Task<(int, IQueryable<TEntity>)> ApplySpecification(ISpecification<TEntity>? spec)
+        {
+            return await SpecificationEvaluator<TEntity>.GetQuery(_context.Set<TEntity>().AsNoTracking(), spec);
+        }
 
-
-
-
-
+        public async Task<(int, IEnumerable<TEntity>)> Find(ISpecification<TEntity>? specification = null)
+        {
+            _context.Database.EnsureCreated();
+            return await ApplySpecification(specification);
+        }
 
         public class FilterBuilder : IFilter<TEntity>
         {
@@ -63,9 +68,11 @@ namespace Persistence.SQL.Repositories
 
         public IFilter<TEntity> GetFilter => new FilterBuilder();
 
+        public ISpecification<TEntity> QuerySpecification => new BaseSpecification<TEntity>();
+
         public async Task<(int count, IEnumerable<TEntity> data)> Find(Expression<Func<TEntity, bool>>? filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, int skip = 0, int take = -1, params string[] inlcluds)
         {
-            _dbContext.Database.EnsureCreated();
+            _context.Database.EnsureCreated();
             IQueryable<TEntity> query = _dbSet.AsNoTracking();
 
             if (filter != null)
@@ -84,7 +91,7 @@ namespace Persistence.SQL.Repositories
         }
         public async Task<(int count, IEnumerable<TEntity> data)> Find(IFilter<TEntity>? filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, int skip = 0, int take = -1)
         {
-            _dbContext.Database.EnsureCreated();
+            _context.Database.EnsureCreated();
             IQueryable<TEntity> query = _dbSet.AsNoTracking();
 
             if (filter != null)
@@ -106,6 +113,7 @@ namespace Persistence.SQL.Repositories
         }
         public async Task<TEntity> GetByAsync(IFilter<TEntity> filter)
         {
+            _context.Database.EnsureCreated();
             IQueryable<TEntity> query = _dbSet.AsQueryable();
 
             if (filter != null)
@@ -122,6 +130,7 @@ namespace Persistence.SQL.Repositories
         }
         public async Task<TEntity> GetByAsync(Expression<Func<TEntity, bool>> filter, params string[] inlcluds)
         {
+            _context.Database.EnsureCreated();
             IQueryable<TEntity> query = _dbSet.AsQueryable();
             foreach (var includeProperty in inlcluds)
                 query = query.Include(includeProperty);
@@ -131,7 +140,7 @@ namespace Persistence.SQL.Repositories
         }
         public async Task<TEntity> GetByIdAsync(Guid id, params string[] inlcluds)
         {
-            _dbContext.Database.EnsureCreated();
+            _context.Database.EnsureCreated();
             IQueryable<TEntity>? query = _dbSet.AsQueryable();
 
             foreach (var includeProperty in inlcluds)
@@ -144,30 +153,31 @@ namespace Persistence.SQL.Repositories
 
         public async Task AddAsync(TEntity entity)
         {
-            _dbContext.Database.EnsureCreated();
+            _context.Database.EnsureCreated();
             await _dbSet.AddAsync(entity);
         }
         public Task DeleteAsync(TEntity entity)
         {
-            _dbContext.Database.EnsureCreated();
+            _context.Database.EnsureCreated();
             _dbSet.Remove(entity);
             return Task.CompletedTask;
         }
         public async Task UpdateAsync(TEntity entity, params string[] exclude)
         {
-            _dbContext.Database.EnsureCreated();
+            _context.Database.EnsureCreated();
 
-            _dbContext.Entry(entity).Property(nameof(Entity.Id)).IsModified = false;
-            _dbContext.Entry(entity).Property(nameof(Entity.CreatedAt)).IsModified = false;
+            _context.Entry(entity).Property(nameof(Entity.Id)).IsModified = false;
+            _context.Entry(entity).Property(nameof(Entity.CreatedAt)).IsModified = false;
 
             foreach (var property in exclude)
             {
-                _dbContext.Entry(entity).Property(property).IsModified = false;
+                _context.Entry(entity).Property(property).IsModified = false;
             }
-            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+            _context.Entry(entity).CurrentValues.SetValues(entity);
         }
         public async Task<bool> Exists(Expression<Func<TEntity, bool>> filter)
         {
+            _context.Database.EnsureCreated();
             IQueryable<TEntity> query = _dbSet;
             return await query.AnyAsync(filter);
         }
@@ -176,6 +186,7 @@ namespace Persistence.SQL.Repositories
 
         public async Task<int> CountAsync(Expression<Func<TEntity, bool>> filter)
         {
+            _context.Database.EnsureCreated();
             return await _dbSet.CountAsync(filter);
         }
     }

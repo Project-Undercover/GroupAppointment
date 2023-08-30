@@ -5,9 +5,10 @@ namespace Core.IPersistence.IRepositories
     public interface IRepository<TEntity>
     {
         IFilter<TEntity> GetFilter { get; }
+        ISpecification<TEntity> QuerySpecification { get; }
 
 
-
+        Task<(int, IEnumerable<TEntity>)> Find(ISpecification<TEntity>? specification = null);
         Task<(int count, IEnumerable<TEntity> data)> Find(Expression<Func<TEntity, bool>>? filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, int skip = 0, int take = -1, params string[] includes);
         Task<(int count, IEnumerable<TEntity> data)> Find(IFilter<TEntity>? filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, int skip = 0, int take = -1);
         Task<TEntity> GetByIdAsync(Guid id, params string[] includes);

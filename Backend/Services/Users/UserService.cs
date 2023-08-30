@@ -66,7 +66,7 @@ namespace Services.Users
             User user = await _unitOfWork.Repository<User>().GetByIdAsync(id);
             return _mapper.Map<UserDTOs.Responses.GetById>(user);
         }
-        public async Task Create(UserDTOs.Requsts.Create dto)
+        public async Task Create(UserDTOs.Requests.Create dto)
         {
 
             bool emailExists = await _unitOfWork.Repository<User>().Exists(s => s.Email == dto.Email);
@@ -86,7 +86,7 @@ namespace Services.Users
             await _unitOfWork.Repository<User>().AddAsync(user);
             await _unitOfWork.Commit();
         }
-        public async Task Edit(UserDTOs.Requsts.Edit dto)
+        public async Task Edit(UserDTOs.Requests.Edit dto)
         {
             User? user = await _unitOfWork.Repository<User>().GetByIdAsync(dto.Id);
             if (user is null)
@@ -125,7 +125,7 @@ namespace Services.Users
 
 
 
-        public async Task<UserDTOs.Responses.BaseLogin> Login(UserDTOs.Requsts.Login dto)
+        public async Task<UserDTOs.Responses.BaseLogin> Login(UserDTOs.Requests.Login dto)
         {
             User user = await _unitOfWork.Repository<User>().GetByAsync(s => s.Email == dto.username || s.MobileNumber == dto.username);
 
@@ -146,13 +146,13 @@ namespace Services.Users
             Guid verificationId = await CreateVerificationRequest(user, VerificationType.Login);
             return new UserDTOs.Responses.Login2FA { verificationId = verificationId };
         }
-        public async Task<UserDTOs.Responses.SendVerification> SendVerificationRequest(UserDTOs.Requsts.SendVerification dto)
+        public async Task<UserDTOs.Responses.SendVerification> SendVerificationRequest(UserDTOs.Requests.SendVerification dto)
         {
             User user = await _unitOfWork.Repository<User>().GetByAsync(s => s.Email == dto.username);
             Guid verificationId = await CreateVerificationRequest(user, dto.type);
             return new UserDTOs.Responses.SendVerification(verificationId);
         }
-        public async Task SetPassword(UserDTOs.Requsts.SetPassword dto)
+        public async Task SetPassword(UserDTOs.Requests.SetPassword dto)
         {
             VerificationRequest request = await _unitOfWork.VerificationRequests.GetByIdAsync(dto.requestId);
             await VerifyRequestCode(request, dto.code);
@@ -210,7 +210,7 @@ namespace Services.Users
         /// <param name="dto"></param>
         /// <returns>request id</returns>
         /// <exception cref="CustomValidationException"></exception>
-        public async Task<Guid> SendVerificationAgain(UserDTOs.Requsts.SendVerificationCodeAgain dto)
+        public async Task<Guid> SendVerificationAgain(UserDTOs.Requests.SendVerificationCodeAgain dto)
         {
             VerificationRequest request = await _unitOfWork.VerificationRequests.GetByIdAsync(dto.requestId);
             User user = await _unitOfWork.Repository<User>().GetByIdAsync(request.UserId);

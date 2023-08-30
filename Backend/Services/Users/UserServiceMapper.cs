@@ -14,8 +14,8 @@ namespace Services.Users
 
         public void CreateMappers()
         {
-            CreateMap<UserDTOs.Requsts.Create, User>();
-            CreateMap<UserDTOs.Requsts.Edit, User>();
+            CreateMap<UserDTOs.Requests.Create, User>();
+            CreateMap<UserDTOs.Requests.Edit, User>();
 
             CreateMap<User, UserDTOs.Responses.GetById>();
             CreateMap<User, UserDTOs.Responses.GetAllDT>();

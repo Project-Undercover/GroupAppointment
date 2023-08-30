@@ -10,15 +10,15 @@ namespace Infrastructure.Entities.Sessions
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
 
-        [ForeignKey(nameof(Appointment))]
-        public Guid AppointmentId { get; set; }
+        [ForeignKey(nameof(Session))]
+        public Guid SessionId { get; set; }
 
         [ForeignKey(nameof(User))]
         public Guid UserId { get; set; }
 
 
         [DeleteBehavior(DeleteBehavior.Cascade)]
-        public Session Appointment { get; set; }
+        public Session Session { get; set; }
 
         [DeleteBehavior(DeleteBehavior.Restrict)]
         public User User { get; set; }
