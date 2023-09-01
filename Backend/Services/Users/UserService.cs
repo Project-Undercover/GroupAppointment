@@ -20,19 +20,16 @@ namespace Services.Users
         private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
         private readonly ITokenGenerator _tokenGenerator;
-        private readonly IPasswordHash _passwordHash;
 
 
         public UserService(IUnitOfWork unitOfWork, IMapper mapper,
             IEmailService emailService,
-            ITokenGenerator tokenGenerator,
-            IPasswordHash passwordHash)
+            ITokenGenerator tokenGenerator)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _emailService = emailService;
             _tokenGenerator = tokenGenerator;
-            _passwordHash = passwordHash;
         }
 
 
@@ -56,13 +53,13 @@ namespace Services.Users
             }
 
             specification
-                .ApplyOrderByDescending(s => s.CreatedAt)
+                .ApplyOrderings(s => s.OrderByDescending(s => s.IsActive).ThenByDescending(s => s.CreatedAt))
                 .SkipAndTake(dto.skip, dto.take);
 
             var (count, data) = await _unitOfWork.Repository<User>().Find(specification);
 
             var users = data
-                .Select(user => _mapper.Map<UserDTOs.Responses.GetAllDT>(user))
+                .Select(_mapper.Map<UserDTOs.Responses.GetAllDT>)
                 .ToList();
 
 
@@ -76,9 +73,12 @@ namespace Services.Users
         public async Task Create(UserDTOs.Requests.Create dto)
         {
 
-            bool emailExists = await _unitOfWork.Repository<User>().Exists(s => s.Email == dto.Email);
-            if (emailExists)
-                throw new ValidationException("AlreadyExists", "Email");
+            if (!string.IsNullOrEmpty(dto.Email))
+            {
+                bool emailExists = await _unitOfWork.Repository<User>().Exists(s => s.Email == dto.Email);
+                if (emailExists)
+                    throw new ValidationException("AlreadyExists", "Email");
+            }
 
             bool mobileNumberExists = await _unitOfWork.Repository<User>().Exists(s => s.MobileNumber == dto.mobileNumber);
             if (mobileNumberExists)
@@ -86,6 +86,7 @@ namespace Services.Users
 
             User user = _mapper.Map<User>(dto);
             user.IsAdmin = user.Role == Infrastructure.Enums.Enums.UserRole.Admin;
+            user.ChildrenNumber = user.Children.Count();
 
             await _unitOfWork.Repository<User>().AddAsync(user);
             await _unitOfWork.Commit();
@@ -115,6 +116,7 @@ namespace Services.Users
 
             _mapper.Map(dto, user);
             user.IsAdmin = user.Role == Infrastructure.Enums.Enums.UserRole.Admin;
+            user.ChildrenNumber = user.Children.Count();
 
             await _unitOfWork.Repository<User>().UpdateAsync(user);
             await _unitOfWork.Commit();
@@ -141,6 +143,9 @@ namespace Services.Users
 
         public async Task AddChild(UserDTOs.Requests.AddChild dto)
         {
+            User user = await _unitOfWork.Repository<User>().GetByIdAsync(dto.userId);
+            user.ChildrenNumber++;
+
             Child child = _mapper.Map<Child>(dto);
 
             await _unitOfWork.Repository<Child>().AddAsync(child);
@@ -149,6 +154,10 @@ namespace Services.Users
         public async Task DeleteChild(Guid id)
         {
             Child child = await _unitOfWork.Repository<Child>().GetByIdAsync(id);
+
+            User user = await _unitOfWork.Repository<User>().GetByIdAsync(child.UserId);
+            user.ChildrenNumber--;
+
             await _unitOfWork.Repository<Child>().DeleteAsync(child);
             await _unitOfWork.Commit();
         }

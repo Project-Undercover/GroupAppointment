@@ -50,19 +50,22 @@ namespace Services.Appointments
             }
 
             specification
-                .ApplyOrderByDescending(s => s.CreatedAt)
+                .ApplyOrderings(s => s.OrderByDescending(s => s.CreatedAt))
                 .SkipAndTake(dto.skip, dto.take);
 
             var (count, data) = await _unitOfWork.Repository<Session>().Find(specification);
             var mappedData = _mapper.Map<List<SessionsDTOs.Responses.GetAllDT>>(data);
-                
+
             return (count, mappedData);
         }
         public async Task<SessionsDTOs.Responses.GetById> GetById(Guid id)
         {
             Session session = await _unitOfWork
                 .Repository<Session>()
-                .GetByIdAsync(id, nameof(Session.Participants),
+                .GetByIdAsync(id,
+                nameof(Session.Instructors),
+                nameof(Session.Instructors) + "." + nameof(Instructor.User),
+                nameof(Session.Participants),
                 nameof(Session.Participants) + "." + nameof(Participant.Child),
                 nameof(Session.Participants) + "." + nameof(Participant.User));
 
@@ -79,7 +82,6 @@ namespace Services.Appointments
                 throw new ValidationException("InvalidSessionDuration");
 
 
-
             bool sessionOverLap;
             if (dto is SessionsDTOs.Requests.Edit)
                 sessionOverLap = await _unitOfWork
@@ -90,6 +92,14 @@ namespace Services.Appointments
 
             if (sessionOverLap)
                 throw new ValidationException("SessionsOverlap");
+
+
+            foreach (var instructorId in dto.instructors)
+            {
+                User instructor = await _unitOfWork.Repository<User>().GetByIdAsync(instructorId);
+                if (instructor.Role != Infrastructure.Enums.Enums.UserRole.Admin && instructor.Role != Infrastructure.Enums.Enums.UserRole.Instructor)
+                    throw new ValidationException("OnlyAdminAndInstructorCanBeInstructors");
+            }
         }
         public async Task Create(SessionsDTOs.Requests.Create dto)
         {
@@ -104,7 +114,7 @@ namespace Services.Appointments
         {
             await ValidateSession(dto);
 
-            Session session = await _unitOfWork.Repository<Session>().GetByIdAsync(dto.id);
+            Session session = await _unitOfWork.Repository<Session>().GetByIdAsync(dto.id, nameof(Session.Instructors));
 
             if (session.ParticipantsCount > dto.maxParticipants)
                 throw new ValidationException("ParticipantsIsBiggerThanMaxParticipants");

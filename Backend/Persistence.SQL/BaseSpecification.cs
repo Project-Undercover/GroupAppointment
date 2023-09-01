@@ -1,4 +1,5 @@
 ﻿using Core.IPersistence;
+using Infrastructure.Entities.Shared;
 using System.Linq.Expressions;
 
 namespace Persistence.SQL
@@ -12,8 +13,7 @@ namespace Persistence.SQL
         public List<Expression<Func<T, bool>>> Criterias { get; }
         public List<Expression<Func<T, object>>> Includes { get; } = new List<Expression<Func<T, object>>>();
         public List<string> IncludeStrings { get; } = new List<string>();
-        public Expression<Func<T, object>> OrderBy { get; private set; }
-        public Expression<Func<T, object>> OrderByDescending { get; private set; }
+        public Func<IQueryable<T>, IOrderedQueryable<T>>? Orderings { get; private set; }
         public Expression<Func<T, object>> GroupBy { get; private set; }
 
         public int Take { get; private set; }
@@ -44,18 +44,6 @@ namespace Persistence.SQL
             return this;
         }
 
-        public ISpecification<T> ApplyOrderBy(Expression<Func<T, object>> orderByExpression)
-        {
-            OrderBy = orderByExpression;
-            return this;
-        }
-
-        public ISpecification<T> ApplyOrderByDescending(Expression<Func<T, object>> orderByDescendingExpression)
-        {
-            OrderByDescending = orderByDescendingExpression;
-            return this;
-        }
-
         public ISpecification<T> ApplyGroupBy(Expression<Func<T, object>> groupByExpression)
         {
             GroupBy = groupByExpression;
@@ -65,6 +53,12 @@ namespace Persistence.SQL
         public ISpecification<T> Where(Expression<Func<T, bool>> codition)
         {
             Criterias.Add(codition);
+            return this;
+        }
+
+        public ISpecification<T> ApplyOrderings(Func<IQueryable<T>, IOrderedQueryable<T>> orderings)
+        {
+            Orderings = orderings;
             return this;
         }
     }

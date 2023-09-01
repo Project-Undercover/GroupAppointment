@@ -12,6 +12,7 @@ namespace Infrastructure.Entities.Users
         public string LastName { get; set; } = null!;
         public string? Email { get; set; }
         public string MobileNumber { get; set; } = null!;
+        public int ChildrenNumber { get; set; }
         public bool IsAdmin { get; set; } = false;
         public bool IsActive { get; set; } = true;
         public UserRole Role { get; set; }

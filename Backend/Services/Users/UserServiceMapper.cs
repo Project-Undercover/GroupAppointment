@@ -14,9 +14,9 @@ namespace Services.Users
 
         public void CreateMappers()
         {
-            CreateMap<UserDTOs.Requests.Create, User>();
-            CreateMap<UserDTOs.Requests.Create.Child, Child>();
-
+            CreateMap<UserDTOs.Requests.Create, User>()
+                .ForMember(s => s.Children, opt => opt.MapFrom(s => s.Children.Select(s => new Child { Name = s }).ToList()));
+            CreateMap<UserDTOs.Requests.Edit.Child, Child>();
             CreateMap<UserDTOs.Requests.Edit, User>();
 
 
@@ -27,6 +27,7 @@ namespace Services.Users
                 .ForMember(s => s.roleName, opt => opt.MapFrom(s => s.Role));
             CreateMap<User, UserDTOs.Responses.GetById>();
             CreateMap<Child, UserDTOs.Responses.GetById.Child>();
+
         }
     }
 }

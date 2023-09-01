@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using static Infrastructure.Enums.Enums;
 using static Infrastructure.Enums.Verifications;
 
@@ -13,10 +14,21 @@ namespace Infrastructure.DTOs.Users
             {
                 public string firstName { get; set; }
                 public string lastName { get; set; }
-                public string Email { get; set; } = "";
+
+                [EmailAddress(ErrorMessage = "Invalid Email Address")]
+                public string? Email { get; set; }
+
+                [RegularExpression("^(?!0+$)(\\+\\d{1,3}[- ]?)?(?!0+$)\\d{10,15}$", ErrorMessage = "Please enter valid phone no.")]
                 public string mobileNumber { get; set; }
                 public UserRole role { get; set; }
-                public List<Child> Children { get; set; }
+                public virtual List<string> Children { get; set; }
+            }
+
+            public record Edit : Create
+            {
+                public Guid Id { get; set; }
+                public bool isActive { get; set; }
+                public new List<Child> Children { get; set; }
 
 
                 public record Child
@@ -27,7 +39,6 @@ namespace Infrastructure.DTOs.Users
                 }
             }
 
-            public record Edit(Guid Id, bool isActive) : Create;
 
             public record Login(string username);
 

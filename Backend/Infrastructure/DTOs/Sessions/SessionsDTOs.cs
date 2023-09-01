@@ -1,4 +1,6 @@
-﻿namespace Infrastructure.DTOs.Sessions
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Infrastructure.DTOs.Sessions
 {
     public class SessionsDTOs
     {
@@ -15,9 +17,14 @@
                 public string title { get; set; }
                 public DateTime startDate { get; set; }
                 public DateTime endDate { get; set; }
+
+                [Range(1, 100)]
                 public int maxParticipants { get; set; }
                 public string? locationName { get; set; }
                 public Location? location { get; set; }
+
+                [Required, MinLength(1, ErrorMessage = "At least one instructor required")]
+                public List<Guid> instructors { get; set; } = new List<Guid>();
 
 
                 public class Location
@@ -42,8 +49,14 @@
                 public string? locationName { get; set; }
                 public Location? location { get; set; }
                 public List<Participant> Participants { get; set; }
+                public List<Instructor> Instructors { get; set; }
 
 
+                public class Instructor
+                {
+                    public Guid id { get; set; }
+                    public string name { get; set; }
+                }
 
                 public class Location
                 {
