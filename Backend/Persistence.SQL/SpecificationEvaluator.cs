@@ -48,7 +48,7 @@ namespace Persistence.SQL
             if (specification.IsPagingEnabled)
             {
                 query = query.Skip(specification.Skip)
-                             .Take(specification.Take);
+                             .Take(specification.Take == -1 ? int.MaxValue : specification.Take);
             }
             return (count, query);
         }

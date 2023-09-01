@@ -5,26 +5,19 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Infrastructure.Entities.Sessions
 {
-    public class Participant : Entity
+    public class Instructor : Entity
     {
-        [ForeignKey(nameof(Session))]
-        public Guid SessionId { get; set; }
-
-        [ForeignKey(nameof(Child))]
-        public Guid ChildId { get; set; }
-
         [ForeignKey(nameof(User))]
         public Guid UserId { get; set; }
 
+        [ForeignKey(nameof(Session))]
+        public Guid SessionId { get; set; }
 
-
-        [DeleteBehavior(DeleteBehavior.Cascade)]
-        public Session Session { get; set; }
-
-        [DeleteBehavior(DeleteBehavior.Restrict)]
-        public Child Child { get; set; }
 
         [DeleteBehavior(DeleteBehavior.Restrict)]
         public User User { get; set; }
+
+        [DeleteBehavior(DeleteBehavior.Cascade)]
+        public Session Session { get; set; }
     }
 }

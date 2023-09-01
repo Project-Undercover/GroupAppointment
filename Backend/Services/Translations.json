@@ -54,7 +54,7 @@
     "EN": "{0} deleted successfully",
     "HE": "{0} כבר קיים במערכת, נסה שנית"
   },
- 
+
   "MaxVerificationAttempts": {
     "EN": "Maximum verification requests has been reached, please try again in few minutes",
     "HE": "הגעת למספר מקסמלי של בקשות אימות, אנא נסה שוב עוד מעט"
@@ -90,7 +90,22 @@
 
 
 
+  "Admin": {
+    "EN": "Admin",
+    "HE": "מנהל",
+    "AR": "مدير"
+  },
 
+  "Instructor": {
+    "EN": "Instructor",
+    "HE": "מדריך",
+    "AR": "مرشد"
+  },
+  "Parent": {
+    "EN": "Parent",
+    "HE": "הורה",
+    "AR": "الأبوين"
+  },
 
   "Login": {
     "EN": "Login",

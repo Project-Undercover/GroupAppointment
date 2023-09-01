@@ -4,14 +4,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.4.33403.182
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API.csproj", "{87E383DE-B2B6-4EF4-ABCD-596B2A1468F5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2BC55A36-0F64-4829-AAF7-8E615930F5B5} = {2BC55A36-0F64-4829-AAF7-8E615930F5B5}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Persistence.SQL", "..\Persistence.SQL\Persistence.SQL.csproj", "{3E13FEDB-7B9B-4577-8962-CA3F41B9BD23}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "..\Core\Core.csproj", "{2BC55A36-0F64-4829-AAF7-8E615930F5B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "..\Core\Core.csproj", "{2BC55A36-0F64-4829-AAF7-8E615930F5B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "..\Services\Services.csproj", "{3C53C414-D85F-44D2-B17C-4E1A085E3D46}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "..\Services\Services.csproj", "{3C53C414-D85F-44D2-B17C-4E1A085E3D46}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "..\Infrastructure\Infrastructure.csproj", "{4EB4C2EB-3A47-44BF-B888-96613D1A9CFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "..\Infrastructure\Infrastructure.csproj", "{4EB4C2EB-3A47-44BF-B888-96613D1A9CFC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

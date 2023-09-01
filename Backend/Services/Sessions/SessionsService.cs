@@ -4,6 +4,7 @@ using Core.IServices.Sessions;
 using Infrastructure.DTOs.Sessions;
 using Infrastructure.Entities.DataTables;
 using Infrastructure.Entities.Sessions;
+using Infrastructure.Entities.Users;
 using Infrastructure.Exceptions;
 
 namespace Services.Appointments
@@ -35,7 +36,11 @@ namespace Services.Appointments
                     specification.Include(nameof(Session.Participants)).Where(s => s.Participants.Any(s => s.UserId == dto.CustomSearch.userId));
 
                 if (!string.IsNullOrEmpty(participantName))
-                    specification.Include(nameof(Session.Participants)).Where(s => s.Participants.Any(s => (s.FirstName + " " + s.LastName).Contains(participantName) || (s.User.FirstName + " " + s.User.LastName).Contains(participantName)));
+                    specification
+                        .Include(nameof(Session.Participants))
+                        .Include(nameof(Session.Participants) + "." + nameof(Participant.User))
+                        .Include(nameof(Session.Participants) + "." + nameof(Participant.Child))
+                        .Where(s => s.Participants.Any(s => s.Child.Name.Contains(participantName) || (s.User.FirstName + " " + s.User.LastName).Contains(participantName)));
 
                 if (from.HasValue)
                     specification.Where(s => s.StartDate >= from);
@@ -44,14 +49,23 @@ namespace Services.Appointments
                     specification.Where(s => s.EndDate <= to);
             }
 
+            specification
+                .ApplyOrderByDescending(s => s.CreatedAt)
+                .SkipAndTake(dto.skip, dto.take);
 
             var (count, data) = await _unitOfWork.Repository<Session>().Find(specification);
             var mappedData = _mapper.Map<List<SessionsDTOs.Responses.GetAllDT>>(data);
+                
             return (count, mappedData);
         }
         public async Task<SessionsDTOs.Responses.GetById> GetById(Guid id)
         {
-            Session session = await _unitOfWork.Repository<Session>().GetByIdAsync(id, nameof(Session.Participants));
+            Session session = await _unitOfWork
+                .Repository<Session>()
+                .GetByIdAsync(id, nameof(Session.Participants),
+                nameof(Session.Participants) + "." + nameof(Participant.Child),
+                nameof(Session.Participants) + "." + nameof(Participant.User));
+
             return _mapper.Map<SessionsDTOs.Responses.GetById>(session);
         }
 
@@ -115,7 +129,9 @@ namespace Services.Appointments
 
         public async Task AddParticipant(SessionsDTOs.Requests.AddParticipant dto)
         {
+            Child child = await _unitOfWork.Repository<Child>().GetByIdAsync(dto.ChildId);
             Participant participant = _mapper.Map<Participant>(dto);
+            participant.UserId = child.UserId;
 
             Session session = await _unitOfWork.Repository<Session>().GetByIdAsync(dto.SessionId);
             if (session.ParticipantsCount == session.MaxParticipants)

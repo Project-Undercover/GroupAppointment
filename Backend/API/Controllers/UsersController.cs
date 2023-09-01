@@ -4,6 +4,7 @@ using Core.IUtils;
 using Infrastructure.DTOs;
 using Infrastructure.DTOs.Users;
 using Infrastructure.Entities.DataTables;
+using Infrastructure.Entities.Users;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fly.SMS.API.Controllers
@@ -33,12 +34,15 @@ namespace Fly.SMS.API.Controllers
             string langKey = Headers.GetLanguage(Request.Headers);
 
             (int count, IEnumerable<UserDTOs.Responses.GetAllDT> list) data = await _userService.GetAllDT(dto);
+
+            data.list.ToList().ForEach(s => s.roleName = _translationService.GetByKey(s.roleName, langKey));
+
             string message = _translationService.GetByKey(TranslationKeys.SuccessFetch, langKey, "User");
             return Ok(MessageResponseFactory.Create(message, data, dto));
         }
 
 
-        [ProducesResponseType(200, Type = typeof(MessageResponseWithDataTable<UserDTOs.Responses.GetById>))]
+        [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<UserDTOs.Responses.GetById>))]
         [HttpGet, Route("GetById/{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
@@ -87,6 +91,28 @@ namespace Fly.SMS.API.Controllers
 
 
 
+
+        [HttpPost, Route("AddChild")]
+        public async Task<IActionResult> AddChild(UserDTOs.Requests.AddChild dto)
+        {
+            string langKey = Headers.GetLanguage(Request.Headers);
+            await _userService.AddChild(dto);
+            string message = _translationService.GetByKey(TranslationKeys.Created, langKey, nameof(Child));
+            return Ok(MessageResponseFactory.Create(message));
+        }
+
+        [HttpDelete, Route("DeleteChild/{id}")]
+        public async Task<IActionResult> DeleteChild(Guid id)
+        {
+            string langKey = Headers.GetLanguage(Request.Headers);
+            await _userService.DeleteChild(id);
+            string message = _translationService.GetByKey(TranslationKeys.Deleted, langKey, nameof(Child));
+            return Ok(MessageResponseFactory.Create(message));
+        }
+
+
+
+
         /// <summary>
         /// Login to the system
         /// </summary>
@@ -106,11 +132,6 @@ namespace Fly.SMS.API.Controllers
             return StatusCode(StatusCodes.Status202Accepted, MessageResponseFactory.Create(message, (UserDTOs.Responses.Login2FA)response));
         }
 
-
-
-
-
-
         /// <summary>
         /// Verify Code
         /// </summary>
@@ -125,10 +146,6 @@ namespace Fly.SMS.API.Controllers
             string message = _translationService.GetByKey(TranslationKeys.Success, langKey, "VerifyRequest");
             return Ok(MessageResponseFactory.Create(message, response));
         }
-
-
-
-
 
         /// <summary>
         /// Send Verification Code Again
@@ -146,11 +163,6 @@ namespace Fly.SMS.API.Controllers
             return Ok(MessageResponseFactory.Create(message, new UserDTOs.Responses.SendVerificationAgain { requestId = response }));
         }
 
-
-
-
-
-
         [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<UserDTOs.Responses.SendVerification>))]
         [HttpPost, Route("SendVerification")]
         public async Task<IActionResult> SendVerification(UserDTOs.Requests.SendVerification dto)
@@ -161,24 +173,5 @@ namespace Fly.SMS.API.Controllers
             string message = _translationService.GetByKey(TranslationKeys.Success, langKey, "SendVerification");
             return Ok(MessageResponseFactory.Create(message, response));
         }
-
-
-
-
-
-        [ProducesResponseType(200, Type = typeof(MessageResponse))]
-        [HttpPost, Route("SetPassword")]
-        public async Task<IActionResult> SetPassword(UserDTOs.Requests.SetPassword dto)
-        {
-            string langKey = Headers.GetLanguage(Request.Headers);
-
-            await _userService.SetPassword(dto);
-            string message = _translationService.GetByKey(TranslationKeys.Success, langKey, "SetPassword");
-            return Ok(MessageResponseFactory.Create(message));
-        }
-
-
-
-
     }
 }

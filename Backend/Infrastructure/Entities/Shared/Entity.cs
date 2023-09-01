@@ -9,9 +9,8 @@ namespace Infrastructure.Entities.Shared
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
 
-        protected Entity(Guid? id = null, DateTime? createdAt = null)
+        protected Entity(DateTime? createdAt = null)
         {
-            Id = id ?? Guid.NewGuid();
             CreatedAt = createdAt ?? DateTime.Now;
             UpdatedAt = DateTime.Now;
         }

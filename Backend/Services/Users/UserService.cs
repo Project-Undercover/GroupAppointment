@@ -9,6 +9,7 @@ using Infrastructure.Entities.Users;
 using Infrastructure.Exceptions;
 using Infrastructure.Utils;
 using static Infrastructure.Enums.Verifications;
+using Infrastructure.Entities.Sessions;
 
 namespace Services.Users
 {
@@ -39,31 +40,37 @@ namespace Services.Users
 
         public async Task<(int count, IEnumerable<UserDTOs.Responses.GetAllDT> data)> GetAllDT(DataTableDTOs.UsersDT dto)
         {
-            var filters = _unitOfWork.Repository<User>().GetFilter;
+            var specification = _unitOfWork.Repository<User>().QuerySpecification;
+
 
             if (dto.CustomSearch != null)
             {
                 if (!string.IsNullOrEmpty(dto.CustomSearch.name))
-                    filters.Add(user => (user.FirstName + " " + user.LastName).Contains(dto.CustomSearch.name));
+                    specification.Where(user => (user.FirstName + " " + user.LastName).Contains(dto.CustomSearch.name));
 
                 if (dto.CustomSearch.isActive.HasValue)
-                    filters.Add(user => user.IsActive);
+                    specification.Where(user => user.IsActive);
 
                 if (!string.IsNullOrEmpty(dto.CustomSearch.mobileNumber))
-                    filters.Add(user => user.MobileNumber.Contains(dto.CustomSearch.mobileNumber));
+                    specification.Where(user => user.MobileNumber.Contains(dto.CustomSearch.mobileNumber));
             }
 
-            (int count, IEnumerable<User> users) data = await _unitOfWork
-                .Repository<User>()
-                .Find(filters, skip: dto.skip, take: dto.take);
+            specification
+                .ApplyOrderByDescending(s => s.CreatedAt)
+                .SkipAndTake(dto.skip, dto.take);
 
-            return (data.count, data.users
+            var (count, data) = await _unitOfWork.Repository<User>().Find(specification);
+
+            var users = data
                 .Select(user => _mapper.Map<UserDTOs.Responses.GetAllDT>(user))
-                .ToList());
+                .ToList();
+
+
+            return (count, users);
         }
         public async Task<UserDTOs.Responses.GetById> GetById(Guid id)
         {
-            User user = await _unitOfWork.Repository<User>().GetByIdAsync(id);
+            User user = await _unitOfWork.Repository<User>().GetByIdAsync(id, nameof(User.Children));
             return _mapper.Map<UserDTOs.Responses.GetById>(user);
         }
         public async Task Create(UserDTOs.Requests.Create dto)
@@ -77,32 +84,37 @@ namespace Services.Users
             if (mobileNumberExists)
                 throw new ValidationException("AlreadyExists", "MobileNumber");
 
-
-
-            //User user = new User(signup.FirstName, signup.LastName, signup.Email, signup.Password ,signup.MobileNumber, company);
             User user = _mapper.Map<User>(dto);
-            user.Password = _passwordHash.Hash(user.Password);
+            user.IsAdmin = user.Role == Infrastructure.Enums.Enums.UserRole.Admin;
 
             await _unitOfWork.Repository<User>().AddAsync(user);
             await _unitOfWork.Commit();
         }
         public async Task Edit(UserDTOs.Requests.Edit dto)
         {
-            User? user = await _unitOfWork.Repository<User>().GetByIdAsync(dto.Id);
+            User? user = await _unitOfWork.Repository<User>().GetByIdAsync(dto.Id, nameof(User.Children));
             if (user is null)
-                throw new NotFoundException("UserNotFound");
+                throw new NotFoundException("NotFound", nameof(User));
 
             bool emailExists = await _unitOfWork.Repository<User>().Exists(s => s.Email == dto.Email && s.Id != user.Id);
             if (emailExists)
-                throw new ValidationException("EmailExists");
+                throw new ValidationException("AlreadyExists", nameof(User.Email));
 
-            bool mobileNumberExists = await _unitOfWork.Repository<User>().Exists(s => s.MobileNumber == dto.Email);
+            bool mobileNumberExists = await _unitOfWork.Repository<User>().Exists(s => s.MobileNumber == dto.Email && s.Id != user.Id);
             if (mobileNumberExists)
-                throw new ValidationException("MobileExists");
+                throw new ValidationException("AlreadyExists", nameof(User.MobileNumber));
 
-            user = _mapper.Map(dto, user);
-            user.Password = _passwordHash.Hash(user.Password);
+            List<Guid> checkIfChildrenExists = dto.Children.Where(s => s.id.HasValue).Select(s => s.id.Value).ToList();
+            foreach (var id in checkIfChildrenExists)
+            {
+                bool exsits = await _unitOfWork.Repository<Child>().Exists(s => s.Id == id && s.UserId == user.Id);
+                if (!exsits)
+                    throw new ValidationException("NotFound", nameof(Child));
+            }
 
+
+            _mapper.Map(dto, user);
+            user.IsAdmin = user.Role == Infrastructure.Enums.Enums.UserRole.Admin;
 
             await _unitOfWork.Repository<User>().UpdateAsync(user);
             await _unitOfWork.Commit();
@@ -110,8 +122,16 @@ namespace Services.Users
         public async Task Delete(Guid id)
         {
             User user = await _unitOfWork.Repository<User>().GetByIdAsync(id);
-            if (!user.IsActive) throw new ValidationException("AlreadyDeleted", "User");
 
+            bool canDelete = await _unitOfWork.Repository<Participant>().Exists(s => s.UserId == id);
+            if (canDelete)
+            {   // hard delete
+                await _unitOfWork.Repository<User>().DeleteAsync(user);
+                return;
+            }
+
+            // soft delete
+            if (!user.IsActive) throw new ValidationException("AlreadyDeleted", "User");
             user.IsActive = false;
 
             await _unitOfWork.Repository<User>().UpdateAsync(user);
@@ -119,9 +139,19 @@ namespace Services.Users
         }
 
 
+        public async Task AddChild(UserDTOs.Requests.AddChild dto)
+        {
+            Child child = _mapper.Map<Child>(dto);
 
-
-
+            await _unitOfWork.Repository<Child>().AddAsync(child);
+            await _unitOfWork.Commit();
+        }
+        public async Task DeleteChild(Guid id)
+        {
+            Child child = await _unitOfWork.Repository<Child>().GetByIdAsync(id);
+            await _unitOfWork.Repository<Child>().DeleteAsync(child);
+            await _unitOfWork.Commit();
+        }
 
 
 
@@ -131,10 +161,6 @@ namespace Services.Users
 
             if (!user.IsActive)
                 throw new ForbiddenException("NotActive", "User");
-
-            bool isValidPassword = _passwordHash.VerifyHash(dto.password, user.Password);
-            if (!isValidPassword)
-                throw new ValidationException("LoginNotValid");
 
 
             (string token, DateTime expiresAt) = _tokenGenerator.GenerateToken(user.Id);
@@ -152,20 +178,7 @@ namespace Services.Users
             Guid verificationId = await CreateVerificationRequest(user, dto.type);
             return new UserDTOs.Responses.SendVerification(verificationId);
         }
-        public async Task SetPassword(UserDTOs.Requests.SetPassword dto)
-        {
-            VerificationRequest request = await _unitOfWork.VerificationRequests.GetByIdAsync(dto.requestId);
-            await VerifyRequestCode(request, dto.code);
-            User user = await _unitOfWork.Repository<User>().GetByAsync(s => s.Id == request.UserId);
 
-            if (!user.IsActive)
-                throw new ForbiddenException("NotActive", "User");
-
-            user.Password = _passwordHash.Hash(dto.password);
-
-            await _unitOfWork.Repository<User>().UpdateAsync(user);
-            await _unitOfWork.Commit();
-        }
         /// <summary>
         /// Verifiy the verification request
         /// </summary>
@@ -241,15 +254,15 @@ namespace Services.Users
             await _unitOfWork.VerificationRequests.AddAsync(request);
 
             // send sms
-            IEmailService.IEmailMessageBuilder messageBuilder = _emailService.GetMessageBuilder();
-            string msg = messageBuilder
-                .AddMessage("Your verification code:")
-                .AddMessage(code, isBold: true)
-                .AddMessage("Expires after: ", withBreak: false)
-                .AddMessage($"{Constants.CodeExpirationTimeInMin}min")
-                .Build();
+            //IEmailService.IEmailMessageBuilder messageBuilder = _emailService.GetMessageBuilder();
+            //string msg = messageBuilder
+            //    .AddMessage("Your verification code:")
+            //    .AddMessage(code, isBold: true)
+            //    .AddMessage("Expires after: ", withBreak: false)
+            //    .AddMessage($"{Constants.CodeExpirationTimeInMin}min")
+            //    .Build();
 
-            _emailService.SendEmail("SuperApp Verification Request", msg, new List<string> { user.Email });
+            //_emailService.SendEmail("SuperApp Verification Request", msg, new List<string> { user.Email });
 
             await _unitOfWork.Commit();
             return request.Id;

@@ -12,12 +12,16 @@ namespace Core.IServices.Users
         Task Edit(UserDTOs.Requests.Edit dto);
         Task Delete(Guid id);
 
+
+        Task AddChild(UserDTOs.Requests.AddChild dto);
+        Task DeleteChild(Guid id);
+
+
         Task<UserDTOs.Responses.BaseLogin> Login(UserDTOs.Requests.Login dto);
         Task<UserDTOs.Responses.VerifyCode?> VerifyCode(Guid requestId, string code);
         Task<Guid> SendVerificationAgain(UserDTOs.Requests.SendVerificationCodeAgain dto);
 
 
         Task<UserDTOs.Responses.SendVerification> SendVerificationRequest(UserDTOs.Requests.SendVerification dto);
-        Task SetPassword(UserDTOs.Requests.SetPassword dto);
     }
 }

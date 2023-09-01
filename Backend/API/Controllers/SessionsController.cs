@@ -46,7 +46,7 @@ namespace API.Controllers
 
 
 
-        [ProducesResponseType(200, Type = typeof(MessageResponseWithDataTable<GetById>))]
+        [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<GetById>))]
         [HttpGet, Route("GetById/{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {

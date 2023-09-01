@@ -38,7 +38,7 @@ namespace API.Middlewares
 
             try
             {
-                await _next(context);
+                 await _next(context);
             }
             catch (NotFoundException e)
             {

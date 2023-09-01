@@ -21,5 +21,12 @@ namespace Infrastructure.Enums
 
 
 
+        public enum UserRole
+        {
+            Admin,
+            Instructor,
+            Parent,
+        }
+
     }
 }

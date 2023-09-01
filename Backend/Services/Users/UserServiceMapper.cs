@@ -15,10 +15,18 @@ namespace Services.Users
         public void CreateMappers()
         {
             CreateMap<UserDTOs.Requests.Create, User>();
+            CreateMap<UserDTOs.Requests.Create.Child, Child>();
+
             CreateMap<UserDTOs.Requests.Edit, User>();
 
+
+            CreateMap<UserDTOs.Requests.AddChild, Child>();
+
+
+            CreateMap<User, UserDTOs.Responses.GetAllDT>()
+                .ForMember(s => s.roleName, opt => opt.MapFrom(s => s.Role));
             CreateMap<User, UserDTOs.Responses.GetById>();
-            CreateMap<User, UserDTOs.Responses.GetAllDT>();
+            CreateMap<Child, UserDTOs.Responses.GetById.Child>();
         }
     }
 }
