@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.IPersistence;
 using Core.IServices.Sessions;
+using Core.IUtils;
 using Infrastructure.DTOs.Sessions;
 using Infrastructure.Entities.DataTables;
 using Infrastructure.Entities.Sessions;
@@ -101,16 +102,23 @@ namespace Services.Appointments
                     throw new ValidationException("OnlyAdminAndInstructorCanBeInstructors");
             }
         }
-        public async Task Create(SessionsDTOs.Requests.Create dto)
+        public async Task Create(IFileProxy? imageFile, SessionsDTOs.Requests.Create dto)
         {
             await ValidateSession(dto);
 
             Session session = _mapper.Map<Session>(dto);
+            session.Id = Guid.NewGuid();
+
+            if (imageFile != null)
+            {
+                string imageFileName = session.Id.ToString();
+                session.Image = await imageFile.SaveFile(imageFileName, Infrastructure.Enums.Enums.Folder.SessionImages) + $"?updated={DateTime.Now.Ticks}";
+            }
 
             await _unitOfWork.Repository<Session>().AddAsync(session);
             await _unitOfWork.Commit();
         }
-        public async Task Edit(SessionsDTOs.Requests.Edit dto)
+        public async Task Edit(IFileProxy? imageFile, SessionsDTOs.Requests.Edit dto)
         {
             await ValidateSession(dto);
 
@@ -119,6 +127,13 @@ namespace Services.Appointments
             if (session.ParticipantsCount > dto.maxParticipants)
                 throw new ValidationException("ParticipantsIsBiggerThanMaxParticipants");
             _mapper.Map(dto, session);
+
+            if (imageFile != null)
+            {
+                string imageFileName = session.Id.ToString();
+                session.Image = await imageFile.SaveFile(imageFileName, Infrastructure.Enums.Enums.Folder.SessionImages) + $"?lastupdated={DateTime.Now.Ticks}";
+            }
+
 
             await _unitOfWork.Repository<Session>().UpdateAsync(session);
             await _unitOfWork.Commit();

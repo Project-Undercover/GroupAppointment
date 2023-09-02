@@ -28,5 +28,14 @@ namespace Infrastructure.Enums
             Parent,
         }
 
+
+
+        public enum Folder
+        {
+            Default,
+            SessionImages,
+            UserImages,
+        }
+
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Infrastructure.DTOs.Sessions
 {
@@ -14,12 +16,19 @@ namespace Infrastructure.DTOs.Sessions
             }
             public record Create
             {
+                [Required]
                 public string title { get; set; }
+
+                [Required]
                 public DateTime startDate { get; set; }
+
+                [Required]
                 public DateTime endDate { get; set; }
 
-                [Range(1, 100)]
+                [Range(1, 100) , Required]
                 public int maxParticipants { get; set; }
+
+
                 public string? locationName { get; set; }
                 public Location? location { get; set; }
 
