@@ -60,16 +60,6 @@ namespace API.Controllers
         }
 
 
-        [HttpPost, Route("Create2")]
-        public async Task<IActionResult> Create2(IFormFile imageFile, [FromForm] Create dto)
-        {
-            var filePath = Path.Combine("./Images", imageFile.FileName);
-            using var fileStream = new FileStream(filePath, FileMode.Create);
-            await imageFile.CopyToAsync(fileStream);
-            return Ok();
-        }
-
-
         [HttpPost, Route("Create")]
         public async Task<IActionResult> Create(IFormFile? imageFile, [FromForm] Create dto)
         {
