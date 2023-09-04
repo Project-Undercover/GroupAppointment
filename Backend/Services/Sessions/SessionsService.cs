@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Core.IPersistence;
 using Core.IServices.Sessions;
+using Core.IUtils;
 using Infrastructure.DTOs.Sessions;
 using Infrastructure.Entities.DataTables;
 using Infrastructure.Entities.Sessions;
+using Infrastructure.Entities.Users;
 using Infrastructure.Exceptions;
 
 namespace Services.Appointments
@@ -35,7 +37,11 @@ namespace Services.Appointments
                     specification.Include(nameof(Session.Participants)).Where(s => s.Participants.Any(s => s.UserId == dto.CustomSearch.userId));
 
                 if (!string.IsNullOrEmpty(participantName))
-                    specification.Include(nameof(Session.Participants)).Where(s => s.Participants.Any(s => (s.FirstName + " " + s.LastName).Contains(participantName) || (s.User.FirstName + " " + s.User.LastName).Contains(participantName)));
+                    specification
+                        .Include(nameof(Session.Participants))
+                        .Include(nameof(Session.Participants) + "." + nameof(Participant.User))
+                        .Include(nameof(Session.Participants) + "." + nameof(Participant.Child))
+                        .Where(s => s.Participants.Any(s => s.Child.Name.Contains(participantName) || (s.User.FirstName + " " + s.User.LastName).Contains(participantName)));
 
                 if (from.HasValue)
                     specification.Where(s => s.StartDate >= from);
@@ -44,14 +50,26 @@ namespace Services.Appointments
                     specification.Where(s => s.EndDate <= to);
             }
 
+            specification
+                .ApplyOrderings(s => s.OrderByDescending(s => s.CreatedAt))
+                .SkipAndTake(dto.skip, dto.take);
 
             var (count, data) = await _unitOfWork.Repository<Session>().Find(specification);
             var mappedData = _mapper.Map<List<SessionsDTOs.Responses.GetAllDT>>(data);
+
             return (count, mappedData);
         }
         public async Task<SessionsDTOs.Responses.GetById> GetById(Guid id)
         {
-            Session session = await _unitOfWork.Repository<Session>().GetByIdAsync(id, nameof(Session.Participants));
+            Session session = await _unitOfWork
+                .Repository<Session>()
+                .GetByIdAsync(id,
+                nameof(Session.Instructors),
+                nameof(Session.Instructors) + "." + nameof(Instructor.User),
+                nameof(Session.Participants),
+                nameof(Session.Participants) + "." + nameof(Participant.Child),
+                nameof(Session.Participants) + "." + nameof(Participant.User));
+
             return _mapper.Map<SessionsDTOs.Responses.GetById>(session);
         }
 
@@ -65,7 +83,6 @@ namespace Services.Appointments
                 throw new ValidationException("InvalidSessionDuration");
 
 
-
             bool sessionOverLap;
             if (dto is SessionsDTOs.Requests.Edit)
                 sessionOverLap = await _unitOfWork
@@ -76,25 +93,47 @@ namespace Services.Appointments
 
             if (sessionOverLap)
                 throw new ValidationException("SessionsOverlap");
+
+
+            foreach (var instructorId in dto.instructors)
+            {
+                User instructor = await _unitOfWork.Repository<User>().GetByIdAsync(instructorId);
+                if (instructor.Role != Infrastructure.Enums.Enums.UserRole.Admin && instructor.Role != Infrastructure.Enums.Enums.UserRole.Instructor)
+                    throw new ValidationException("OnlyAdminAndInstructorCanBeInstructors");
+            }
         }
-        public async Task Create(SessionsDTOs.Requests.Create dto)
+        public async Task Create(IFileProxy? imageFile, SessionsDTOs.Requests.Create dto)
         {
             await ValidateSession(dto);
 
             Session session = _mapper.Map<Session>(dto);
+            session.Id = Guid.NewGuid();
+
+            if (imageFile != null)
+            {
+                string imageFileName = session.Id.ToString();
+                session.Image = await imageFile.SaveFile(imageFileName, Infrastructure.Enums.Enums.Folder.SessionImages) + $"?updated={DateTime.Now.Ticks}";
+            }
 
             await _unitOfWork.Repository<Session>().AddAsync(session);
             await _unitOfWork.Commit();
         }
-        public async Task Edit(SessionsDTOs.Requests.Edit dto)
+        public async Task Edit(IFileProxy? imageFile, SessionsDTOs.Requests.Edit dto)
         {
             await ValidateSession(dto);
 
-            Session session = await _unitOfWork.Repository<Session>().GetByIdAsync(dto.id);
+            Session session = await _unitOfWork.Repository<Session>().GetByIdAsync(dto.id, nameof(Session.Instructors));
 
             if (session.ParticipantsCount > dto.maxParticipants)
                 throw new ValidationException("ParticipantsIsBiggerThanMaxParticipants");
             _mapper.Map(dto, session);
+
+            if (imageFile != null)
+            {
+                string imageFileName = session.Id.ToString();
+                session.Image = await imageFile.SaveFile(imageFileName, Infrastructure.Enums.Enums.Folder.SessionImages) + $"?lastupdated={DateTime.Now.Ticks}";
+            }
+
 
             await _unitOfWork.Repository<Session>().UpdateAsync(session);
             await _unitOfWork.Commit();
@@ -115,7 +154,9 @@ namespace Services.Appointments
 
         public async Task AddParticipant(SessionsDTOs.Requests.AddParticipant dto)
         {
+            Child child = await _unitOfWork.Repository<Child>().GetByIdAsync(dto.ChildId);
             Participant participant = _mapper.Map<Participant>(dto);
+            participant.UserId = child.UserId;
 
             Session session = await _unitOfWork.Repository<Session>().GetByIdAsync(dto.SessionId);
             if (session.ParticipantsCount == session.MaxParticipants)

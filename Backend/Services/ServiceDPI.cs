@@ -18,6 +18,7 @@ namespace Services
             services.AddSingleton<IPasswordHash, BcryptPaswordHash>();
             services.AddSingleton<ITranslationService, TranslationService>();
             services.AddSingleton<IEmailService, EmailService>();
+            services.AddSingleton<IEnumService, EnumsService>();
 
             return services;
         }

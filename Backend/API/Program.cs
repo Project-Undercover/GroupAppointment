@@ -8,8 +8,7 @@ using Infrastructure;
 using Persistence;
 using Services;
 using API.Utils;
-
-
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +44,15 @@ if (app.Environment.InDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+
+app.UseStaticFiles(new StaticFileOptions()
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Images")),
+    RequestPath = new PathString("/Images")
+});
+
+
 
 app.UseHttpsRedirection();
 app.UseCors();

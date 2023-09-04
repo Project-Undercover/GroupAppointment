@@ -21,5 +21,21 @@ namespace Infrastructure.Enums
 
 
 
+        public enum UserRole
+        {
+            Admin,
+            Instructor,
+            Parent,
+        }
+
+
+
+        public enum Folder
+        {
+            Default,
+            SessionImages,
+            UserImages,
+        }
+
     }
 }

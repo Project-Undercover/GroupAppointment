@@ -5,13 +5,12 @@ namespace Infrastructure.Entities.Shared
     [Index(nameof(Id), IsUnique = true)]
     public abstract class Entity
     {
-        public Guid Id { get; private set; }
+        public Guid Id { get; set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
 
-        protected Entity(Guid? id = null, DateTime? createdAt = null)
+        protected Entity(DateTime? createdAt = null)
         {
-            Id = id ?? Guid.NewGuid();
             CreatedAt = createdAt ?? DateTime.Now;
             UpdatedAt = DateTime.Now;
         }

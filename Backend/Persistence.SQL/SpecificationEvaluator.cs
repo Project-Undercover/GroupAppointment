@@ -30,13 +30,9 @@ namespace Persistence.SQL
                                     (current, include) => current.Include(include));
 
             // Apply ordering if expressions are set
-            if (specification.OrderBy != null)
+            if (specification.Orderings != null)
             {
-                query = query.OrderBy(specification.OrderBy);
-            }
-            else if (specification.OrderByDescending != null)
-            {
-                query = query.OrderByDescending(specification.OrderByDescending);
+                query = specification.Orderings(query);
             }
 
             if (specification.GroupBy != null)
@@ -48,7 +44,7 @@ namespace Persistence.SQL
             if (specification.IsPagingEnabled)
             {
                 query = query.Skip(specification.Skip)
-                             .Take(specification.Take);
+                             .Take(specification.Take == -1 ? int.MaxValue : specification.Take);
             }
             return (count, query);
         }

@@ -14,11 +14,20 @@ namespace Services.Users
 
         public void CreateMappers()
         {
-            CreateMap<UserDTOs.Requests.Create, User>();
+            CreateMap<UserDTOs.Requests.Create, User>()
+                .ForMember(s => s.Children, opt => opt.MapFrom(s => s.Children.Select(s => new Child { Name = s }).ToList()));
+            CreateMap<UserDTOs.Requests.Edit.Child, Child>();
             CreateMap<UserDTOs.Requests.Edit, User>();
 
+
+            CreateMap<UserDTOs.Requests.AddChild, Child>();
+
+
+            CreateMap<User, UserDTOs.Responses.GetAllDT>()
+                .ForMember(s => s.roleName, opt => opt.MapFrom(s => s.Role));
             CreateMap<User, UserDTOs.Responses.GetById>();
-            CreateMap<User, UserDTOs.Responses.GetAllDT>();
+            CreateMap<Child, UserDTOs.Responses.GetById.Child>();
+
         }
     }
 }

@@ -1,9 +1,11 @@
-﻿using API.Utils;
+﻿using API.Files;
+using API.Utils;
 using Core.IServices.Sessions;
 using Core.IUtils;
 using Infrastructure.DTOs;
 using Infrastructure.Entities.DataTables;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Headers;
 using static Infrastructure.DTOs.Sessions.SessionsDTOs.Requests;
 using static Infrastructure.DTOs.Sessions.SessionsDTOs.Responses;
 
@@ -46,7 +48,7 @@ namespace API.Controllers
 
 
 
-        [ProducesResponseType(200, Type = typeof(MessageResponseWithDataTable<GetById>))]
+        [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<GetById>))]
         [HttpGet, Route("GetById/{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
@@ -58,24 +60,25 @@ namespace API.Controllers
         }
 
 
-
-
         [HttpPost, Route("Create")]
-        public async Task<IActionResult> Create(Create dto)
+        public async Task<IActionResult> Create(IFormFile? imageFile, [FromForm] Create dto)
         {
             string langKey = Headers.GetLanguage(Request.Headers);
 
-            await _sessionService.Create(dto);
+            IFileProxy? file = imageFile != null ? new LocalFormFileProxy(imageFile) : null;
+            await _sessionService.Create(file, dto);
+
             string message = _translationService.GetByKey(TranslationKeys.Created, langKey, nameof(Session));
             return Ok(MessageResponseFactory.Create(message));
         }
 
         [HttpPost, Route("Edit")]
-        public async Task<IActionResult> Edit(Edit dto)
+        public async Task<IActionResult> Edit(IFormFile? imageFile, [FromForm] Edit dto)
         {
             string langKey = Headers.GetLanguage(Request.Headers);
 
-            await _sessionService.Edit(dto);
+            IFileProxy? file = imageFile != null ? new LocalFormFileProxy(imageFile) : null;
+            await _sessionService.Edit(file, dto);
 
             string message = _translationService.GetByKey(TranslationKeys.Edited, langKey, nameof(Session));
             return Ok(MessageResponseFactory.Create(message));

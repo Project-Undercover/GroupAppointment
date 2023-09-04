@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence.SQL;
 
@@ -11,9 +12,11 @@ using Persistence.SQL;
 namespace Persistence.SQL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230901153019_UserRole")]
+    partial class UserRole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,36 +63,6 @@ namespace Persistence.SQL.Migrations
                     b.ToTable("VerificationRequests");
                 });
 
-            modelBuilder.Entity("Infrastructure.Entities.Sessions.Instructor", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("SessionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Id")
-                        .IsUnique();
-
-                    b.HasIndex("SessionId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Instructors");
-                });
-
             modelBuilder.Entity("Infrastructure.Entities.Sessions.Participant", b =>
                 {
                     b.Property<Guid>("Id")
@@ -122,7 +95,7 @@ namespace Persistence.SQL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Participants");
+                    b.ToTable("Participant");
                 });
 
             modelBuilder.Entity("Infrastructure.Entities.Sessions.Session", b =>
@@ -137,12 +110,6 @@ namespace Persistence.SQL.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LocationName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("MaxParticipants")
                         .HasColumnType("int");
 
@@ -151,10 +118,6 @@ namespace Persistence.SQL.Migrations
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -182,9 +145,6 @@ namespace Persistence.SQL.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -210,9 +170,6 @@ namespace Persistence.SQL.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("ChildrenNumber")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -270,25 +227,6 @@ namespace Persistence.SQL.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Infrastructure.Entities.Sessions.Instructor", b =>
-                {
-                    b.HasOne("Infrastructure.Entities.Sessions.Session", "Session")
-                        .WithMany("Instructors")
-                        .HasForeignKey("SessionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Infrastructure.Entities.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Session");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Infrastructure.Entities.Sessions.Participant", b =>
                 {
                     b.HasOne("Infrastructure.Entities.Users.Child", "Child")
@@ -316,30 +254,6 @@ namespace Persistence.SQL.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Infrastructure.Entities.Sessions.Session", b =>
-                {
-                    b.OwnsOne("Infrastructure.Entities.Sessions.Location", "Location", b1 =>
-                        {
-                            b1.Property<Guid>("SessionId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<double>("Latitude")
-                                .HasColumnType("float");
-
-                            b1.Property<double>("Longitude")
-                                .HasColumnType("float");
-
-                            b1.HasKey("SessionId");
-
-                            b1.ToTable("Sessions");
-
-                            b1.WithOwner()
-                                .HasForeignKey("SessionId");
-                        });
-
-                    b.Navigation("Location");
-                });
-
             modelBuilder.Entity("Infrastructure.Entities.Users.Child", b =>
                 {
                     b.HasOne("Infrastructure.Entities.Users.User", "User")
@@ -353,8 +267,6 @@ namespace Persistence.SQL.Migrations
 
             modelBuilder.Entity("Infrastructure.Entities.Sessions.Session", b =>
                 {
-                    b.Navigation("Instructors");
-
                     b.Navigation("Participants");
                 });
 

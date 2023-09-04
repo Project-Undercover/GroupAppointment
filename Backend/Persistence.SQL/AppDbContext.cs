@@ -14,7 +14,11 @@ namespace Persistence.SQL
 
         public virtual DbSet<VerificationRequest> VerificationRequests { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Child> Children { get; set; }
         public virtual DbSet<Session> Sessions { get; set; }
+        public virtual DbSet<Participant> Participants { get; set; }
+        public virtual DbSet<Instructor> Instructors { get; set; }
+
 
     }
 }
