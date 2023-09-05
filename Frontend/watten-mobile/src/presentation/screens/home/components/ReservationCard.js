@@ -46,6 +46,7 @@ const styles = StyleSheet.create({
   },
   timerText: {
     fontSize: 13,
+    color: theme.COLORS.secondaryPrimary,
   },
   timerContainer: {
     paddingHorizontal: 12,

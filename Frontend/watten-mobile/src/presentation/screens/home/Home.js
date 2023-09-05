@@ -12,6 +12,7 @@ const Home = () => {
       <Header />
       <ScrollView
         style={{ flex: 1 }}
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
       >
         <WelcomeBanner username={"Sabreen"} date={moment().format("LL")} />

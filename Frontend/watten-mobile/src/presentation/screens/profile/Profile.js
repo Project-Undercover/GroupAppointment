@@ -45,6 +45,7 @@ const Profile = () => {
       <CustomeStatusBar />
       <AppHeader />
       <ScrollView
+        showsVerticalScrollIndicator={false}
         className="flex-1 p-5"
         contentContainerStyle={{ paddingBottom: 120 }}
       >
