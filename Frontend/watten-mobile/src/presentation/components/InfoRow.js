@@ -3,11 +3,13 @@ import React from "react";
 import TextComponent from "./TextComponent";
 import theme from "../../utils/theme";
 
-const InfoRow = ({ icon, value }) => {
+const InfoRow = ({ icon, value, textStyle, font }) => {
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>{icon}</View>
-      <TextComponent style={styles.valueText}>{value}</TextComponent>
+      <TextComponent {...font} style={[styles.valueText, { ...textStyle }]}>
+        {value}
+      </TextComponent>
     </View>
   );
 };

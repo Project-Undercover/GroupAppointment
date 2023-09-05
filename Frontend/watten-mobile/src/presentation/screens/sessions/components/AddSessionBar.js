@@ -10,7 +10,7 @@ const AddSessionBar = ({ date }) => {
   const navigation = useNavigation();
   const handlePressBar = () => {
     navigation.navigate("session-manager", {
-      mode: SessionMode.ADD,
+      mode: SessionMode.Add,
       date: date?.format(),
     });
   };

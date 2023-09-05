@@ -4,8 +4,14 @@ export enum RequestMethod {
   DELETE = "DELETE",
   PUT = "PUT",
 }
-
 export enum SessionMode {
-  ADD = 0,
+  Add = 0,
   Edit = 1,
+}
+
+export enum Language {
+  English = 0,
+  Arabic = 1,
+
+  Hebrew = 2,
 }

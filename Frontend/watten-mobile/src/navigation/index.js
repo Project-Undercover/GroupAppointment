@@ -44,6 +44,9 @@ export const UsersStack = () => {
         keyboardHidesTabBar: true,
         gestureEnabled: false,
       }}
+      screenOptions={{
+        headerShown: false,
+      }}
       initialRouteName={"users"}
     >
       <UserStack.Screen name={"users"} component={Users} />

@@ -12,7 +12,7 @@ const SessionManager = ({ route, navigation }) => {
   const { mode, date } = route.params;
 
   const ManagerTitle = useMemo(() => {
-    return mode === SessionMode.ADD ? "Add Session" : "Edit Session";
+    return mode === SessionMode.Add ? "Add Session" : "Edit Session";
   }, [mode]);
 
   return (

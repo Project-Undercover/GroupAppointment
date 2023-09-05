@@ -138,7 +138,6 @@ const Inputs = () => {
               containerStyle={{ width: "90%" }}
               placeholder={"Enter start time"}
               label="Session start time"
-              ref={startTimeRef}
               onFocus={toggleTimePicker}
               icon={
                 <AntDesign

@@ -17,7 +17,7 @@ const DefaultButton = ({ text, onPress, containerStyle, textStyle, icon }) => {
 const styles = StyleSheet.create({
   button: {
     width: 301,
-    height: 45,
+    height: 50,
     borderRadius: 13,
     borderWidth: 1,
     borderColor: "white",
