@@ -5,12 +5,13 @@ using Core.IUtils;
 using Infrastructure.DTOs;
 using Infrastructure.Entities.DataTables;
 using Microsoft.AspNetCore.Mvc;
+using static API.Middlewares.Authorization;
 using static Infrastructure.DTOs.Sessions.SessionsDTOs.Requests;
 using static Infrastructure.DTOs.Sessions.SessionsDTOs.Responses;
+using static Infrastructure.Enums.Enums;
 
 namespace API.Controllers
 {
-
     [ProducesResponseType(200, Type = typeof(MessageResponse))]
     [ProducesResponseType(404, Type = typeof(MessageResponse))]
     [ProducesResponseType(400, Type = typeof(MessageResponse))]
@@ -32,7 +33,7 @@ namespace API.Controllers
 
 
 
-
+        [AuthorizeUser(UserRole.Admin)]
         [ProducesResponseType(200, Type = typeof(MessageResponseWithDataTable<IEnumerable<GetAllDT>>))]
         [HttpPost, Route("GetAllDT")]
         public async Task<IActionResult> GetAllDT(DataTableDTOs.SessionDT dto)
@@ -46,7 +47,7 @@ namespace API.Controllers
 
 
 
-
+        [AuthorizeUser(UserRole.Admin)]
         [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<GetById>))]
         [HttpGet, Route("GetById/{id}")]
         public async Task<IActionResult> GetById(Guid id)
@@ -59,6 +60,7 @@ namespace API.Controllers
         }
 
 
+        [AuthorizeUser(UserRole.Admin)]
         [HttpPost, Route("Create")]
         public async Task<IActionResult> Create(IFormFile? imageFile, [FromForm] Create dto)
         {
@@ -71,6 +73,8 @@ namespace API.Controllers
             return Ok(MessageResponseFactory.Create(message));
         }
 
+
+        [AuthorizeUser(UserRole.Admin)]
         [HttpPost, Route("Edit")]
         public async Task<IActionResult> Edit(IFormFile? imageFile, [FromForm] Edit dto)
         {
@@ -83,6 +87,8 @@ namespace API.Controllers
             return Ok(MessageResponseFactory.Create(message));
         }
 
+
+        [AuthorizeUser(UserRole.Admin)]
         [HttpDelete, Route("Delete/{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -96,7 +102,7 @@ namespace API.Controllers
 
 
 
-
+        [AuthorizeUser(allowAll = true)]
         [HttpPost, Route("AddParticipant")]
         public async Task<IActionResult> AddParticipant(AddParticipant dto)
         {
@@ -110,6 +116,7 @@ namespace API.Controllers
 
 
 
+        [AuthorizeUser(allowAll = true)]
         [HttpDelete, Route("DeleteParticipant/{id}")]
         public async Task<IActionResult> DeleteParticipant(Guid id)
         {

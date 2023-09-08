@@ -16,9 +16,11 @@ namespace Infrastructure.DTOs.Users
                 public string lastName { get; set; }
 
                 [EmailAddress(ErrorMessage = "Invalid Email Address")]
+                [DataType(DataType.EmailAddress)]
                 public string? Email { get; set; }
 
                 [RegularExpression("^(?!0+$)(\\+\\d{1,3}[- ]?)?(?!0+$)\\d{10,15}$", ErrorMessage = "Please enter valid phone no.")]
+                [DataType(DataType.PhoneNumber)]
                 public string mobileNumber { get; set; }
                 public UserRole role { get; set; }
                 public virtual List<string> Children { get; set; }

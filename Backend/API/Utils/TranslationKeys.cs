@@ -12,10 +12,5 @@
         public const string UnAuthorized = "UnAuthorized";
         public const string InActiveUser = "InActiveUser";
 
-
-
-
-
-
     }
 }

@@ -1,5 +1,5 @@
 global using Infrastructure.Entities.Sessions;
-
+global using Infrastructure.Enums;
 
 using API;
 using API.Middlewares;
