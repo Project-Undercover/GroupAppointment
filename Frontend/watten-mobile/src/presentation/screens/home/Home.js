@@ -6,7 +6,9 @@ import WelcomeBanner from "./components/WelcomeBanner";
 import StatCard from "./components/StatCard";
 import Spacer from "../../components/Spacer";
 import ReservationsList from "./components/ReservationsList";
+import { useTranslation } from "react-i18next";
 const Home = () => {
+  const { t } = useTranslation();
   return (
     <View className="flex-1">
       <Header />
@@ -19,13 +21,13 @@ const Home = () => {
         <View className="p-4 flex-row justify-around">
           <StatCard
             value={10}
-            label={"Therapy completed"}
+            label={t("done_sessions")}
             iconPath={require("../../../assets/icons/koala.png")}
           />
           <Spacer space={15} />
           <StatCard
             value={2}
-            label={"Children registered"}
+            label={t("registered_children")}
             iconPath={require("../../../assets/icons/sloth.png")}
           />
         </View>

@@ -77,18 +77,18 @@ const AppBottomTabs = () => {
 const AppNavigation = () => {
   return (
     <Stack.Navigator
-      // initialRouteName={"splash"}
+      initialRouteName={"splash"}
       screenOptions={{
         headerShown: false,
         gestureEnabled: false,
       }}
     >
-      {/* <Stack.Screen
+      <Stack.Screen
         name={"splash"}
         component={Splash}
         options={{ headerShown: false }}
-      /> */}
-      {/* <Stack.Screen name="entry" component={Entry} /> */}
+      />
+      <Stack.Screen name="entry" component={Entry} />
       <Stack.Screen
         name={"app-tabs"}
         component={AppBottomTabs}

@@ -10,8 +10,8 @@ export enum Mode {
 }
 
 export enum Language {
-  English = 0,
-  Arabic = 1,
+  English = "en",
+  Arabic = "ar",
 
-  Hebrew = 2,
+  Hebrew = "he",
 }

@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.COLORS.white,
     paddingHorizontal: 10,
     justifyContent: "space-between",
+    alignItems: "flex-start",
     // alignItems: "stretch",
     paddingVertical: 20,
     paddingBottom: 0,

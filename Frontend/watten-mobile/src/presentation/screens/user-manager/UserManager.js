@@ -15,11 +15,15 @@ import theme from "../../../utils/theme";
 import Spacer from "../../components/Spacer";
 import TextComponent from "../../components/TextComponent";
 import InputItem from "./components/InputItem";
+import { useTranslation } from "react-i18next";
+import DefaultButton from "../../components/DefaultButton";
+
 const UserManager = ({ route }) => {
+  const { t } = useTranslation();
   const { mode } = route.params;
 
   const ManagerTitle = useMemo(() => {
-    return mode === Mode.Add ? "Add User" : "Edit User";
+    return mode === Mode.Add ? t("create_user") : t("edit_user");
   }, [mode]);
   const [inputItems, setInputItems] = useState([]);
 
@@ -48,13 +52,18 @@ const UserManager = ({ route }) => {
       <DefaultHeader title={ManagerTitle} />
       <Spacer space={20} />
       <ScrollView
-        className="flex-1 px-5"
-        contentContainerStyle={{ paddingBottom: 100 }}
+        className="flex-1"
+        contentContainerStyle={{
+          paddingBottom: 120,
+          alignItems: "left",
+          flexGrow: 1,
+          padding: 14,
+        }}
       >
         <View className="flex-row">
           <DefaultInput
-            placeholder={"Enter First name"}
-            label="First name"
+            placeholder={t("enter") + " " + t("firstName")}
+            label={t("firstName")}
             wrapperStyle={{ width: "50%" }}
             icon={
               <Feather name="user" color={theme.COLORS.primary} size={20} />
@@ -62,8 +71,8 @@ const UserManager = ({ route }) => {
           />
           <Spacer space={3} />
           <DefaultInput
-            placeholder={"Enter last name"}
-            label="Last name"
+            placeholder={t("enter") + " " + t("lastName")}
+            label={t("lastName")}
             wrapperStyle={{ width: "50%" }}
             icon={
               <Feather name="user" color={theme.COLORS.primary} size={20} />
@@ -72,27 +81,40 @@ const UserManager = ({ route }) => {
         </View>
         <Spacer space={15} />
         <DefaultInput
-          placeholder={"Enter phone number"}
-          label="Phone number"
+          placeholder={t("enter") + " " + t("phoneNumber")}
+          label={t("phoneNumber")}
+          wrapperStyle={{ width: "100%" }}
           icon={<Feather name="phone" color={theme.COLORS.primary} size={20} />}
         />
         <Spacer space={15} />
-        <TouchableOpacity
-          className="flex-row items-center gap-2"
-          onPress={handlePressAddChild}
-        >
-          <AntDesign name="plussquare" size={26} color={theme.COLORS.primary} />
-          <TextComponent style={styles.addText}>Add child</TextComponent>
-        </TouchableOpacity>
-        <Spacer space={15} />
-        <View style={{ flex: 1, gap: 10 }}>
+
+        <View className="flex-1 gap-[10px]">
+          <TouchableOpacity
+            className="flex-row items-center gap-2"
+            onPress={handlePressAddChild}
+          >
+            <AntDesign
+              name="plussquare"
+              size={26}
+              color={theme.COLORS.primary}
+            />
+            <TextComponent style={styles.addText}>
+              {t("add_child")}
+            </TextComponent>
+          </TouchableOpacity>
+          <Spacer space={15} />
           {inputItems.map((item) => (
             <InputItem
               key={item.id}
+              t={t}
               handleRemoveInput={() => handleRemoveInput(item.id)}
               handleChangeInput={() => handleChangeInput(item.id)}
             />
           ))}
+        </View>
+        <Spacer space={20} />
+        <View className="items-center w-full justify-end">
+          <DefaultButton text={t("create_user")} />
         </View>
       </ScrollView>
     </View>

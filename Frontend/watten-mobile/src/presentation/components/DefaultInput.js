@@ -12,8 +12,9 @@ const DefaultInput = ({
   wrapperStyle,
   inputStyle,
   component,
+  keyboardType,
+  editable = true,
   onFocus = () => {},
-  handleChange = () => {},
   onChange = () => {},
 }) => {
   const ref = useRef();
@@ -24,12 +25,15 @@ const DefaultInput = ({
         {icon && <View style={styles.iconContainer}>{icon}</View>}
         {!component ? (
           <TextInput
+            value={value}
             ref={ref}
             onFocus={() => onFocus(ref)}
-            onChange={onChange}
+            onChangeText={onChange}
+            editable={editable}
             style={[globalStyles.input, { ...inputStyle }]}
             placeholder={placeholder}
             underlineColorAndroid="transparent"
+            keyboardType={keyboardType}
           />
         ) : (
           component

@@ -9,17 +9,19 @@ import theme from "../../../utils/theme";
 import Inputs from "./components/Inputs";
 import globalStyles from "../../../utils/theme/globalStyles";
 import Spacer from "../../components/Spacer";
+import { useTranslation } from "react-i18next";
 const SessionManager = ({ route, navigation }) => {
   const { mode, date } = route.params;
+  const { t } = useTranslation();
 
   const ManagerTitle = useMemo(() => {
-    return mode === Mode.Add ? "Add Session" : "Edit Session";
+    return mode === Mode.Add ? "create_session" : "edit_session";
   }, [mode]);
 
   return (
     <View className="flex-1">
       <CustomeStatusBar />
-      <DefaultHeader title={ManagerTitle} />
+      <DefaultHeader title={t(ManagerTitle)} />
       <View className="px-4 py-5 flex-1">
         <View className="w-auto" style={{ alignSelf: "flex-start" }}>
           <TextComponent mediumBold style={styles.dateText}>

@@ -4,6 +4,7 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
+  I18nManager,
 } from "react-native";
 import { useState } from "react";
 import CustomeStatusBar from "../../components/CustomeStatusBar";
@@ -12,6 +13,7 @@ import theme from "../../../utils/theme";
 import * as ImagePicker from "expo-image-picker";
 import ProfileInfoCard from "./components/ProfileInfoCard";
 import ProfileInfoRow from "./components/ProfileInfoRow";
+import i18next from "../../../utils/i18n";
 import {
   FontAwesome,
   Feather,
@@ -20,10 +22,13 @@ import {
 import Spacer from "../../components/Spacer";
 import RadioButton from "../../components/RadioButton";
 import { Language } from "../../../utils/Enums";
+import { useTranslation } from "react-i18next";
+import AuthActions from "../../../actions/AuthActions";
 const Profile = () => {
   const [image, setImage] = useState();
-  const [language, setLanguage] = useState(Language.Arabic);
-
+  const [language, setLanguage] = useState(i18next.language);
+  const { t } = useTranslation();
+  const authActions = AuthActions();
   const selectImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -37,7 +42,8 @@ const Profile = () => {
     }
   };
 
-  const handleSelectOption = (lang) => {
+  const handleSelectLangOption = (lang) => {
+    authActions.changeLanguage(lang);
     setLanguage(lang);
   };
   return (
@@ -46,8 +52,12 @@ const Profile = () => {
       <AppHeader />
       <ScrollView
         showsVerticalScrollIndicator={false}
-        className="flex-1 p-5"
-        contentContainerStyle={{ paddingBottom: 120 }}
+        className="flex-1"
+        contentContainerStyle={{
+          paddingBottom: 120,
+          alignItems: "center",
+          padding: 14,
+        }}
       >
         <View>
           <View className="items-center">
@@ -66,8 +76,8 @@ const Profile = () => {
           </View>
         </View>
         <Spacer space={10} />
-        <View>
-          <ProfileInfoCard title="User Details">
+        <View className="w-full">
+          <ProfileInfoCard title={t("user_details")}>
             <ProfileInfoRow
               value="Sabreen arar"
               icon={
@@ -82,7 +92,7 @@ const Profile = () => {
             />
           </ProfileInfoCard>
           <Spacer space={10} />
-          <ProfileInfoCard title="Children registered">
+          <ProfileInfoCard title={t("registered_children")}>
             <ProfileInfoRow
               value="Ghaith arar"
               icon={
@@ -105,15 +115,15 @@ const Profile = () => {
             />
           </ProfileInfoCard>
           <Spacer space={10} />
-          <ProfileInfoCard title="Language">
+          <ProfileInfoCard title={t("language")}>
             <ProfileInfoRow
               value="العربيه"
               disabled={false}
-              onPress={() => handleSelectOption(Language.Arabic)}
+              onPress={() => handleSelectLangOption(Language.Arabic)}
               selectInput={
                 <RadioButton
                   isActive={language === Language.Arabic}
-                  handleSelectOption={handleSelectOption}
+                  handleSelectOption={handleSelectLangOption}
                   option={Language.Arabic}
                 />
               }
@@ -129,11 +139,11 @@ const Profile = () => {
             <ProfileInfoRow
               value="עברית"
               disabled={false}
-              onPress={() => handleSelectOption(Language.Hebrew)}
+              onPress={() => handleSelectLangOption(Language.Hebrew)}
               selectInput={
                 <RadioButton
                   isActive={language === Language.Hebrew}
-                  handleSelectOption={handleSelectOption}
+                  handleSelectOption={handleSelectLangOption}
                   option={Language.Hebrew}
                 />
               }

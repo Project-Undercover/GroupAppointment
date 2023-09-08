@@ -1,15 +1,23 @@
 import { Text, TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
 import theme from "../../utils/theme";
-const DefaultButton = ({ text, onPress, containerStyle, textStyle, icon }) => {
+const DefaultButton = ({
+  text,
+  onPress,
+  disabled,
+  containerStyle,
+  textStyle,
+  icon,
+}) => {
   return (
     <TouchableOpacity
       activeOpacity={0.7}
       onPress={onPress}
+      disabled={disabled}
       style={{ ...styles.button, ...containerStyle }}
     >
-      {icon}
       <Text style={[styles.text, { ...textStyle }]}>{text}</Text>
+      {icon}
     </TouchableOpacity>
   );
 };

@@ -3,15 +3,15 @@ import React from "react";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import DefaultInput from "../../../components/DefaultInput";
 import theme from "../../../../utils/theme";
-const InputItem = ({ handleRemoveInput, handleChangeInput }) => {
+const InputItem = ({ handleRemoveInput, handleChangeInput, t }) => {
   return (
-    <View className="flex-row items-center ">
+    <View className="flex-row items-center my-2">
       <TouchableOpacity className=" mt-6" onPress={handleRemoveInput}>
         <AntDesign name="minus" size={30} color={theme.COLORS.secondary2} />
       </TouchableOpacity>
       <DefaultInput
-        label={"Name"}
-        placeholder={"Enter child name"}
+        label={t("name")}
+        placeholder={t("enter") + " " + t("child_name")}
         wrapperStyle={{ width: "90%" }}
         onChange={handleChangeInput}
         icon={

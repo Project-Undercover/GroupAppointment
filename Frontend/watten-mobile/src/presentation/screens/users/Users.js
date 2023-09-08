@@ -1,17 +1,17 @@
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { StyleSheet, View } from "react-native";
 import React from "react";
 import CustomeStatusBar from "../../components/CustomeStatusBar";
 import AppHeader from "../../components/AppHeader";
-import TextComponent from "../../components/TextComponent";
-import globalStyles from "../../../utils/theme/globalStyles";
 import DefaultInput from "../../components/DefaultInput";
 import { Feather } from "@expo/vector-icons";
 import theme from "../../../utils/theme";
 import Spacer from "../../components/Spacer";
 import UsersList from "./components/UsersList";
-import { AntDesign } from "@expo/vector-icons";
 import UsersBar from "./components/UsersBar";
+import { useTranslation } from "react-i18next";
+
 const Users = ({ navigation }) => {
+  const { t } = useTranslation();
   return (
     <View className="flex-1">
       <CustomeStatusBar />
@@ -21,7 +21,7 @@ const Users = ({ navigation }) => {
 
         <Spacer space={5} />
         <DefaultInput
-          placeholder={"Search"}
+          placeholder={t("search_user")}
           icon={
             <Feather name="search" color={theme.COLORS.primary} size={20} />
           }

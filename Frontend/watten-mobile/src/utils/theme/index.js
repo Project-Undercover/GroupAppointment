@@ -16,7 +16,7 @@ const theme = {
     black: "#1E1F20",
     white: "#FFFFFF",
     green: "#00B894",
-    green2: "#16A34A",
+    green2: "#00A344",
 
     // status
     statusOpen: "#35d0ba",

@@ -1,11 +1,17 @@
 import { StyleSheet, Text, View, Image } from "react-native";
-import React from "react";
+import React, { useMemo } from "react";
 import theme from "../../../utils/theme";
 import * as Progress from "react-native-progress";
 import TextComponent from "../TextComponent";
 import SessionInfo from "./SessionInfo";
+import { useTranslation } from "react-i18next";
 
-const SessionCard = ({ maxParticipants = 30, totalParticipant = 5 }) => {
+const SessionCard = ({ maxParticipants = 100, totalParticipant = 10 }) => {
+  const { t } = useTranslation();
+
+  const progress = useMemo(() => {
+    return totalParticipant / maxParticipants;
+  }, [maxParticipants, totalParticipant]);
   return (
     <View style={styles.container}>
       <View style={styles.imagePartContainer}>
@@ -17,12 +23,20 @@ const SessionCard = ({ maxParticipants = 30, totalParticipant = 5 }) => {
         </View>
         <View style={styles.participantsContainer}>
           <TextComponent style={styles.progressText}>
-            Participants {totalParticipant + "/" + maxParticipants}{" "}
+            {t("participantes") +
+              " " +
+              totalParticipant +
+              "/" +
+              maxParticipants}{" "}
           </TextComponent>
-          <Progress.Bar progress={0.3} width={100} color={theme.COLORS.white} />
+          <Progress.Bar
+            progress={progress}
+            width={100}
+            color={theme.COLORS.white}
+          />
         </View>
       </View>
-      <SessionInfo />
+      <SessionInfo t={t} />
     </View>
   );
 };

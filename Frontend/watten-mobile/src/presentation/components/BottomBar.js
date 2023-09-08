@@ -13,6 +13,7 @@ import { Entypo, Feather, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import theme from "../../utils/theme";
 import TextComponent from "./TextComponent";
+import { useTranslation } from "react-i18next";
 
 if (Platform.OS === "android") {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -23,6 +24,8 @@ const BottomBar = () => {
   const [animationActive, setAnimationActive] = useState(false);
   const navigation = useNavigation();
   const [fadeAnimation] = useState(new Animated.Value(0));
+  const { t } = useTranslation();
+
   useEffect(() => {
     Animated.timing(fadeAnimation, {
       toValue: 1,
@@ -45,7 +48,7 @@ const BottomBar = () => {
 
   const tabRoutes = [
     {
-      text: "Home",
+      text: t("home"),
       tab: "home",
       icon: (
         <Entypo
@@ -60,7 +63,7 @@ const BottomBar = () => {
       ),
     },
     {
-      text: "Sessions",
+      text: t("sessions"),
       tab: "sessionsStack",
       icon: (
         <Ionicons
@@ -75,7 +78,7 @@ const BottomBar = () => {
       ),
     },
     {
-      text: "Users",
+      text: t("users"),
       tab: "usersStack",
       icon: (
         <Feather
@@ -90,7 +93,7 @@ const BottomBar = () => {
       ),
     },
     {
-      text: "Profile",
+      text: t("profile"),
       tab: "profile",
       icon: (
         <Feather

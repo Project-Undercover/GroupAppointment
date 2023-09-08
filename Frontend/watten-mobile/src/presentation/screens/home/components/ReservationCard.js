@@ -4,17 +4,18 @@ import TextComponent from "../../../components/TextComponent";
 import theme from "../../../../utils/theme";
 import ReservationInfo from "./ReservationInfo";
 import Spacer from "../../../components/Spacer";
-
+import { useTranslation } from "react-i18next";
 const ReservationCard = ({ instructure }) => {
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
       <View className="flex-row justify-between">
         <TextComponent mediumBold style={styles.headerText}>
-          Instructure - {instructure}
+          {t("instructure") + " - " + instructure}
         </TextComponent>
         <View style={styles.timerContainer}>
           <TextComponent mediumBold style={styles.timerText}>
-            24 min
+            {"24 " + t("min")}
           </TextComponent>
         </View>
       </View>

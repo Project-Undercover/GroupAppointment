@@ -6,14 +6,14 @@ import { AntDesign, Ionicons, Feather } from "@expo/vector-icons";
 import theme from "../../../utils/theme";
 import Spacer from "../Spacer";
 import Status from "./Status";
-const SessionInfo = () => {
+const SessionInfo = ({ t }) => {
   return (
     <View style={styles.container}>
       <View className="flex-row justify-between">
         <TextComponent mediumBold style={styles.infoTitle}>
           Title of the session
         </TextComponent>
-        <Status status={"Available"} />
+        <Status status={t("available")} />
       </View>
       <Spacer space={5} />
       <View style={styles.colContainer}>

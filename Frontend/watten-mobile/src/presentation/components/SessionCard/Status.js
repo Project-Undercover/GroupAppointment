@@ -16,18 +16,16 @@ export default Status;
 
 const styles = StyleSheet.create({
   container: {
-    width: 57,
-    height: 21,
+    paddingHorizontal: 20,
+    paddingVertical: 3,
     backgroundColor: theme.COLORS.lightGreen,
     alignItems: "center",
     justifyContent: "center",
-    // position: "absolute",
     borderRadius: 4,
-    // end: 5,
-    // top: 4,
   },
   text: {
     color: theme.COLORS.green,
     fontSize: 10,
+    padding: 2,
   },
 });

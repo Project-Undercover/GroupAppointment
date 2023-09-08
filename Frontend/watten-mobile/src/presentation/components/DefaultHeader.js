@@ -1,4 +1,10 @@
-import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  TouchableOpacity,
+  I18nManager,
+} from "react-native";
 import React from "react";
 import TextComponent from "./TextComponent";
 import theme from "../../utils/theme";
@@ -15,7 +21,11 @@ const DefaultHeader = ({ title }) => {
         style={styles.iconContainer}
         onPress={() => navigation.goBack()}
       >
-        <AntDesign name="right" size={24} color={theme.COLORS.white} />
+        <AntDesign
+          name={I18nManager.allowRTL ? "left" : "right"}
+          size={24}
+          color={theme.COLORS.white}
+        />
       </TouchableOpacity>
     </View>
   );

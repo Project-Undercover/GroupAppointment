@@ -28,7 +28,7 @@ const TextComponent = ({ children, style, bold, semiBold, mediumBold }) => {
       : theme.FONTS.primaryFontRegular;
   }, [lang, bold, semiBold, mediumBold]);
   const combinedStyles = [
-    { fontFamily: getFontBasedOnLanguage },
+    { fontFamily: getFontBasedOnLanguage, textAlign: "left" },
     ...(Array.isArray(style) ? style : [style]),
   ];
   return <Text style={combinedStyles}>{children}</Text>;

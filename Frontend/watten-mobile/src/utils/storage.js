@@ -12,6 +12,16 @@ export const getDataFromStorage = async () => {
   }
 };
 
+export const getToken = async () => {
+  try {
+    const token = await AsyncStorage.getItem("token");
+    if (token == null) return null;
+    return JSON.parse(token);
+  } catch (e) {
+    // console.log('getToken:', e);
+  }
+};
+
 export const getLanguageFromStorage = async () => {
   try {
     const language = await AsyncStorage.getItem("language");
@@ -22,13 +32,28 @@ export const getLanguageFromStorage = async () => {
   }
 };
 
-export const getLocationServiceFromStorage = async () => {
+export const storeData = async ({ token, user }) => {
   try {
-    const service = await AsyncStorage.getItem("location_service");
-    // console.log('storage service', service);
-    // return language;
-    return service ? service : "waze";
+    await AsyncStorage.setItem("token", JSON.stringify(token));
+    await AsyncStorage.setItem("user", JSON.stringify(user));
   } catch (e) {
-    // console.log(e);
+    console.log(e);
+  }
+};
+
+export const storeLanguage = async (language) => {
+  try {
+    await AsyncStorage.setItem("language", language);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const cleanData = async () => {
+  try {
+    await AsyncStorage.removeItem("user");
+    await AsyncStorage.removeItem("token");
+  } catch (e) {
+    // console.log('Error removing data:', e);
   }
 };

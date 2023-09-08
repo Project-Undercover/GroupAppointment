@@ -25,9 +25,11 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import DropDownPicker from "react-native-dropdown-picker";
 import DefaultButton from "../../../components/DefaultButton";
 import UploadImageCard from "./UploadImageCard";
+import { useTranslation } from "react-i18next";
 
 const Inputs = () => {
   const [openInstructorsSelector, setpenInstructorsSelector] = useState(false);
+  const { t } = useTranslation();
   const [value, setValue] = useState(["wissam"]);
   const [items, setItems] = useState([
     { label: "wissam", value: "wissam" },
@@ -75,8 +77,8 @@ const Inputs = () => {
       >
         <View className="flex-start flex-1" style={{ rowGap: 20 }}>
           <DefaultInput
-            placeholder={"Enter session title"}
-            label="Session title"
+            placeholder={t("enter") + " " + t("session_title")}
+            label={t("session_title")}
             icon={
               <MaterialCommunityIcons
                 name="subtitles-outline"
@@ -86,8 +88,8 @@ const Inputs = () => {
             }
           />
           <DefaultInput
-            placeholder={"Enter session address"}
-            label="Session address"
+            placeholder={t("enter") + " " + t("session_address")}
+            label={t("session_address")}
             icon={
               <Feather name="user" color={theme.COLORS.primary} size={20} />
             }
@@ -95,7 +97,7 @@ const Inputs = () => {
 
           <View style={styles.dropContainer}>
             <TextComponent style={styles.label}>
-              Session Instructure
+              {t("session_instructure")}
             </TextComponent>
             <DropDownPicker
               open={openInstructorsSelector}
@@ -121,14 +123,14 @@ const Inputs = () => {
                 fontFamily: theme.FONTS.primaryFontRegular,
                 textAlign: I18nManager.isRTL ? "right" : "left",
               }}
-              placeholder="Session Instructure"
+              placeholder={t("session_instructure")}
               badgeDotColors={[theme.COLORS.primary]}
             />
           </View>
 
           <DefaultInput
-            placeholder={"Enter max participants"}
-            label="Session max participants"
+            placeholder={t("enter") + " " + t("session_max")}
+            label={t("session_max")}
             icon={
               <Feather name="user" color={theme.COLORS.primary} size={20} />
             }
@@ -136,8 +138,9 @@ const Inputs = () => {
           <View className="flex-row">
             <DefaultInput
               containerStyle={{ width: "90%" }}
-              placeholder={"Enter start time"}
-              label="Session start time"
+              placeholder={t("enter") + " " + t("session_start")}
+              label={t("session_start")}
+              ref={startTimeRef}
               onFocus={toggleTimePicker}
               icon={
                 <AntDesign
@@ -148,8 +151,8 @@ const Inputs = () => {
               }
             />
             <DefaultInput
-              placeholder={"Enter end time"}
-              label="Session end time"
+              placeholder={t("enter") + " " + t("session_end")}
+              label={t("session_end")}
               containerStyle={{ width: "90%" }}
               onFocus={toggleTimePicker}
               icon={
@@ -177,7 +180,7 @@ const Inputs = () => {
           <UploadImageCard />
           <Spacer space={5} />
           <View className="items-center">
-            <DefaultButton text="Create Session" />
+            <DefaultButton text={t("create_session")} />
           </View>
         </View>
       </ScrollView>

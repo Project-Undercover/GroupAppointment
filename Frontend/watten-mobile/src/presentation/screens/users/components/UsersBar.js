@@ -5,7 +5,9 @@ import TextComponent from "../../../components/TextComponent";
 import { AntDesign } from "@expo/vector-icons";
 import theme from "../../../../utils/theme";
 import { Mode } from "../../../../utils/Enums";
+import { useTranslation } from "react-i18next";
 const UsersBar = ({ navigation }) => {
+  const { t } = useTranslation();
   const handlePressAddUser = () => {
     navigation.navigate("user-manager", {
       mode: Mode.Add,
@@ -15,7 +17,7 @@ const UsersBar = ({ navigation }) => {
     <View className="flex-row justify-between">
       <View className="w-auto" style={{ alignSelf: "flex-start" }}>
         <TextComponent mediumBold style={styles.titleText}>
-          {"Customers"}
+          {t("users")}
         </TextComponent>
         <View style={globalStyles.underLine}></View>
       </View>

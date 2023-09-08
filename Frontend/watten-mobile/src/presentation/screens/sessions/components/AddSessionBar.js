@@ -5,9 +5,11 @@ import { AntDesign } from "@expo/vector-icons";
 import theme from "../../../../utils/theme";
 import { useNavigation } from "@react-navigation/native";
 import { Mode } from "../../../../utils/Enums";
+import { useTranslation } from "react-i18next";
 
 const AddSessionBar = ({ date }) => {
   const navigation = useNavigation();
+  const { t } = useTranslation();
   const handlePressBar = () => {
     navigation.navigate("session-manager", {
       mode: Mode.Add,
@@ -22,7 +24,7 @@ const AddSessionBar = ({ date }) => {
       onPress={handlePressBar}
     >
       <TextComponent style={styles.text} mediumBold>
-        Add new session
+        {t("add_new_session")}
       </TextComponent>
       <TouchableOpacity activeOpacity={0.5} onPress={handlePressBar}>
         <AntDesign name="plussquare" size={26} color={theme.COLORS.primary} />

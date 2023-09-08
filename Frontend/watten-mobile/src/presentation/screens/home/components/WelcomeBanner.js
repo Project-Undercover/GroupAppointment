@@ -1,13 +1,14 @@
 import { View, Image, StyleSheet } from "react-native";
 import React from "react";
 import TextComponent from "../../../components/TextComponent";
-
+import { useTranslation } from "react-i18next";
 const WelcomeBanner = ({ username, date }) => {
+  const { t } = useTranslation();
   return (
-    <View className="p-5 mt-5">
+    <View className="p-5 mt-5 items-start">
       <View className="flex-row items-center gap-4">
         <TextComponent mediumBold style={styles.textMain}>
-          Hey, {username}
+          {t("greeting") + "," + username}
         </TextComponent>
         <Image
           className="w-10 h-10"

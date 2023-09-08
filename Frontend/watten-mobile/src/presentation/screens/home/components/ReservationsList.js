@@ -2,11 +2,13 @@ import { StyleSheet, View } from "react-native";
 import React from "react";
 import TextComponent from "../../../components/TextComponent";
 import ReservationCard from "./ReservationCard";
+import { useTranslation } from "react-i18next";
 const ReservationsList = ({ total }) => {
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
       <TextComponent mediumBold style={styles.textTitle}>
-        Upcoming Reservation - {total}
+        {t("upcoming_sessions") + " - " + total}
       </TextComponent>
 
       <ReservationCard instructure={"Sabreen"} />
