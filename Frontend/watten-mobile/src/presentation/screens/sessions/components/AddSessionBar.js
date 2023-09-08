@@ -4,13 +4,13 @@ import TextComponent from "../../../components/TextComponent";
 import { AntDesign } from "@expo/vector-icons";
 import theme from "../../../../utils/theme";
 import { useNavigation } from "@react-navigation/native";
-import { SessionMode } from "../../../../utils/Enums";
+import { Mode } from "../../../../utils/Enums";
 
 const AddSessionBar = ({ date }) => {
   const navigation = useNavigation();
   const handlePressBar = () => {
     navigation.navigate("session-manager", {
-      mode: SessionMode.Add,
+      mode: Mode.Add,
       date: date?.format(),
     });
   };

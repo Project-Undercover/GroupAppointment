@@ -2,21 +2,23 @@ import { View, Text, TextInput, StyleSheet, I18nManager } from "react-native";
 import { useRef } from "react";
 import theme from "../../utils/theme";
 import TextComponent from "./TextComponent";
-
+import globalStyles from "../../utils/theme/globalStyles";
 const DefaultInput = ({
   label,
   value,
   icon,
   placeholder,
   containerStyle,
+  wrapperStyle,
   inputStyle,
   component,
-  onFocus,
-  handleChange,
+  onFocus = () => {},
+  handleChange = () => {},
+  onChange = () => {},
 }) => {
   const ref = useRef();
   return (
-    <View style={[styles.wrapper]}>
+    <View style={[styles.wrapper, { ...wrapperStyle }]}>
       <TextComponent style={styles.label}>{label}</TextComponent>
       <View style={[styles.container, { ...containerStyle }]}>
         {icon && <View style={styles.iconContainer}>{icon}</View>}
@@ -24,8 +26,8 @@ const DefaultInput = ({
           <TextInput
             ref={ref}
             onFocus={() => onFocus(ref)}
-            // onChange={() => handleChange()}
-            style={[styles.input, { ...inputStyle }]}
+            onChange={onChange}
+            style={[globalStyles.input, { ...inputStyle }]}
             placeholder={placeholder}
             underlineColorAndroid="transparent"
           />
@@ -39,6 +41,7 @@ const DefaultInput = ({
 
 export default DefaultInput;
 const styles = StyleSheet.create({
+  wrapper: {},
   container: {
     height: 45,
     flexDirection: "row",
@@ -49,17 +52,6 @@ const styles = StyleSheet.create({
     borderColor: theme.COLORS.secondary2,
     borderRadius: 5,
     overflow: "hidden",
-  },
-
-  input: {
-    flex: 1,
-    padding: 10,
-    paddingLeft: 0,
-    backgroundColor: "#fff",
-    color: "#424242",
-    fontSize: 14,
-    fontFamily: theme.FONTS.primaryFontRegular,
-    textAlign: I18nManager.isRTL ? "right" : "left",
   },
   iconContainer: {
     padding: 10,
