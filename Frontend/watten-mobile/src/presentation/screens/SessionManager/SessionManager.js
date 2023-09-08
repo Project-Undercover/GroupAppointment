@@ -2,17 +2,18 @@ import { StyleSheet, Text, View } from "react-native";
 import { useMemo } from "react";
 import CustomeStatusBar from "../../components/CustomeStatusBar";
 import DefaultHeader from "../../components/DefaultHeader";
-import { SessionMode } from "../../../utils/Enums";
+import { Mode } from "../../../utils/Enums";
 import moment from "moment";
 import TextComponent from "../../components/TextComponent";
 import theme from "../../../utils/theme";
 import Inputs from "./components/Inputs";
+import globalStyles from "../../../utils/theme/globalStyles";
 import Spacer from "../../components/Spacer";
 const SessionManager = ({ route, navigation }) => {
   const { mode, date } = route.params;
 
   const ManagerTitle = useMemo(() => {
-    return mode === SessionMode.Add ? "Add Session" : "Edit Session";
+    return mode === Mode.Add ? "Add Session" : "Edit Session";
   }, [mode]);
 
   return (
@@ -24,7 +25,7 @@ const SessionManager = ({ route, navigation }) => {
           <TextComponent mediumBold style={styles.dateText}>
             {moment(date).format("LL")}
           </TextComponent>
-          <View style={styles.dateUnderLine}></View>
+          <View style={globalStyles.underLine}></View>
         </View>
         <Spacer space={20} />
         <Inputs />
@@ -38,11 +39,5 @@ export default SessionManager;
 const styles = StyleSheet.create({
   dateText: {
     fontSize: 18,
-  },
-  dateUnderLine: {
-    height: 2,
-    borderBottomEndRadius: 20,
-    borderBottomStartRadius: 20,
-    backgroundColor: theme.COLORS.secondaryPrimary,
   },
 });

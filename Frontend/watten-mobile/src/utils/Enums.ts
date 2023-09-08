@@ -4,7 +4,7 @@ export enum RequestMethod {
   DELETE = "DELETE",
   PUT = "PUT",
 }
-export enum SessionMode {
+export enum Mode {
   Add = 0,
   Edit = 1,
 }
