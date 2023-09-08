@@ -64,7 +64,7 @@ namespace API.Middlewares
             {
                 _logger.LogError(e.Message);
 
-                if (_env.InDevelopment())
+                if (_env.InDevelopment() || true)
                 {
                     await ResponseDev(context, StatusCodes.Status400BadRequest, e.Message); // send the real error
                     return;

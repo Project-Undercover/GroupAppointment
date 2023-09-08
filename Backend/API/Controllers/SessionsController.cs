@@ -5,7 +5,6 @@ using Core.IUtils;
 using Infrastructure.DTOs;
 using Infrastructure.Entities.DataTables;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Headers;
 using static Infrastructure.DTOs.Sessions.SessionsDTOs.Requests;
 using static Infrastructure.DTOs.Sessions.SessionsDTOs.Responses;
 
@@ -65,7 +64,7 @@ namespace API.Controllers
         {
             string langKey = Headers.GetLanguage(Request.Headers);
 
-            IFileProxy? file = imageFile != null ? new LocalFormFileProxy(imageFile) : null;
+            IFileProxy? file = imageFile != null ? new AzureFormFileProxy(imageFile) : null;
             await _sessionService.Create(file, dto);
 
             string message = _translationService.GetByKey(TranslationKeys.Created, langKey, nameof(Session));
@@ -77,7 +76,7 @@ namespace API.Controllers
         {
             string langKey = Headers.GetLanguage(Request.Headers);
 
-            IFileProxy? file = imageFile != null ? new LocalFormFileProxy(imageFile) : null;
+            IFileProxy? file = imageFile != null ? new AzureFormFileProxy(imageFile) : null;
             await _sessionService.Edit(file, dto);
 
             string message = _translationService.GetByKey(TranslationKeys.Edited, langKey, nameof(Session));

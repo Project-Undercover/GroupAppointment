@@ -10,7 +10,7 @@ namespace Persistence.SQL
         {
 
         }
-        public List<Expression<Func<T, bool>>> Criterias { get; }
+        public List<Expression<Func<T, bool>>> Criterias { get; } = new List<Expression<Func<T, bool>>>();
         public List<Expression<Func<T, object>>> Includes { get; } = new List<Expression<Func<T, object>>>();
         public List<string> IncludeStrings { get; } = new List<string>();
         public Func<IQueryable<T>, IOrderedQueryable<T>>? Orderings { get; private set; }

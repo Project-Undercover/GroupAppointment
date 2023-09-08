@@ -1,32 +1,34 @@
 ﻿using Azure.Storage.Blobs;
 using Core.IUtils;
 using static Infrastructure.Enums.Enums;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace API.Files
 {
     public class AzureFormFileProxy : IFileProxy
     {
-        private IFormFile _file;
         const int MaxFileSize = 5242880;
         const string allowedExt = ".png.jpg.jpeg";
-        const string _connectionString = "";
-        const string _containerName = "upl";
+        const string _connectionString = "DefaultEndpointsProtocol=https;AccountName=watten;AccountKey=QoBfH4xb55M6geeaUlYplZl8dA+HY0SUjSAxRw1m/oO7Lg01bYSWqlbcbZVxQi92F2YsZyTEeQgg+AStzLZB9A==;EndpointSuffix=core.windows.net";
+        const string _containerName = "watten";
         const string _baseURL = "https://azure.com";
+        private IFormFile _file;
+        private string _ext;
 
 
         public AzureFormFileProxy(IFormFile file)
         {
             _file = file;
+            _ext = Path.GetExtension(_file.FileName);
             Validate();
         }
 
 
         private void Validate()
         {
-            string ext = Path.GetExtension(_file.FileName);
             long fileSize = _file.Length;
 
-            if (fileSize > MaxFileSize || !allowedExt.Contains(ext))
+            if (fileSize > MaxFileSize || !allowedExt.Contains(_ext))
                 throw new Exception("Invalid File");
         }
 
@@ -51,7 +53,7 @@ namespace API.Files
 
         public async Task<string> SaveFile(string fileName, Folder folder = Folder.Default)
         {
-            string uri = await UploadAsync(fileName);
+            string uri = await UploadAsync(fileName + _ext);
             return uri;
         }
     }
