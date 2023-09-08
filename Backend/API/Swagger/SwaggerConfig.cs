@@ -12,20 +12,19 @@ namespace API.Swagger
 
         public static IServiceCollection AddSwaggerWithConfig(this IServiceCollection services, string env)
         {
-          
+
             services.AddSwaggerGen(config =>
             {
                 config.EnableAnnotations();
                 config.SwaggerDoc("v1", ApiInfo(env));
                 config.CustomSchemaIds(type => type.FullName?.Replace("+", "_"));
                 config.OperationFilter<AddAcceptLanguageHeaderParameter>();
-        
+                config.OperationFilter<AuthResponsesOperationFilter>();
 
                 if (TokenSecurityEnabled)
                 {
                     var jwtSecurityScheme = TokenSecurity();
                     config.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
-                    config.AddSecurityRequirement(new OpenApiSecurityRequirement { { jwtSecurityScheme, Array.Empty<string>() } });
                 }
 
 
@@ -55,7 +54,7 @@ namespace API.Swagger
         /// Token Security Scheme
         /// </summary>
         /// <returns></returns>
-        private static OpenApiSecurityScheme TokenSecurity() => new OpenApiSecurityScheme
+        public static OpenApiSecurityScheme TokenSecurity() => new OpenApiSecurityScheme
         {
             Scheme = "bearer",
             BearerFormat = "JWT",

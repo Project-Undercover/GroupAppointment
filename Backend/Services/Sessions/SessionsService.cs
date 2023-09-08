@@ -89,7 +89,7 @@ namespace Services.Appointments
                     .Repository<Session>()
                     .Exists(s => s.StartDate <= dto.startDate && s.EndDate >= dto.startDate && s.Id != ((SessionsDTOs.Requests.Edit)dto).id);
             else
-                sessionOverLap = await _unitOfWork.Repository<Session>().Exists(s => s.StartDate <= dto.startDate && s.EndDate >= dto.startDate);
+                sessionOverLap = await _unitOfWork.Repository<Session>().Exists(s => s.StartDate <= dto.startDate && s.EndDate > dto.startDate);
 
             if (sessionOverLap)
                 throw new ValidationException("SessionsOverlap");

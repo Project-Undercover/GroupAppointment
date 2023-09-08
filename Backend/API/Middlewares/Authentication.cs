@@ -1,4 +1,6 @@
-﻿using Core.IUtils;
+﻿using API.Utils;
+using Core.IPersistence;
+using Core.IUtils;
 using Infrastructure.Entities.Users;
 
 namespace API.Middlewares
@@ -33,14 +35,17 @@ namespace API.Middlewares
         {
             try
             {
+                var unitOfWork = httpContext.RequestServices.GetRequiredService<IUnitOfWork>();
+
+
                 User? user = null;
 
                 if (token != null)
-                    user = await GetUserFromToken(token);
+                    user = await GetUserFromToken(token, unitOfWork);
                 // if in development get an admin user
-                else if (_env.IsDevelopment() || _env.EnvironmentName.Contains("Development"))
-                    //user = await _unitOfWork.Users.GetByIdAsync(new Guid("B33EDFA5-B700-4786-8701-321D90CF570E"));
-                //user.Password = null;
+                else if (_env.InDevelopment())
+                    user = await unitOfWork.Repository<User>().GetByAsync(s => s.IsAdmin);
+
                 httpContext.Items["User"] = user;
             }
             catch (Exception ex)
@@ -53,7 +58,7 @@ namespace API.Middlewares
 
 
 
-        private async Task<User> GetUserFromToken(string token)
+        private async Task<User> GetUserFromToken(string token, IUnitOfWork unitOfWork)
         {
             string userId = _tokenGenerator.ValidateToken(token);
 
@@ -61,8 +66,7 @@ namespace API.Middlewares
                 throw new Exception("UserId is null");
 
             var userIdParsed = Guid.Parse(userId);
-            //return await _unitOfWork.Users.GetByIdAsync(userIdParsed);
-            return new User();
+            return await unitOfWork.Repository<User>().GetByIdAsync(userIdParsed);
         }
     }
 }

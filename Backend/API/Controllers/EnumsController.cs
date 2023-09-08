@@ -3,6 +3,7 @@ using Core.IUtils;
 using Infrastructure.DTOs;
 using Infrastructure.DTOs.Enums;
 using Microsoft.AspNetCore.Mvc;
+using static API.Middlewares.Authorization;
 using static Infrastructure.Enums.Enums;
 
 namespace API.Controllers
@@ -10,6 +11,7 @@ namespace API.Controllers
     [ProducesResponseType(200, Type = typeof(MessageResponse))]
     [ProducesResponseType(404, Type = typeof(MessageResponse))]
     [ProducesResponseType(400, Type = typeof(MessageResponse))]
+    [AuthorizeUser(UserRole.Admin)]
     [Route("/api/[controller]")]
     [ApiController]
     public class EnumsController : ControllerBase

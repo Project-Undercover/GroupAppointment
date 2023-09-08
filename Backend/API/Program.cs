@@ -1,5 +1,5 @@
 global using Infrastructure.Entities.Sessions;
-
+global using Infrastructure.Enums;
 
 using API;
 using API.Middlewares;
@@ -39,18 +39,18 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.InDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.InDevelopment())
+//{
+app.UseSwagger();
+app.UseSwaggerUI();
+//}
 
 
-app.UseStaticFiles(new StaticFileOptions()
-{
-    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Images")),
-    RequestPath = new PathString("/Images")
-});
+//app.UseStaticFiles(new StaticFileOptions()
+//{
+//    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Images")),
+//    RequestPath = new PathString("/Images")
+//});
 
 
 
