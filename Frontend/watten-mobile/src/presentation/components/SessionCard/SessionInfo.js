@@ -6,12 +6,19 @@ import { AntDesign, Ionicons, Feather } from "@expo/vector-icons";
 import theme from "../../../utils/theme";
 import Spacer from "../Spacer";
 import Status from "./Status";
-const SessionInfo = ({ t }) => {
+const SessionInfo = ({
+  t,
+  startTime,
+  endTime,
+  locationName,
+  instructor,
+  title,
+}) => {
   return (
     <View style={styles.container}>
       <View className="flex-row justify-between">
         <TextComponent mediumBold style={styles.infoTitle}>
-          Title of the session
+          {title}
         </TextComponent>
         <Status status={t("available")} />
       </View>
@@ -25,7 +32,7 @@ const SessionInfo = ({ t }) => {
               color={theme.COLORS.primary}
             />
           }
-          value={"11:30 - 11:45"}
+          value={startTime + " - " + endTime}
         />
         <InfoRow
           icon={
@@ -35,11 +42,11 @@ const SessionInfo = ({ t }) => {
               color={theme.COLORS.primary}
             />
           }
-          value={"Bartaa Basma est"}
+          value={locationName}
         />
         <InfoRow
           icon={<Feather name="user" color={theme.COLORS.primary} size={17} />}
-          value={"Sabreen arar"}
+          value={instructor}
         />
       </View>
     </View>

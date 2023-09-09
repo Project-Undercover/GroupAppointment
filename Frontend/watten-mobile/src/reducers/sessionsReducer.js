@@ -1,8 +1,7 @@
 import { FETCH_SESSIONS_SUCCESS } from "../constants/actionTypes";
 const initialState = {
-  isLoggedIn: false,
-  token: "",
-  username: "",
+  sessions: [],
+  error: null,
 };
 
 const sessionsReducer = (state = initialState, action) => {
@@ -10,6 +9,7 @@ const sessionsReducer = (state = initialState, action) => {
     case FETCH_SESSIONS_SUCCESS:
       return {
         ...state,
+        sessions: action.payload,
       };
     default:
       return state;

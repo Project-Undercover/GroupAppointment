@@ -62,7 +62,7 @@ const AuthActions = () => {
           payload: response?.data,
         });
         setTimeout(() => {
-          showSuccess(t("verify_success"));
+          // showSuccess(t("verify_success"));
           NavigateHome();
         }, 1000);
       } catch (error) {

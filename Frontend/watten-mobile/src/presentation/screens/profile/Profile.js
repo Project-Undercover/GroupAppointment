@@ -6,7 +6,7 @@ import {
   ScrollView,
   I18nManager,
 } from "react-native";
-import { useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import CustomeStatusBar from "../../components/CustomeStatusBar";
 import AppHeader from "../../components/AppHeader";
 import theme from "../../../utils/theme";
@@ -24,11 +24,19 @@ import RadioButton from "../../components/RadioButton";
 import { Language } from "../../../utils/Enums";
 import { useTranslation } from "react-i18next";
 import AuthActions from "../../../actions/AuthActions";
+import UserActions from "../../../actions/UserActions";
+import { useDispatch, useSelector } from "react-redux";
+import { useFocusEffect } from "@react-navigation/native";
+
 const Profile = () => {
+  const { userProfile } = useSelector((state) => state.users);
   const [image, setImage] = useState();
   const [language, setLanguage] = useState(i18next.language);
   const { t } = useTranslation();
   const authActions = AuthActions();
+  const userActions = UserActions();
+  const dispatch = useDispatch();
+
   const selectImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -41,7 +49,18 @@ const Profile = () => {
       setImage(result.assets[0].uri);
     }
   };
+  useFocusEffect(
+    useCallback(() => {
+      fetchProfile();
+    }, [])
+  );
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
+  const fetchProfile = () => {
+    dispatch(userActions.fetchProfile());
+  };
   const handleSelectLangOption = (lang) => {
     authActions.changeLanguage(lang);
     setLanguage(lang);
@@ -79,13 +98,13 @@ const Profile = () => {
         <View className="w-full">
           <ProfileInfoCard title={t("user_details")}>
             <ProfileInfoRow
-              value="Sabreen arar"
+              value={userProfile?.firstName + " " + userProfile?.lastName}
               icon={
                 <Feather name="user" color={theme.COLORS.primary} size={18} />
               }
             />
             <ProfileInfoRow
-              value="0547973441"
+              value={userProfile?.mobileNumber}
               icon={
                 <Feather name="phone" color={theme.COLORS.primary} size={18} />
               }
@@ -93,26 +112,19 @@ const Profile = () => {
           </ProfileInfoCard>
           <Spacer space={10} />
           <ProfileInfoCard title={t("registered_children")}>
-            <ProfileInfoRow
-              value="Ghaith arar"
-              icon={
-                <FontAwesome
-                  name="child"
-                  color={theme.COLORS.primary}
-                  size={18}
-                />
-              }
-            />
-            <ProfileInfoRow
-              value="aser arar"
-              icon={
-                <FontAwesome
-                  name="child"
-                  color={theme.COLORS.primary}
-                  size={18}
-                />
-              }
-            />
+            {userProfile?.children?.map((child) => (
+              <ProfileInfoRow
+                key={child?.id}
+                value={child?.name}
+                icon={
+                  <FontAwesome
+                    name="child"
+                    color={theme.COLORS.primary}
+                    size={18}
+                  />
+                }
+              />
+            ))}
           </ProfileInfoCard>
           <Spacer space={10} />
           <ProfileInfoCard title={t("language")}>
@@ -123,7 +135,7 @@ const Profile = () => {
               selectInput={
                 <RadioButton
                   isActive={language === Language.Arabic}
-                  handleSelectOption={handleSelectLangOption}
+                  // handleSelectOption={handleSelectLangOption}
                   option={Language.Arabic}
                 />
               }
@@ -143,7 +155,7 @@ const Profile = () => {
               selectInput={
                 <RadioButton
                   isActive={language === Language.Hebrew}
-                  handleSelectOption={handleSelectLangOption}
+                  // handleSelectOption={handleSelectLangOption}
                   option={Language.Hebrew}
                 />
               }

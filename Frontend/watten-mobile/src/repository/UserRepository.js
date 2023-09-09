@@ -16,7 +16,6 @@ const UserRepository = () => {
     mobileNumber,
     children,
   }) => {
-    console.log(firstName, lastName, mobileNumber, children);
     const data = await apiCall("Users/Create", RequestMethod.POST, {
       firstName,
       lastName,
@@ -26,7 +25,12 @@ const UserRepository = () => {
     return data;
   };
 
-  return { getUsers, createUser };
+  const getProfile = async () => {
+    const data = await apiCall("Users/GetProfile", RequestMethod.GET);
+    return data;
+  };
+
+  return { getUsers, createUser, getProfile };
 };
 
 export default UserRepository;

@@ -5,13 +5,22 @@ import * as Progress from "react-native-progress";
 import TextComponent from "../TextComponent";
 import SessionInfo from "./SessionInfo";
 import { useTranslation } from "react-i18next";
-
-const SessionCard = ({ maxParticipants = 100, totalParticipant = 10 }) => {
+import moment from "moment";
+const SessionCard = ({ session }) => {
+  const {
+    maxParticipants,
+    participantsCount,
+    startDate,
+    endDate,
+    locationName,
+    instructor,
+    title,
+  } = session;
   const { t } = useTranslation();
 
   const progress = useMemo(() => {
-    return totalParticipant / maxParticipants;
-  }, [maxParticipants, totalParticipant]);
+    return participantsCount / maxParticipants;
+  }, [session]);
   return (
     <View style={styles.container}>
       <View style={styles.imagePartContainer}>
@@ -25,7 +34,7 @@ const SessionCard = ({ maxParticipants = 100, totalParticipant = 10 }) => {
           <TextComponent style={styles.progressText}>
             {t("participantes") +
               " " +
-              totalParticipant +
+              participantsCount +
               "/" +
               maxParticipants}{" "}
           </TextComponent>
@@ -36,7 +45,14 @@ const SessionCard = ({ maxParticipants = 100, totalParticipant = 10 }) => {
           />
         </View>
       </View>
-      <SessionInfo t={t} />
+      <SessionInfo
+        t={t}
+        instructor={instructor}
+        title={title}
+        startTime={moment(startDate).format("LT")}
+        endTime={moment(endDate).format("LT")}
+        locationName={locationName}
+      />
     </View>
   );
 };

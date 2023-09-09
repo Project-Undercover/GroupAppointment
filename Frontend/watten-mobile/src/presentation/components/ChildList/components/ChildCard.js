@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import TextComponent from "../../components/TextComponent";
+import TextComponent from "../../TextComponent";
 
-import theme from "../../../utils/theme";
+import theme from "../../../../utils/theme";
 const ChildCard = ({ value }) => {
   return (
     <View style={styles.container}>

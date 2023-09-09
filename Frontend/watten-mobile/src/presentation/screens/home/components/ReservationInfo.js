@@ -11,7 +11,7 @@ import {
 } from "@expo/vector-icons";
 import theme from "../../../../utils/theme";
 import Spacer from "../../../components/Spacer";
-import ChildList from "../../../ChildList/ChildList";
+import ChildList from "../../../components/ChildList/ChildList";
 const ReservationInfo = () => {
   return (
     <View className="flex-1">

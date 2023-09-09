@@ -1,7 +1,12 @@
-import { FETCH_USERS_SUCCESS, FILTER_USERS } from "../constants/actionTypes";
+import {
+  FETCH_USERS_SUCCESS,
+  FETCH_USER_PROFILE_SUCCESS,
+  FILTER_USERS,
+} from "../constants/actionTypes";
 const initialState = {
   users: [],
   searchedUsers: [],
+  userProfile: {},
   error: null,
 };
 
@@ -12,6 +17,12 @@ const usersReducer = (state = initialState, action) => {
         ...state,
         users: action.payload,
         searchedUsers: action.payload,
+      };
+
+    case FETCH_USER_PROFILE_SUCCESS:
+      return {
+        ...state,
+        userProfile: action.payload,
       };
 
     case FILTER_USERS:

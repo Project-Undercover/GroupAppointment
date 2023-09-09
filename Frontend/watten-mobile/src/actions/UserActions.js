@@ -4,6 +4,7 @@ import { useAlertsContext } from "../hooks/useAlertsContext";
 import {
   CREATE_USER_SUCCESS,
   FETCH_USERS_SUCCESS,
+  FETCH_USER_PROFILE_SUCCESS,
   FILTER_USERS,
 } from "../constants/actionTypes";
 import { useLoadingContext } from "../hooks/useLoadingContext";
@@ -58,6 +59,20 @@ const UserActions = () => {
     };
   };
 
+  const fetchProfile = () => {
+    return async (dispatch) => {
+      setLoading(true);
+      try {
+        const response = await userRepository.getProfile();
+        dispatch({ type: FETCH_USER_PROFILE_SUCCESS, payload: response?.data });
+      } catch (error) {
+        console.log(error?.data);
+        const messg = error?.data?.message ? error?.data?.message : t("error");
+        showError(messg);
+      }
+      setLoading(false);
+    };
+  };
   const NavigateUsers = () => {
     navigation.goBack();
   };
@@ -67,7 +82,7 @@ const UserActions = () => {
       dispatch({ type: FILTER_USERS, payload: filter });
     };
   };
-  return { fetchUsers, filterUsers, createUser };
+  return { fetchUsers, filterUsers, createUser, fetchProfile };
 };
 
 export default UserActions;

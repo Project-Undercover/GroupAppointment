@@ -6,7 +6,6 @@ import { AntDesign } from "@expo/vector-icons";
 // import "moment/locale/ar";
 import "moment/locale/he";
 const DatePickerStrip = ({ date, handleChangeDate }) => {
-  console.log(I18nManager.isRTL);
   return (
     <View style={styles.container}>
       <CalendarStrip
