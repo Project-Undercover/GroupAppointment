@@ -135,7 +135,9 @@ const Profile = () => {
               selectInput={
                 <RadioButton
                   isActive={language === Language.Arabic}
-                  // handleSelectOption={handleSelectLangOption}
+                  handleSelectOption={() =>
+                    handleSelectLangOption(Language.Arabic)
+                  }
                   option={Language.Arabic}
                 />
               }
@@ -155,7 +157,9 @@ const Profile = () => {
               selectInput={
                 <RadioButton
                   isActive={language === Language.Hebrew}
-                  // handleSelectOption={handleSelectLangOption}
+                  handleSelectOption={() =>
+                    handleSelectLangOption(Language.Hebrew)
+                  }
                   option={Language.Hebrew}
                 />
               }

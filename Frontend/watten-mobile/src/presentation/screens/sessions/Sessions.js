@@ -36,17 +36,21 @@ const Sessions = () => {
   // }, []);
 
   const fetchSessions = (date) => {
-    const interval = timeInterval(date);
+    const interval = timeInterval(date?.locale("he"));
     dispatch(sessionActions.fetchSessions({ ...interval }));
   };
   const timeInterval = (date) => {
-    const startDate = date?.startOf("day")?.format("YYYY-MM-DDTHH:mm:ss");
-    const endDate = date?.endOf("day")?.format("YYYY-MM-DDTHH:mm:ss");
+    const startDate = moment(date)
+      .startOf("day")
+      ?.format("yyyy-MM-DDTHH:mm:ss");
+    const endDate = moment(date).endOf("day")?.format("yyyy-MM-DDTHH:mm:ss");
+
+    console.log(startDate, endDate);
     return { startDate, endDate };
   };
 
   const handleRefreshSessions = () => {
-    fetchSessions(date);
+    fetchSessions(date.locale("he"));
   };
 
   return (
