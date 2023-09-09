@@ -1,11 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { View, StyleSheet, I18nManager } from "react-native";
 import CalendarStrip from "react-native-calendar-strip";
 import theme from "../../../../utils/theme";
-import { AntDesign } from "@expo/vector-icons";
 // import "moment/locale/ar";
-import "moment/locale/he";
+// import "moment/locale/he";
+// import moment from "moment";
+import i18next from "i18next";
+import { useSelector } from "react-redux";
+
 const DatePickerStrip = ({ date, handleChangeDate }) => {
+  const { language } = useSelector((state) => state?.auth);
+  console.log(language);
+  const locale = {
+    name: language,
+    config: {},
+  };
+  // useEffect(() => {
+  //   console.log(language);
+
+  //   if (language === "ar") {
+  //     console.log("changing lang1");
+  //     moment.locale(language);
+  //   } else {
+  //     console.log("changing lang2");
+  //     moment.locale(language);
+  //   }
+  // }, [language]);
+
   return (
     <View style={styles.container}>
       <CalendarStrip
@@ -17,6 +38,7 @@ const DatePickerStrip = ({ date, handleChangeDate }) => {
           paddingTop: 20,
           paddingBottom: 10,
         }}
+        locale={locale}
         calendarHeaderStyle={{
           color: theme.COLORS.secondaryPrimary,
           fontSize: 17,

@@ -18,9 +18,10 @@ const SessionActions = () => {
           startDate,
           endDate,
         });
+        console.log("---", startDate, endDate);
         dispatch({ type: FETCH_SESSIONS_SUCCESS, payload: response?.data });
       } catch (error) {
-        // console.log(error?.data);
+        console.log(error?.data);
         const messg = error?.data?.message ? error?.data?.message : t("error");
         showError(messg);
       }

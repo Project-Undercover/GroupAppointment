@@ -62,7 +62,7 @@ const Profile = () => {
     dispatch(userActions.fetchProfile());
   };
   const handleSelectLangOption = (lang) => {
-    authActions.changeLanguage(lang);
+    dispatch(authActions.changeLanguage(lang));
     setLanguage(lang);
   };
   return (

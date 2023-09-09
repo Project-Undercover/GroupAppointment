@@ -4,6 +4,7 @@ import {
   LOGIN_FAILURE,
   VERIFY_SUCCESS,
   LOGOUT_SUCCESS,
+  CHANGE_LANG_SUCCESS,
 } from "../constants/actionTypes";
 import { storeData } from "../utils/storage";
 
@@ -12,6 +13,7 @@ const initialState = {
   user: {},
   isLoading: false,
   requestId: "",
+  language: "he",
   error: {},
 };
 
@@ -45,6 +47,11 @@ const authReducer = (state = initialState, action) => {
         ...state,
         isLoading: false,
         error: action?.payload,
+      };
+    case CHANGE_LANG_SUCCESS:
+      return {
+        ...state,
+        language: action.payload,
       };
 
     case LOGOUT_SUCCESS:

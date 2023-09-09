@@ -7,13 +7,14 @@ import {
   LOGIN_SUCCESS,
   VERIFY_SUCCESS,
   LOGOUT_SUCCESS,
+  CHANGE_LANG_SUCCESS,
 } from "../constants/actionTypes";
 import { useNavigation } from "@react-navigation/native";
 import { useAlertsContext } from "../hooks/useAlertsContext";
 import { useTranslation } from "react-i18next";
 import "moment/locale/ar";
-
 import "moment/locale/he";
+
 import {
   cleanData,
   getDataFromStorage,
@@ -73,23 +74,30 @@ const AuthActions = () => {
     };
   };
 
-  const changeLanguage = async (lang) => {
-    if (i18next.language === lang) return;
-    i18next
-      .changeLanguage(lang)
-      .then(() => {
-        console.log("language changed successfully");
-        storeLanguage(lang);
-        moment.locale(lang);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const changeLanguage = (lang) => {
+    return async (dispatch) => {
+      if (i18next.language === lang) return;
+
+      i18next
+        .changeLanguage(lang)
+        .then(() => {
+          console.log("language changed successfully", lang);
+          moment.locale(lang);
+          storeLanguage(lang);
+          dispatch({ type: CHANGE_LANG_SUCCESS, payload: lang });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
   };
 
-  const checkLanguageInStorage = async () => {
-    const lang = await getLanguageFromStorage();
-    changeLanguage(lang);
+  const checkLanguageInStorage = () => {
+    return async (dispatch) => {
+      const lang = await getLanguageFromStorage();
+
+      dispatch(changeLanguage(lang));
+    };
   };
 
   const checkUserInStorage = () => {
