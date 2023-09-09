@@ -42,7 +42,7 @@ const SplashScreen = ({ navigation }) => {
           easing: Easing.inOut(Easing.exp),
           useNativeDriver: false,
         }).start(() => {
-          authActions.checkLanguageInStorage();
+          dispatch(authActions.checkLanguageInStorage());
           dispatch(authActions.checkUserInStorage());
         });
       }, 1000);

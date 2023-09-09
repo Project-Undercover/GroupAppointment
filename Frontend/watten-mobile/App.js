@@ -22,13 +22,9 @@ export default function App() {
     "Rubik-SemiBold": require("./src/assets/fonts/Rubik-SemiBold.ttf"),
   });
 
-  useEffect(() => {
-    if (i18next.language === "ar") {
-      moment.locale("ar");
-    } else {
-      moment.locale("he");
-    }
-  }, []);
+  // useEffect(() => {
+  //   moment.locale(i18next.language);
+  // }, []);
   if (!fontsLoaded) {
     return null;
   }
