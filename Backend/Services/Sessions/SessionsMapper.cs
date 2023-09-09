@@ -36,7 +36,8 @@ namespace Services.Sessions
 
 
 
-            CreateMap<Session, SessionsDTOs.Responses.GetAllDT>();
+            CreateMap<Session, SessionsDTOs.Responses.GetAllDT>()
+                .ForMember(s => s.instructor, opt => opt.MapFrom(s => s.Instructors.Select(s => s.User.FirstName + " " + s.User.LastName).FirstOrDefault()));
         }
     }
 }

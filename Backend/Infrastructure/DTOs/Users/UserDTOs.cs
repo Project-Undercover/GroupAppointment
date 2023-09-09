@@ -76,6 +76,7 @@ namespace Infrastructure.DTOs.Users
                 public string lastName { get; set; }
                 public string email { get; set; } = "";
                 public string mobileNumber { get; set; }
+                public string? image { get; set; }
                 public bool isActive { get; set; } = true;
                 public int role { get; set; }
                 public string roleName { get; set; }
@@ -89,6 +90,7 @@ namespace Infrastructure.DTOs.Users
                 public string lastName { get; set; }
                 public string email { get; set; } = "";
                 public string mobileNumber { get; set; }
+                public string? image { get; set; }
                 public int role { get; set; }
                 public bool isActive { get; set; } = true;
                 public List<Child> Children { get; set; } = new List<Child>();

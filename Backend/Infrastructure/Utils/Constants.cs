@@ -29,6 +29,7 @@ namespace Infrastructure.Utils
         public const bool TwoFactorAuthEnabled = true;
         public const int VerificationAttempts = 10;
         public const int VerificationCodeDuration = 2;
+        public const int VerificationCodeLength = 5;
         public const int CodeExpirationTimeInMin = 6;
     }
 }

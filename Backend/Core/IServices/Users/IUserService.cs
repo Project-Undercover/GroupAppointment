@@ -1,5 +1,7 @@
-﻿using Infrastructure.DTOs.Users;
+﻿using Core.IUtils;
+using Infrastructure.DTOs.Users;
 using Infrastructure.Entities.DataTables;
+using Infrastructure.Entities.Users;
 
 namespace Core.IServices.Users
 {
@@ -15,13 +17,6 @@ namespace Core.IServices.Users
 
         Task AddChild(UserDTOs.Requests.AddChild dto);
         Task DeleteChild(Guid id);
-
-
-        Task<UserDTOs.Responses.BaseLogin> Login(UserDTOs.Requests.Login dto);
-        Task<UserDTOs.Responses.VerifyCode?> VerifyCode(Guid requestId, string code);
-        Task<Guid> SendVerificationAgain(UserDTOs.Requests.SendVerificationCodeAgain dto);
-
-
-        Task<UserDTOs.Responses.SendVerification> SendVerificationRequest(UserDTOs.Requests.SendVerification dto);
+        Task EditProfileImage(Guid userId, IFileProxy imageFile);
     }
 }

@@ -1,10 +1,12 @@
-﻿using API.Utils;
+﻿using API.Files;
+using API.Utils;
 using Core.IServices.Users;
 using Core.IUtils;
 using Infrastructure.DTOs;
 using Infrastructure.DTOs.Users;
 using Infrastructure.Entities.DataTables;
 using Infrastructure.Entities.Users;
+using Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using static API.Middlewares.Authorization;
 using static Infrastructure.Enums.Enums;
@@ -29,7 +31,13 @@ namespace Fly.SMS.API.Controllers
         }
 
 
-        [AuthorizeUser]
+
+        /// <summary>
+        /// Admin only
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [AuthorizeUser(UserRole.Admin)]
         [ProducesResponseType(200, Type = typeof(MessageResponseWithDataTable<IEnumerable<UserDTOs.Responses.GetAllDT>>))]
         [HttpPost, Route("GetAllDT")]
         public async Task<IActionResult> GetAllDT(DataTableDTOs.UsersDT dto)
@@ -45,7 +53,14 @@ namespace Fly.SMS.API.Controllers
         }
 
 
-        [AuthorizeUser]
+
+        /// <summary>
+        /// admin only
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="UnAuthorizedException"></exception>
+        [AuthorizeUser(UserRole.Admin)]
         [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<UserDTOs.Responses.GetById>))]
         [HttpGet, Route("GetById/{id}")]
         public async Task<IActionResult> GetById(Guid id)
@@ -58,8 +73,27 @@ namespace Fly.SMS.API.Controllers
         }
 
 
-
         [AuthorizeUser]
+        [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<UserDTOs.Responses.GetById>))]
+        [HttpGet, Route("GetProfile")]
+        public async Task<IActionResult> GetProfile()
+        {
+            User user = HttpContext.GetUser<User>();
+            string langKey = Headers.GetLanguage(Request.Headers);
+
+            UserDTOs.Responses.GetById data = await _userService.GetById(user.Id);
+            string message = _translationService.GetByKey(TranslationKeys.SuccessFetch, langKey, "User");
+            return Ok(MessageResponseFactory.Create(message, data));
+        }
+
+
+
+        /// <summary>
+        /// Admin only
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [AuthorizeUser(UserRole.Admin)]
         [HttpPost, Route("Create")]
         public async Task<IActionResult> Create(UserDTOs.Requests.Create dto)
         {
@@ -72,10 +106,15 @@ namespace Fly.SMS.API.Controllers
         }
 
 
+
         [AuthorizeUser]
         [HttpPost, Route("Edit")]
         public async Task<IActionResult> Edit(UserDTOs.Requests.Edit dto)
         {
+            User user = HttpContext.GetUser<User>();
+            if (!user.IsAdmin && dto.Id != user.Id) throw new UnAuthorizedException(TranslationKeys.UnAuthorized);
+
+
             string langKey = Headers.GetLanguage(Request.Headers);
 
             await _userService.Edit(dto);
@@ -85,7 +124,12 @@ namespace Fly.SMS.API.Controllers
         }
 
 
-        [AuthorizeUser]
+        /// <summary>
+        /// admin only
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [AuthorizeUser(UserRole.Admin)]
         [HttpDelete, Route("Delete/{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -103,6 +147,10 @@ namespace Fly.SMS.API.Controllers
         [HttpPost, Route("AddChild")]
         public async Task<IActionResult> AddChild(UserDTOs.Requests.AddChild dto)
         {
+            User user = HttpContext.GetUser<User>();
+            if (!user.IsAdmin && dto.userId != user.Id) throw new UnAuthorizedException(TranslationKeys.UnAuthorized);
+
+
             string langKey = Headers.GetLanguage(Request.Headers);
             await _userService.AddChild(dto);
             string message = _translationService.GetByKey(TranslationKeys.Created, langKey, nameof(Child));
@@ -113,6 +161,9 @@ namespace Fly.SMS.API.Controllers
         [HttpDelete, Route("DeleteChild/{id}")]
         public async Task<IActionResult> DeleteChild(Guid id)
         {
+            User user = HttpContext.GetUser<User>();
+            if (!user.IsAdmin && !user.Children.Any(s => s.Id == id)) throw new UnAuthorizedException(TranslationKeys.UnAuthorized);
+
             string langKey = Headers.GetLanguage(Request.Headers);
             await _userService.DeleteChild(id);
             string message = _translationService.GetByKey(TranslationKeys.Deleted, langKey, nameof(Child));
@@ -120,19 +171,17 @@ namespace Fly.SMS.API.Controllers
         }
 
 
+        [AuthorizeUser]
+        [HttpPost, Route("EditProfileImage")]
+        public async Task<IActionResult> EditProfileImage(IFormFile imageFile)
+        {
+            User user = HttpContext.GetUser<User>();
 
+            string langKey = Headers.GetLanguage(Request.Headers);
+            await _userService.EditProfileImage(user.Id, new AzureFormFileProxy(imageFile));
+            string message = _translationService.GetByKey(TranslationKeys.Edited, langKey, "ProfileImage");
+            return Ok(MessageResponseFactory.Create(message));
+        }
 
-        
-
-        //[ProducesResponseType(200, Type = typeof(MessageResponseWithObj<UserDTOs.Responses.SendVerification>))]
-        //[HttpPost, Route("SendVerification")]
-        //public async Task<IActionResult> SendVerification(UserDTOs.Requests.SendVerification dto)
-        //{
-        //    string langKey = Headers.GetLanguage(Request.Headers);
-
-        //    UserDTOs.Responses.SendVerification response = await _userService.SendVerificationRequest(dto);
-        //    string message = _translationService.GetByKey(TranslationKeys.Success, langKey, "SendVerification");
-        //    return Ok(MessageResponseFactory.Create(message, response));
-        //}
     }
 }

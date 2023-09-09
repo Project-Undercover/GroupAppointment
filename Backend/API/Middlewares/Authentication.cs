@@ -66,7 +66,7 @@ namespace API.Middlewares
                 throw new Exception("UserId is null");
 
             var userIdParsed = Guid.Parse(userId);
-            return await unitOfWork.Repository<User>().GetByIdAsync(userIdParsed);
+            return await unitOfWork.Repository<User>().GetByIdAsync(userIdParsed, nameof(User.Children));
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Core.IUtils;
 using Infrastructure.DTOs.Sessions;
 using Infrastructure.Entities.DataTables;
+using Infrastructure.Entities.Users;
 
 namespace Core.IServices.Sessions
 {
@@ -12,6 +13,6 @@ namespace Core.IServices.Sessions
         Task Edit(IFileProxy? imageFile, SessionsDTOs.Requests.Edit dto);
         Task Delete(Guid id);
         Task AddParticipant(SessionsDTOs.Requests.AddParticipant dto);
-        Task DeleteParticipant(Guid participantId);
+        Task DeleteParticipant(Guid participantId, User user);
     }
 }
