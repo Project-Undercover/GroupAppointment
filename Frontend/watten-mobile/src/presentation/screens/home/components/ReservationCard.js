@@ -5,19 +5,34 @@ import theme from "../../../../utils/theme";
 import ReservationInfo from "./ReservationInfo";
 import Spacer from "../../../components/Spacer";
 import { useTranslation } from "react-i18next";
-const ReservationCard = ({ instructure }) => {
+import moment from "moment";
+const ReservationCard = ({ session }) => {
+  const {
+    maxParticipants,
+    participantsCount,
+    startDate,
+    endDate,
+    locationName,
+    instructor,
+    title,
+    children,
+  } = session;
   const { t } = useTranslation();
+
   return (
     <View style={styles.container}>
       <View className="flex-row justify-between">
         <TextComponent mediumBold style={styles.headerText}>
-          {t("instructure") + " - " + instructure}
+          {t("instructure") + " - " + session?.instructor}
         </TextComponent>
-        <View style={styles.timerContainer}>
+        {/* <View style={styles.timerContainer}>
           <TextComponent mediumBold style={styles.timerText}>
-            {"24 " + t("min")}
+            {moment(endDate).diff(
+              moment()?.format("yyyy-MM-DDTHH:mm:ssZ"),
+              "hours"
+            ) + t("min")}
           </TextComponent>
-        </View>
+        </View> */}
       </View>
       <Spacer space={7} />
       <View className="flex-row items-start">
@@ -26,7 +41,13 @@ const ReservationCard = ({ instructure }) => {
           source={require("../../../../assets/icons/user.png")}
         />
         <Spacer space={5} />
-        <ReservationInfo />
+        <ReservationInfo
+          instructor={instructor}
+          startTime={startDate}
+          endTime={endDate}
+          children={children}
+          locationName={locationName}
+        />
       </View>
     </View>
   );

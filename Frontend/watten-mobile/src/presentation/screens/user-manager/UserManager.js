@@ -48,7 +48,6 @@ const UserManager = ({ route }) => {
     setInputItems((prev) => prev.filter((item) => item.id !== id));
   };
   const handleChangeInput = (id, value) => {
-    console.log(value);
     setInputItems((prevItems) =>
       prevItems.map((item) =>
         item.id === id ? { ...item, name: value } : item

@@ -1,19 +1,20 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, FlatList, RefreshControl } from "react-native";
 import React from "react";
 import TextComponent from "../../../components/TextComponent";
 import ReservationCard from "./ReservationCard";
 import { useTranslation } from "react-i18next";
-const ReservationsList = ({ total }) => {
+import theme from "../../../../utils/theme";
+import Spacer from "../../../components/Spacer";
+const ReservationsList = ({ data }) => {
   const { t } = useTranslation();
   return (
     <View style={styles.container}>
       <TextComponent mediumBold style={styles.textTitle}>
-        {t("upcoming_sessions") + " - " + total}
+        {t("upcoming_sessions") + " - " + data?.length}
       </TextComponent>
-
-      <ReservationCard instructure={"Sabreen"} />
-      <ReservationCard instructure={"Sabreen"} />
-      <ReservationCard instructure={"Sabreen"} />
+      {data?.map((session) => {
+        return <ReservationCard key={session?.id} session={session} />;
+      })}
     </View>
   );
 };

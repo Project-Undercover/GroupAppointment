@@ -1,15 +1,16 @@
 import UserRepository from "../repository/UserRepository";
-
 import { useAlertsContext } from "../hooks/useAlertsContext";
 import {
   CREATE_USER_SUCCESS,
   FETCH_USERS_SUCCESS,
   FETCH_USER_PROFILE_SUCCESS,
   FILTER_USERS,
+  FETCH_USER_HOME_DATA_SUCCESS,
 } from "../constants/actionTypes";
 import { useLoadingContext } from "../hooks/useLoadingContext";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
+
 const UserActions = () => {
   const userRepository = UserRepository();
   const { showSuccess, showError } = useAlertsContext();
@@ -73,6 +74,26 @@ const UserActions = () => {
       setLoading(false);
     };
   };
+
+  const fetchUserHomeData = (startDate) => {
+    return async (dispatch) => {
+      setLoading(true);
+      try {
+        const response = await userRepository.getUserHomeData({ startDate });
+        console.log(response);
+        dispatch({
+          type: FETCH_USER_HOME_DATA_SUCCESS,
+          payload: response?.data,
+        });
+      } catch (error) {
+        console.log(error?.data);
+        const messg = error?.data?.message ? error?.data?.message : t("error");
+        showError(messg);
+      }
+      setLoading(false);
+    };
+  };
+
   const NavigateUsers = () => {
     navigation.goBack();
   };
@@ -82,7 +103,13 @@ const UserActions = () => {
       dispatch({ type: FILTER_USERS, payload: filter });
     };
   };
-  return { fetchUsers, filterUsers, createUser, fetchProfile };
+  return {
+    fetchUsers,
+    filterUsers,
+    createUser,
+    fetchProfile,
+    fetchUserHomeData,
+  };
 };
 
 export default UserActions;

@@ -12,7 +12,7 @@ import {
 import theme from "../../../../utils/theme";
 import Spacer from "../../../components/Spacer";
 import ChildList from "../../../components/ChildList/ChildList";
-const ReservationInfo = () => {
+const ReservationInfo = ({ startTime, endTime, locationName, children }) => {
   return (
     <View className="flex-1">
       <View style={styles.infoContainer}>
@@ -24,7 +24,7 @@ const ReservationInfo = () => {
               color={theme.COLORS.primary}
             />
           }
-          value={moment().format("LL")}
+          value={moment(startTime).format("LL")}
         />
         <InfoRow
           icon={
@@ -34,7 +34,11 @@ const ReservationInfo = () => {
               color={theme.COLORS.primary}
             />
           }
-          value={"11:30 - 11:45"}
+          value={
+            moment(startTime).format("LT") +
+            " - " +
+            moment(endTime).format("LT")
+          }
         />
         <InfoRow
           icon={
@@ -44,7 +48,7 @@ const ReservationInfo = () => {
               color={theme.COLORS.primary}
             />
           }
-          value={"Bartaa Basma est"}
+          value={locationName}
         />
 
         <View className="flex-row">
@@ -54,7 +58,7 @@ const ReservationInfo = () => {
             size={19}
           />
           <Spacer space={5} />
-          <ChildList data={[]} />
+          <ChildList data={children} />
         </View>
       </View>
     </View>

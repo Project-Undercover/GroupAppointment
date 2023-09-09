@@ -24,7 +24,6 @@ const OTP = ({ number = "0547973441" }) => {
   const [code, setCode] = useState("");
 
   const handleVerify = () => {
-    console.log(code);
     dispatch(authActions.verifyCode(code));
   };
 

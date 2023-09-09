@@ -23,8 +23,6 @@ const SessionCard = ({ session }) => {
     return participantsCount / maxParticipants;
   }, [session]);
 
-  console.log(session?.image)
-
   return (
     <View style={styles.container}>
       <View style={styles.imagePartContainer}>
@@ -41,7 +39,7 @@ const SessionCard = ({ session }) => {
               " " +
               participantsCount +
               "/" +
-              maxParticipants}{" "}
+              maxParticipants}
           </TextComponent>
           <Progress.Bar
             progress={progress}
@@ -85,7 +83,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   participantsContainer: {
-    backgroundColor: "rgba(0, 0, 0, 0.15)",
+    backgroundColor: "rgba(0, 0, 0, 0.25)",
     height: 35,
     blurRadius: 7.5,
     position: "absolute",

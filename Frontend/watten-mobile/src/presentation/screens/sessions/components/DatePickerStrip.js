@@ -2,30 +2,16 @@ import { useState, useEffect } from "react";
 import { View, StyleSheet, I18nManager } from "react-native";
 import CalendarStrip from "react-native-calendar-strip";
 import theme from "../../../../utils/theme";
-// import "moment/locale/ar";
-// import "moment/locale/he";
-// import moment from "moment";
-import i18next from "i18next";
-import { useSelector } from "react-redux";
 
+import { useSelector } from "react-redux";
+import "moment/locale/ar";
+import "moment/locale/he";
 const DatePickerStrip = ({ date, handleChangeDate }) => {
   const { language } = useSelector((state) => state?.auth);
-  console.log(language);
-  const locale = {
+  const [locale, setLocale] = useState({
     name: language,
     config: {},
-  };
-  // useEffect(() => {
-  //   console.log(language);
-
-  //   if (language === "ar") {
-  //     console.log("changing lang1");
-  //     moment.locale(language);
-  //   } else {
-  //     console.log("changing lang2");
-  //     moment.locale(language);
-  //   }
-  // }, [language]);
+  });
 
   return (
     <View style={styles.container}>

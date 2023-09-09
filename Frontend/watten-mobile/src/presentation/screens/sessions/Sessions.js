@@ -31,10 +31,6 @@ const Sessions = () => {
     }, [])
   );
 
-  // useEffect(() => {
-  //   fetchSessions(date);
-  // }, []);
-
   const fetchSessions = (date) => {
     const interval = timeInterval(date?.locale("he"));
     dispatch(sessionActions.fetchSessions({ ...interval }));
@@ -42,10 +38,10 @@ const Sessions = () => {
   const timeInterval = (date) => {
     const startDate = moment(date)
       .startOf("day")
-      ?.format("yyyy-MM-DDTHH:mm:ss");
-    const endDate = moment(date).endOf("day")?.format("yyyy-MM-DDTHH:mm:ss");
+      ?.format("yyyy-MM-DDTHH:mm:ssZ");
 
-    console.log(startDate, endDate);
+    const endDate = moment(date).endOf("day")?.format("yyyy-MM-DDTHH:mm:ssZ");
+
     return { startDate, endDate };
   };
 

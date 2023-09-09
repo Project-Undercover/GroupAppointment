@@ -14,6 +14,7 @@ import { useAlertsContext } from "../hooks/useAlertsContext";
 import { useTranslation } from "react-i18next";
 import "moment/locale/ar";
 import "moment/locale/he";
+// import * as Updates from "expo-updates";
 
 import {
   cleanData,
@@ -82,13 +83,18 @@ const AuthActions = () => {
         .changeLanguage(lang)
         .then(() => {
           console.log("language changed successfully", lang);
-          moment.locale(lang);
+          // moment.locale(lang);
           storeLanguage(lang);
           dispatch({ type: CHANGE_LANG_SUCCESS, payload: lang });
         })
         .catch((error) => {
           console.log(error);
         });
+      // try {
+      //   Updates.reloadAsync();
+      // } catch (e) {
+      //   console.log(e);
+      // }
     };
   };
 

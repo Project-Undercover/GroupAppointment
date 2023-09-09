@@ -25,12 +25,19 @@ const UserRepository = () => {
     return data;
   };
 
+  const getUserHomeData = async ({ startDate }) => {
+    const data = await apiCall("Users/HomeData", RequestMethod.POST, {
+      from: startDate,
+    });
+    return data;
+  };
+
   const getProfile = async () => {
     const data = await apiCall("Users/GetProfile", RequestMethod.GET);
     return data;
   };
 
-  return { getUsers, createUser, getProfile };
+  return { getUsers, createUser, getProfile, getUserHomeData };
 };
 
 export default UserRepository;
