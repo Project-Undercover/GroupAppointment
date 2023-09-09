@@ -2,11 +2,13 @@
 using Core.IPersistence;
 using Core.IServices.Users;
 using Core.IUtils;
+using Infrastructure.DTOs.Sessions;
 using Infrastructure.DTOs.Users;
 using Infrastructure.Entities.DataTables;
 using Infrastructure.Entities.Sessions;
 using Infrastructure.Entities.Users;
 using Infrastructure.Exceptions;
+using System.Runtime.InteropServices;
 
 namespace Services.Users
 {
@@ -31,14 +33,39 @@ namespace Services.Users
 
 
 
+        public async Task<UserDTOs.Responses.HomeData> GetHomeData(UserDTOs.Requests.HomeData dto, User user)
+        {
+            int childrenCount = await _unitOfWork.Repository<Child>().CountAsync(s => s.UserId == user.Id);
+            int finishedSessions = await _unitOfWork.Repository<Session>().CountAsync(s => s.Participants.Any(s => s.UserId == user.Id));
 
-        public async Task<(int count, IEnumerable<UserDTOs.Responses.GetAllDT> data)> GetAllDT(DataTableDTOs.UsersDT dto)
+            ISpecification<Session> specification = _unitOfWork.Repository<Session>().QuerySpecification;
+            specification
+                .Include(nameof(Session.Participants))
+                .Include(nameof(Session.Participants) + "." + nameof(Participant.Child))
+                .Include(nameof(Session.Instructors))
+                .Include(nameof(Session.Instructors) + "." + nameof(Instructor.User))
+                .Where(s => s.Participants.Any(s => s.UserId == user.Id))
+                .Where(s => s.StartDate >= dto.from)
+                .ApplyOrderings(s => s.OrderBy(e => e.StartDate))
+                .SkipAndTake(0, 10);
+
+            var (count, data) = await _unitOfWork.Repository<Session>().Find(specification);
+            data.ToList().ForEach(s => s.Participants = s.Participants.Where(s => s.UserId == user.Id).ToList()); // only user children 
+            var mappedData = _mapper.Map<List<UserDTOs.Responses.HomeData.Session>>(data);
+
+            var homeData = new UserDTOs.Responses.HomeData { childrenCount = childrenCount, finishedSessions = finishedSessions, sessionsCount = count, sessions = mappedData };
+            return homeData;
+        }
+
+        public async Task<(int count, IEnumerable<UserDTOs.Responses.GetAllDT> data)> GetAllDT(DataTableDTOs.UsersDT dto, User user)
         {
             var specification = _unitOfWork.Repository<User>().QuerySpecification;
 
-
             if (dto.CustomSearch != null)
             {
+                if (dto.CustomSearch.withCurrentUser.HasValue && !dto.CustomSearch.withCurrentUser.Value)
+                    specification.Where(s => s.Id != user.Id);
+
                 if (!string.IsNullOrEmpty(dto.CustomSearch.name))
                     specification.Where(user => (user.FirstName + " " + user.LastName).Contains(dto.CustomSearch.name));
 

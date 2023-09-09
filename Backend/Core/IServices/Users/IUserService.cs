@@ -7,8 +7,8 @@ namespace Core.IServices.Users
 {
     public interface IUserService
     {
-
-        Task<(int count, IEnumerable<UserDTOs.Responses.GetAllDT> data)> GetAllDT(DataTableDTOs.UsersDT dto);
+        Task<UserDTOs.Responses.HomeData> GetHomeData(UserDTOs.Requests.HomeData dto, User user);
+        Task<(int count, IEnumerable<UserDTOs.Responses.GetAllDT> data)> GetAllDT(DataTableDTOs.UsersDT dto, User user);
         Task<UserDTOs.Responses.GetById> GetById(Guid id);
         Task Create(UserDTOs.Requests.Create dto);
         Task Edit(UserDTOs.Requests.Edit dto);
