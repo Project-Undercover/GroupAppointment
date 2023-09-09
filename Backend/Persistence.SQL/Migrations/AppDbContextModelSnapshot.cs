@@ -57,7 +57,7 @@ namespace Persistence.SQL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("VerificationRequests");
+                    b.ToTable("VerificationRequests", (string)null);
                 });
 
             modelBuilder.Entity("Infrastructure.Entities.Sessions.Instructor", b =>
@@ -87,7 +87,7 @@ namespace Persistence.SQL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Instructors");
+                    b.ToTable("Instructors", (string)null);
                 });
 
             modelBuilder.Entity("Infrastructure.Entities.Sessions.Participant", b =>
@@ -122,7 +122,7 @@ namespace Persistence.SQL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Participants");
+                    b.ToTable("Participants", (string)null);
                 });
 
             modelBuilder.Entity("Infrastructure.Entities.Sessions.Session", b =>
@@ -134,8 +134,8 @@ namespace Persistence.SQL.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTimeOffset>("EndDate")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
@@ -152,8 +152,8 @@ namespace Persistence.SQL.Migrations
                     b.Property<int>("ParticipantsCount")
                         .HasColumnType("int");
 
-                    b.Property<DateTimeOffset>("StartDate")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -173,7 +173,7 @@ namespace Persistence.SQL.Migrations
                     b.HasIndex("Id")
                         .IsUnique();
 
-                    b.ToTable("Sessions");
+                    b.ToTable("Sessions", (string)null);
                 });
 
             modelBuilder.Entity("Infrastructure.Entities.Users.Child", b =>
@@ -205,7 +205,7 @@ namespace Persistence.SQL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Children");
+                    b.ToTable("Children", (string)null);
                 });
 
             modelBuilder.Entity("Infrastructure.Entities.Users.User", b =>
@@ -262,7 +262,7 @@ namespace Persistence.SQL.Migrations
                     b.HasIndex("MobileNumber")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Infrastructure.Entities.Others.VerificationRequest", b =>
@@ -324,7 +324,7 @@ namespace Persistence.SQL.Migrations
 
             modelBuilder.Entity("Infrastructure.Entities.Sessions.Session", b =>
                 {
-                    b.OwnsOne("Infrastructure.Entities.Sessions.Location", "Location", b1 =>
+                    b.OwnsOne("Infrastructure.Entities.Sessions.Session.Location#Infrastructure.Entities.Sessions.Location", "Location", b1 =>
                         {
                             b1.Property<Guid>("SessionId")
                                 .HasColumnType("uniqueidentifier");
@@ -337,7 +337,7 @@ namespace Persistence.SQL.Migrations
 
                             b1.HasKey("SessionId");
 
-                            b1.ToTable("Sessions");
+                            b1.ToTable("Sessions", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("SessionId");

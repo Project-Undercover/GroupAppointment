@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Infrastructure.DTOs.Users;
+using Infrastructure.Entities.Sessions;
 using Infrastructure.Entities.Users;
 
 namespace Services.Users
@@ -27,6 +28,14 @@ namespace Services.Users
                 .ForMember(s => s.roleName, opt => opt.MapFrom(s => s.Role));
             CreateMap<User, UserDTOs.Responses.GetById>();
             CreateMap<Child, UserDTOs.Responses.GetById.Child>();
+
+
+
+
+            CreateMap<Session, UserDTOs.Responses.HomeData.Session>()
+                .ForMember(s => s.children, opt => opt.MapFrom(s => s.Participants.Select(s => new UserDTOs.Responses.HomeData.Session.Child { id = s.ChildId, name = s.Child.Name }).ToList()))
+                .ForMember(s => s.instructor, opt => opt.MapFrom(s => s.Instructors.Select(s => s.User.FirstName + " " + s.User.LastName).FirstOrDefault()));
+
 
         }
     }

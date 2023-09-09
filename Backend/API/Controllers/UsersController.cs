@@ -32,6 +32,22 @@ namespace Fly.SMS.API.Controllers
 
 
 
+        [AuthorizeUser]
+        [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<UserDTOs.Responses.HomeData>))]
+        [HttpPost, Route("HomeData")]
+        public async Task<IActionResult> HomeData(UserDTOs.Requests.HomeData dto)
+        {
+            string langKey = Headers.GetLanguage(Request.Headers);
+            User user = HttpContext.GetUser<User>();
+
+            UserDTOs.Responses.HomeData data = await _userService.GetHomeData(dto, user);
+
+            string message = _translationService.GetByKey(TranslationKeys.SuccessFetch, langKey);
+            return Ok(MessageResponseFactory.Create(message, data));
+        }
+
+
+
         /// <summary>
         /// Admin only
         /// </summary>
@@ -43,8 +59,9 @@ namespace Fly.SMS.API.Controllers
         public async Task<IActionResult> GetAllDT(DataTableDTOs.UsersDT dto)
         {
             string langKey = Headers.GetLanguage(Request.Headers);
+            User user = HttpContext.GetUser<User>();
 
-            (int count, IEnumerable<UserDTOs.Responses.GetAllDT> list) data = await _userService.GetAllDT(dto);
+            (int count, IEnumerable<UserDTOs.Responses.GetAllDT> list) data = await _userService.GetAllDT(dto, user);
 
             data.list.ToList().ForEach(s => s.roleName = _translationService.GetByKey(s.roleName, langKey));
 

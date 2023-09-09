@@ -114,6 +114,13 @@
 
 
 
+
+  "HomeData": {
+    "EN": "Home info",
+    "HE": "מידע ראשי",
+    "AR": "معلومات أساسية"
+  },
+
   "ProfileImage": {
     "EN": "Profile Image",
     "HE": "תמונת פרופיל",

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Infrastructure.DTOs.Sessions;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using static Infrastructure.Enums.Enums;
 using static Infrastructure.Enums.Verifications;
@@ -52,6 +53,8 @@ namespace Infrastructure.DTOs.Users
             public record AddChild(Guid userId, string name);
             public record DeleteChild(Guid userId, Guid childId);
 
+            public record HomeData(DateTime from);
+
         }
 
 
@@ -70,6 +73,34 @@ namespace Infrastructure.DTOs.Users
             public record SendVerification(Guid verificationId);
 
 
+            public record HomeData
+            {
+                public int childrenCount { get; set; }
+                public int sessionsCount { get; set; }
+                public List<Session> sessions { get; set; }
+                public int finishedSessions { get; set; }
+
+                public record Session : EntityDTO
+                {
+                    public string title { get; set; }
+                    public string? image { get; set; }
+                    public int ParticipantsCount { get; set; }
+                    public int MaxParticipants { get; set; }
+                    public DateTimeOffset StartDate { get; set; }
+                    public DateTimeOffset EndDate { get; set; }
+                    public string? locationName { get; set; }
+                    public string instructor { get; set; }
+                    public bool isAvailable { get; set; }
+                    public List<Child> children { get; set; }
+
+                    public record Child
+                    {
+                        public Guid id { get; set; }
+                        public string name { get; set; }
+                    }
+                }
+            }
+
             public record GetAllDT : EntityDTO
             {
                 public string firstName { get; set; }
@@ -80,7 +111,6 @@ namespace Infrastructure.DTOs.Users
                 public bool isActive { get; set; } = true;
                 public int role { get; set; }
                 public string roleName { get; set; }
-
             }
 
 

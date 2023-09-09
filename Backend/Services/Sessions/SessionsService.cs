@@ -3,6 +3,7 @@ using Core.IPersistence;
 using Core.IServices.Sessions;
 using Core.IUtils;
 using Infrastructure.DTOs.Sessions;
+using Infrastructure.DTOs.Users;
 using Infrastructure.Entities.DataTables;
 using Infrastructure.Entities.Sessions;
 using Infrastructure.Entities.Users;
@@ -22,6 +23,8 @@ namespace Services.Appointments
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
+
+
 
 
 
@@ -164,7 +167,7 @@ namespace Services.Appointments
 
             Session session = await _unitOfWork.Repository<Session>().GetByIdAsync(dto.SessionId);
 
-            bool alreadyParticiping = await _unitOfWork.Repository<Participant>().Exists(s => s.ChildId == dto.ChildId);
+            bool alreadyParticiping = await _unitOfWork.Repository<Participant>().Exists(s => s.SessionId == dto.SessionId && s.ChildId == dto.ChildId);
             if (alreadyParticiping) throw new ValidationException(TranslationKeys.ChildAlreadyParticipating);
 
             if (session.ParticipantsCount == session.MaxParticipants)
