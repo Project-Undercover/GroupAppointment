@@ -33,6 +33,7 @@ namespace Infrastructure.Entities.DataTables
 
         public record UsersDT(Searches.UserDT? CustomSearch) : Paginate;
         public record SessionDT(Searches.SessionDT? CustomSearch) : Paginate;
+        public record UserSessionDT(Searches.UserSessionDT? CustomSearch) : Paginate;
 
 
         public record SessionDTT : Paginate

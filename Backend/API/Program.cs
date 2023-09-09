@@ -1,5 +1,6 @@
 global using Infrastructure.Entities.Sessions;
 global using Infrastructure.Enums;
+global using Infrastructure.Utils;
 
 using API;
 using API.Middlewares;
@@ -9,6 +10,7 @@ using Persistence;
 using Services;
 using API.Utils;
 using Microsoft.Extensions.FileProviders;
+using Infrastructure.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +38,13 @@ builder.Services.AddCors(options =>
 });
 
 
+
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<CustomValidationErrorFilter>(); // Add the custom filter here
+});
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -51,6 +60,7 @@ app.UseSwaggerUI();
 //    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Images")),
 //    RequestPath = new PathString("/Images")
 //});
+
 
 
 

@@ -1,5 +1,6 @@
 ﻿using Core.IUtils;
 using Microsoft.Extensions.DependencyInjection;
+using Services.Auth;
 using Services.Sessions;
 using Services.Users;
 using Services.Utils;
@@ -10,8 +11,10 @@ namespace Services
     {
         public static IServiceCollection AddServicesLayer(this IServiceCollection services)
         {
+            services.AddAuthService();
             services.AddUserService();
             services.AddSessionService();
+
 
             // Singletons 
             services.AddSingleton<ITokenGenerator, JWTGenerator>();

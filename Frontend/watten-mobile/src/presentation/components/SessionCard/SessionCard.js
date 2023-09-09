@@ -6,6 +6,7 @@ import TextComponent from "../TextComponent";
 import SessionInfo from "./SessionInfo";
 import { useTranslation } from "react-i18next";
 import moment from "moment";
+
 const SessionCard = ({ session }) => {
   const {
     maxParticipants,
@@ -21,13 +22,17 @@ const SessionCard = ({ session }) => {
   const progress = useMemo(() => {
     return participantsCount / maxParticipants;
   }, [session]);
+
+  console.log(session?.image)
+
   return (
     <View style={styles.container}>
       <View style={styles.imagePartContainer}>
         <View style={styles.imgContainer}>
           <Image
             style={styles.img}
-            source={require("../../../assets/icons/image.png")}
+            defaultSource={require("../../../assets/icons/image.png")}
+            source={{ uri: session.image }}
           />
         </View>
         <View style={styles.participantsContainer}>

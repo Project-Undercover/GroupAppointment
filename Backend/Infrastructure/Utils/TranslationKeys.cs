@@ -1,4 +1,4 @@
-﻿namespace API.Utils
+﻿namespace Infrastructure.Utils
 {
     public static class TranslationKeys
     {
@@ -11,6 +11,8 @@
         public const string Deleted = "Deleted";
         public const string UnAuthorized = "UnAuthorized";
         public const string InActiveUser = "InActiveUser";
-
+        public const string ForbiddenAction = "ForbiddenAction";
+        public const string ChildAlreadyParticipating = "ChildAlreadyParticipating";
+        public const string Invalid = "Invalid";
     }
 }

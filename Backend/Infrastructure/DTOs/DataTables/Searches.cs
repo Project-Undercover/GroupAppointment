@@ -1,9 +1,11 @@
-﻿namespace Infrastructure.Entities.DataTables
+﻿using static Infrastructure.Enums.Enums;
+
+namespace Infrastructure.Entities.DataTables
 {
     public class Searches
     {
-        public record UserDT(string? name, string? email, bool? isActive, string? mobileNumber);
-        public record SessionDT(Guid? userId, string? participantName, DateTime? startDate, DateTime? endDate);
-
+        public record UserDT(string? name, string? email, bool? isActive, string? mobileNumber, List<UserRole>? roles);
+        public record SessionDT(Guid? userId, string? searchTerm, DateTime? startDate, DateTime? endDate);
+        public record UserSessionDT(DateTime? startDate, DateTime? endDate, string? searchTerm = null);
     }
 }

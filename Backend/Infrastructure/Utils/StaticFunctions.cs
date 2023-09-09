@@ -8,14 +8,11 @@ namespace Infrastructure.Utils
 {
     public static class StaticFunctions
     {
-        public static string GenerateRandomCode(int? length = null)
+        public static string GenerateRandomCode(int? length = Constants.VerificationCodeLength)
         {
-            if (length is null)
-                length = Constants.VerificationCodeDuration;
-
             bool? isDevelopment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")?.Contains("Development");
-            if (isDevelopment is null || (isDevelopment.HasValue && isDevelopment.Value))
-                return "11111";
+            //if (isDevelopment is null || (isDevelopment.HasValue && isDevelopment.Value))
+            return "11111";
 
             var random = new Random();
             const string chars = "0123456789";

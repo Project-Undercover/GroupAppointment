@@ -56,7 +56,6 @@ namespace Infrastructure.DTOs
             return new MessageResponse(message);
         }
 
-
         public static MessageResponseWithObj<T> Create<T>(string message, T data)
         {
             return new MessageResponseWithObj<T>(message, data);

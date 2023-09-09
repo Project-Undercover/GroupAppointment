@@ -22,73 +22,103 @@
   },
   "NotFound": {
     "EN": "{0} was not found, please try again",
-    "HE": "{0} לא נמצאת במערכת, נסה שנית"
+    "HE": "{0} לא נמצאת במערכת, נסה שנית",
+    "AR": "{0} غير موجد في النظام, حاول مرة اخرى"
   },
   "NotActive": {
     "EN": "{0} is not active, try again",
-    "HE": "{0} לא פעיל, נסה שנית"
+    "HE": "{0} לא פעיל, נסה שנית",
+    "AR": "{0} غير فعال, حاول مرة اخرى"
   },
   "AlreadyDeleted": {
     "EN": "{0} already deleted",
-    "HE": "{0} כבר נמחק"
+    "HE": "{0} כבר נמחק",
+    "AR": "{0} قد حذف"
   },
 
 
   "NotAdded": {
     "EN": "{0} was not added, please try again",
-    "HE": "{0} לא התווסף, נסה שנית"
+    "HE": "{0} לא התווסף, נסה שנית",
+    "AR": "{0} لم يضاف, حاول مرة اخرى"
   },
   "AlreadyExists": {
     "EN": "{0} already exists, please try again",
-    "HE": "{0} כבר קיים במערכת, נסה שנית"
+    "HE": "{0} כבר קיים במערכת, נסה שנית",
+    "AR": "{0} موجد في النظام, حاول مرة اخرى"
   },
   "Created": {
     "EN": "{0} has been created successfully",
-    "HE": "{0} נוצר בהצלחה"
+    "HE": "{0} נוצר בהצלחה",
+    "AR": "{0} انشأ بنجاح"
   },
   "Edited": {
     "EN": "{0} has been edited successfully",
-    "HE": "{0} נערך בהצלחה"
+    "HE": "{0} נערך בהצלחה",
+    "AR": "{0} عدل بنجاح"
   },
   "Deleted": {
     "EN": "{0} deleted successfully",
-    "HE": "{0} כבר קיים במערכת, נסה שנית"
+    "HE": "{0} נמחק בהצלחה",
+    "AR": "{0} حذف بنجاح"
   },
 
   "MaxVerificationAttempts": {
     "EN": "Maximum verification requests has been reached, please try again in few minutes",
-    "HE": "הגעת למספר מקסמלי של בקשות אימות, אנא נסה שוב עוד מעט"
+    "HE": "הגעת למספר מקסמלי של בקשות אימות, אנא נסה שוב עוד מעט",
+    "AR": "قمت بارسال طلب التصديق عدة مرات, انتظر وحاول مرة اخرى"
   },
   "Success": {
     "EN": "{0} was successfull",
-    "HE": "{0} הצליח\\ה"
+    "HE": "{0} הצליח\\ה",
+    "AR": "{0} نجح\\ت"
   },
   "LoginNotValid": {
     "EN": "Username or password is invalid, please try agaun",
-    "HE": "שם משתמשם או סיסמה אינו תקין, אנא נסה שנית"
+    "HE": "שם משתמשם או סיסמה אינו תקין, אנא נסה שנית",
+    "AR": "المعلومات غير صحيحة, حاول مرة اخرى"
   },
   "SendVerificationAgain": {
     "EN": "Verification request has been send again",
-    "HE": "בקשת אמות נשלחה שוב"
+    "HE": "בקשת אמות נשלחה שוב",
+    "AR": "تم ارسال الطلب ثانية"
   },
   "VerificationAlreadyConfirmed": {
     "EN": "Verification request already been confirmed",
-    "HE": "בקשת אמות כבר אושרה"
+    "HE": "בקשת אמות כבר אושרה",
+    "AR": "تم التصديق"
   },
   "VerificationExpired": {
     "EN": "Verification request has been expired",
-    "HE": "בקשת אמות פג תוקף"
+    "HE": "בקשת אמות פג תוקף",
+    "AR": "طلب التصديق انتهى"
   },
   "InvalidVerificationCode": {
     "EN": "Invalid verification code",
-    "HE": "קוד אימות לא תקין"
+    "HE": "קוד אימות לא תקין",
+    "AR": "الكود ليس صحيح"
+  },
+
+  "Invalid": {
+    "EN": "Invalid {0}",
+    "HE": "{0} לא תקין",
+    "AR": "{0} غير صالح"
+  },
+
+
+  "ChildAlreadyParticipating": {
+    "EN": "This child already participating in this session",
+    "HE": "הילד כבר משתתף בפעילות",
+    "AR": "الولد مشترك بالجلسة"
   },
 
 
 
-
-
-
+  "ProfileImage": {
+    "EN": "Profile Image",
+    "HE": "תמונת פרופיל",
+    "AR": "الصورة الشخصية"
+  },
 
   "Admin": {
     "EN": "Admin",
@@ -113,7 +143,8 @@
   },
   "Email": {
     "EN": "Email",
-    "HE": "מייל"
+    "HE": "מייל",
+    "AR": "الايميل"
   },
   "User": {
     "EN": "User",

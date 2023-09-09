@@ -44,7 +44,7 @@ namespace API.Swagger
         /// <returns></returns>
         private static OpenApiInfo ApiInfo(string env) => new OpenApiInfo
         {
-            Title = "Documentation",
+            Title = "Watten Documentation",
             Version = $"{Version} - {env}",
             License = new OpenApiLicense() { Name = "Tarik & Wissam" }
         };

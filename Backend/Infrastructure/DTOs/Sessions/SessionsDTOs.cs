@@ -25,7 +25,7 @@ namespace Infrastructure.DTOs.Sessions
                 [Required]
                 public DateTime endDate { get; set; }
 
-                [Range(1, 100) , Required]
+                [Range(1, 100), Required]
                 public int maxParticipants { get; set; }
 
 
@@ -42,7 +42,11 @@ namespace Infrastructure.DTOs.Sessions
                     public double latitude { get; set; }
                 }
             }
-            public record Edit(Guid id) : Create;
+            public record Edit : Create
+            {
+                [Required] public Guid id { get; set; }
+                [Required] public bool isAvailable { get; set; }
+            };
             public record Delete(Guid id) : Create;
         }
 
@@ -51,12 +55,15 @@ namespace Infrastructure.DTOs.Sessions
         {
             public record GetById : EntityDTO
             {
+                public string title { get; set; }
+                public string? image { get; set; }
                 public int ParticipantsCount { get; set; }
                 public int MaxParticipants { get; set; }
-                public DateTime StartDate { get; set; }
-                public DateTime EndDate { get; set; }
+                public DateTimeOffset StartDate { get; set; }
+                public DateTimeOffset EndDate { get; set; }
                 public string? locationName { get; set; }
                 public Location? location { get; set; }
+                public bool isAvailable { get; set; }
                 public List<Participant> Participants { get; set; }
                 public List<Instructor> Instructors { get; set; }
 
@@ -90,11 +97,15 @@ namespace Infrastructure.DTOs.Sessions
 
             public record GetAllDT : EntityDTO
             {
+                public string title { get; set; }
+                public string? image { get; set; }
                 public int ParticipantsCount { get; set; }
                 public int MaxParticipants { get; set; }
-                public DateTime StartDate { get; set; }
-                public DateTime EndDate { get; set; }
+                public DateTimeOffset StartDate { get; set; }
+                public DateTimeOffset EndDate { get; set; }
                 public string? locationName { get; set; }
+                public string instructor { get; set; }
+                public bool isAvailable { get; set; }
             }
         }
     }

@@ -16,7 +16,7 @@ namespace Infrastructure.Entities.Sessions
 
         public string? LocationName { get; set; }
         public Location? Location { get; set; }
-
+        public bool IsAvailable { get; set; } = true;
 
         public List<Participant> Participants { get; set; }
         public List<Instructor> Instructors { get; set; }

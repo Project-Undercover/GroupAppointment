@@ -7,6 +7,7 @@ using Infrastructure.Entities.DataTables;
 using Infrastructure.Entities.Sessions;
 using Infrastructure.Entities.Users;
 using Infrastructure.Exceptions;
+using Infrastructure.Utils;
 
 namespace Services.Appointments
 {
@@ -31,17 +32,19 @@ namespace Services.Appointments
 
             if (dto.CustomSearch != null)
             {
-                var (userId, participantName, from, to) = dto.CustomSearch;
+                var (userId, searchTerm, from, to) = dto.CustomSearch;
 
                 if (userId.HasValue)
                     specification.Include(nameof(Session.Participants)).Where(s => s.Participants.Any(s => s.UserId == dto.CustomSearch.userId));
 
-                if (!string.IsNullOrEmpty(participantName))
+                if (!string.IsNullOrEmpty(searchTerm))
                     specification
                         .Include(nameof(Session.Participants))
                         .Include(nameof(Session.Participants) + "." + nameof(Participant.User))
                         .Include(nameof(Session.Participants) + "." + nameof(Participant.Child))
-                        .Where(s => s.Participants.Any(s => s.Child.Name.Contains(participantName) || (s.User.FirstName + " " + s.User.LastName).Contains(participantName)));
+                        .Where(s =>
+                            s.Title.Contains(dto.CustomSearch.searchTerm)
+                            || s.Participants.Any(s => s.Child.Name.Contains(searchTerm) || (s.User.FirstName + " " + s.User.LastName).Contains(searchTerm)));
 
                 if (from.HasValue)
                     specification.Where(s => s.StartDate >= from);
@@ -51,6 +54,8 @@ namespace Services.Appointments
             }
 
             specification
+                .Include(nameof(Session.Instructors))
+                .Include(nameof(Session.Instructors) + "." + nameof(Instructor.User))
                 .ApplyOrderings(s => s.OrderByDescending(s => s.CreatedAt))
                 .SkipAndTake(dto.skip, dto.take);
 
@@ -146,7 +151,6 @@ namespace Services.Appointments
             if (session.ParticipantsCount > 0)
                 await SendParticipantsMessage(session.Id, "Appointment has been canceled");
 
-
             await _unitOfWork.Repository<Session>().DeleteAsync(session);
             await _unitOfWork.Commit();
         }
@@ -159,17 +163,24 @@ namespace Services.Appointments
             participant.UserId = child.UserId;
 
             Session session = await _unitOfWork.Repository<Session>().GetByIdAsync(dto.SessionId);
+
+            bool alreadyParticiping = await _unitOfWork.Repository<Participant>().Exists(s => s.ChildId == dto.ChildId);
+            if (alreadyParticiping) throw new ValidationException(TranslationKeys.ChildAlreadyParticipating);
+
             if (session.ParticipantsCount == session.MaxParticipants)
                 throw new ValidationException("SessionIsFull");
+
             session.ParticipantsCount++;
 
-            await _unitOfWork.Repository<Session>().UpdateAsync(session);
             await _unitOfWork.Repository<Participant>().AddAsync(participant);
+            await _unitOfWork.Repository<Session>().UpdateAsync(session);
             await _unitOfWork.Commit();
         }
-        public async Task DeleteParticipant(Guid participantId)
+        public async Task DeleteParticipant(Guid participantId, User user)
         {
             Participant participant = await _unitOfWork.Repository<Participant>().GetByIdAsync(participantId, includes: new string[] { nameof(Participant.User), nameof(Participant.Session) });
+            if (!user.IsAdmin && participant.UserId != user.Id) throw new UnAuthorizedException(TranslationKeys.UnAuthorized);
+
 
             Session session = await _unitOfWork.Repository<Session>().GetByIdAsync(participant.SessionId);
             session.ParticipantsCount--;
@@ -178,8 +189,8 @@ namespace Services.Appointments
             await _unitOfWork.Repository<Participant>().DeleteAsync(participant);
             await _unitOfWork.Commit();
 
-
-            Console.WriteLine($"{participant.User.FirstName} {participant.User.LastName} has been removed from appointment {participant.Session.StartDate}-{participant.Session.EndDate}");
+            if (user.IsAdmin && participant.UserId != user.Id)
+                Console.WriteLine($"{participant.User.FirstName} {participant.User.LastName} has been removed from appointment {participant.Session.StartDate}-{participant.Session.EndDate}");
         }
 
 

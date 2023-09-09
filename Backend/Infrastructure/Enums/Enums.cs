@@ -36,6 +36,5 @@ namespace Infrastructure.Enums
             SessionImages,
             UserImages,
         }
-
     }
 }
