@@ -29,7 +29,7 @@ const OTP = ({ number = "0547973441" }) => {
   };
 
   const goBack = () => {
-    dispatch(authActions.logout());
+    dispatch(authActions.backToLogin());
   };
 
   return (

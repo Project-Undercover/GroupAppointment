@@ -54,6 +54,6 @@ export const cleanData = async () => {
     await AsyncStorage.removeItem("user");
     await AsyncStorage.removeItem("token");
   } catch (e) {
-    // console.log('Error removing data:', e);
+    console.log("Error removing data:", e);
   }
 };

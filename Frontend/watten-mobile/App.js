@@ -11,6 +11,7 @@ import i18next from "./src/utils/i18n";
 import "moment/locale/ar";
 import "moment/locale/he";
 import moment from "moment";
+import { LoadingContextProvider } from "./src/context/LoadingContext";
 export default function App() {
   const [fontsLoaded] = useFonts({
     "Changa-Bold": require("./src/assets/fonts/Changa-Bold.ttf"),
@@ -36,11 +37,13 @@ export default function App() {
     <Provider store={store}>
       <TailwindProvider>
         <ToastProvider>
-          <AlertsContextProvider>
-            <View style={{ flex: 1 }}>
-              <Navigation />
-            </View>
-          </AlertsContextProvider>
+          <LoadingContextProvider>
+            <AlertsContextProvider>
+              <View style={{ flex: 1 }}>
+                <Navigation />
+              </View>
+            </AlertsContextProvider>
+          </LoadingContextProvider>
         </ToastProvider>
       </TailwindProvider>
     </Provider>

@@ -7,11 +7,11 @@ import StatCard from "./components/StatCard";
 import Spacer from "../../components/Spacer";
 import ReservationsList from "./components/ReservationsList";
 import { useTranslation } from "react-i18next";
-const Home = () => {
+const Home = ({ navigation }) => {
   const { t } = useTranslation();
   return (
     <View className="flex-1">
-      <Header />
+      <Header navigation={navigation} />
       <ScrollView
         style={{ flex: 1 }}
         showsVerticalScrollIndicator={false}

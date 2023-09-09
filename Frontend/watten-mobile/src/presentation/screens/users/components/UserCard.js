@@ -3,7 +3,16 @@ import React from "react";
 import TextComponent from "../../../components/TextComponent";
 import { Feather } from "@expo/vector-icons";
 import theme from "../../../../utils/theme";
-const UserCard = () => {
+import ExternalActions from "../../../../actions/ExternalActions";
+const UserCard = ({ user }) => {
+  const externalActions = ExternalActions();
+  const handleOpenWhatsApp = () => {
+    externalActions.openWhatsApp({ phoneNumber: user?.mobileNumber });
+  };
+  const handleCall = () => {
+    externalActions.callPhone({ phoneNumber: user?.mobileNumber });
+  };
+
   return (
     <View style={styles.container}>
       <View className="flex-row items-center">
@@ -12,16 +21,18 @@ const UserCard = () => {
           source={require("../../../../assets/icons/user.png")}
         />
         <View className="mx-3">
-          <TextComponent mediumBold>Wissam kabha</TextComponent>
-          <TextComponent mediumBold>0547973441</TextComponent>
+          <TextComponent mediumBold>
+            {user?.firstName + " " + user?.lastName}
+          </TextComponent>
+          <TextComponent mediumBold>{user?.mobileNumber}</TextComponent>
         </View>
       </View>
 
       <View className="flex-row items-center gap-2">
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleCall}>
           <Feather name="phone-call" size={20} color={theme.COLORS.green2} />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleOpenWhatsApp}>
           <Image
             style={styles.icon}
             source={require("../../../../assets/icons/whatsapp.png")}

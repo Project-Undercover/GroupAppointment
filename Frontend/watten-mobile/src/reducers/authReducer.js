@@ -36,7 +36,7 @@ const authReducer = (state = initialState, action) => {
       storeData({ user: action.payload, token: action.payload?.jwt });
       return {
         ...state,
-        user: action.payload,
+        user: { ...state.user, ...action.payload },
         // isLoading: false,
         error: null,
       };

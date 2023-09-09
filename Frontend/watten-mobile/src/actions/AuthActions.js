@@ -15,6 +15,7 @@ import "moment/locale/ar";
 
 import "moment/locale/he";
 import {
+  cleanData,
   getDataFromStorage,
   getLanguageFromStorage,
   storeData,
@@ -40,9 +41,7 @@ const AuthActions = () => {
         // setTimeout(() => {
         // }, 1000);
       } catch (error) {
-        const messg = error?.data?.message
-          ? error?.data?.message
-          : error?.message;
+        const messg = error?.data?.message ? error?.data?.message : t("error");
         showError(messg);
         dispatch({ type: LOGIN_FAILURE, payload: error?.data });
       }
@@ -58,7 +57,6 @@ const AuthActions = () => {
           requestId,
           code,
         });
-        console.log("---", response);
         dispatch({
           type: VERIFY_SUCCESS,
           payload: response?.data,
@@ -68,14 +66,15 @@ const AuthActions = () => {
           NavigateHome();
         }, 1000);
       } catch (error) {
-        console.log(error);
-        console.log(error?.data?.message);
+        const messg = error?.data?.message ? error?.data?.message : t("error");
+        showError(messg);
         dispatch({ type: LOGIN_FAILURE, payload: error?.data });
       }
     };
   };
 
   const changeLanguage = async (lang) => {
+    if (i18next.language === lang) return;
     i18next
       .changeLanguage(lang)
       .then(() => {
@@ -120,11 +119,18 @@ const AuthActions = () => {
   const NavigateHome = () => {
     navigation.reset({
       index: 0,
-      routes: [{ name: "app-tabs" }],
+      routes: [{ name: "app-drawer" }],
     });
   };
 
   const logout = () => {
+    return async (dispatch) => {
+      dispatch({ type: LOGOUT_SUCCESS });
+      await cleanData();
+      NavigateEntry();
+    };
+  };
+  const backToLogin = () => {
     return async (dispatch) => {
       dispatch({ type: LOGOUT_SUCCESS });
     };
@@ -134,6 +140,7 @@ const AuthActions = () => {
     changeLanguage,
     login,
     verifyCode,
+    backToLogin,
     logout,
     checkLanguageInStorage,
   };

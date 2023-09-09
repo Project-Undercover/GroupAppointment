@@ -4,23 +4,26 @@ import TextComponent from "./TextComponent";
 import theme from "../../utils/theme";
 import { Feather } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
+import { useNavigation } from "@react-navigation/native";
 const AppHeader = () => {
   const { t } = useTranslation();
+  const navigation = useNavigation();
+
+  const openDrawer = () => {
+    navigation.openDrawer();
+  };
+
   return (
     <View style={styles.container}>
+      <TouchableOpacity className="px-5" onPress={openDrawer}>
+        <Feather name="menu" size={30} color={theme.COLORS.white} />
+      </TouchableOpacity>
       <View style={styles.titleContainer}>
         <TextComponent mediumBold style={styles.titleText}>
           {t("watten")}
         </TextComponent>
         <View style={styles.point}></View>
-        {/* <Image
-          style={styles.img}
-          source={require("../../assets/icons/snake.png")}
-        /> */}
       </View>
-      <TouchableOpacity className="px-5">
-        <Feather name="menu" size={30} color={theme.COLORS.white} />
-      </TouchableOpacity>
     </View>
   );
 };
@@ -39,8 +42,8 @@ const styles = StyleSheet.create({
   titleContainer: {
     // height: 24,
     width: 80,
-    borderStartEndRadius: 5,
-    borderEndEndRadius: 5,
+    borderStartStartRadius: 5,
+    borderEndStartRadius: 5,
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",

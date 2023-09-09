@@ -3,15 +3,12 @@ import React from "react";
 import UserCard from "./UserCard";
 import Spacer from "../../../components/Spacer";
 import theme from "../../../../utils/theme";
-const UsersList = () => {
-  const list = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }];
+const UsersList = ({ data, handleRefreshUsers }) => {
   return (
     <View className="flex-1">
       <FlatList
         onEndReachedThreshold={0.5}
         style={{ flex: 1 }}
-        // columnWrapperStyle={{ justifyContent: "space-between", gap: 30 }}
-
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingBottom: 100,
@@ -19,17 +16,17 @@ const UsersList = () => {
           padding: 5,
         }}
         ItemSeparatorComponent={<Spacer space={6} />}
-        data={list}
+        data={data}
         keyExtractor={(item) => item?.id}
         refreshControl={
           <RefreshControl
             colors={[theme.COLORS.primary]}
-            // onRefresh={() => {
-            //   handleRefreshOrders();
-            // }}
+            onRefresh={() => {
+              handleRefreshUsers();
+            }}
           />
         }
-        renderItem={({ item }) => <UserCard />}
+        renderItem={({ item }) => <UserCard user={item} />}
       />
     </View>
   );

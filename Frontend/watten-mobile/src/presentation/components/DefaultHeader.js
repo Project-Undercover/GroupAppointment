@@ -12,6 +12,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 const DefaultHeader = ({ title }) => {
   const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       <TextComponent semiBold style={styles.title}>

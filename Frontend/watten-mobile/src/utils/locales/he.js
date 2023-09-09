@@ -50,4 +50,9 @@ export default {
   verify: "אימות",
   enter_otp: "הזן את ה-OTP שנשלח ל",
   verify_success: "הצלחת אימות",
+  history: "ארכיון מפגשים",
+
+  version: "גרסה",
+
+  error: "אנא נסה שוב מאוחר יותר",
 };
