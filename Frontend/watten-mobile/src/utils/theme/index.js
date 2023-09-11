@@ -37,8 +37,8 @@ const theme = {
   },
 
   FONTS: {
-    secondaryFontBold: "Changa-Bold",
-    secondaryFontRegular: "Changa-Regular",
+    secondaryFontBold: "Cairo-Bold",
+    secondaryFontRegular: "Cairo-Regular",
 
     primaryFontBold: "Rubik-Bold",
     primaryFontMedium: "Rubik-Medium",

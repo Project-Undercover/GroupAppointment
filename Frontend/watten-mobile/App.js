@@ -8,14 +8,14 @@ import store from "./src/stores/configureStore";
 import Navigation from "./src/navigation";
 import { useFonts } from "expo-font";
 import i18next from "./src/utils/i18n";
-import "moment/locale/ar";
-import "moment/locale/he";
-import moment from "moment";
+// import "moment/locale/ar";
+// import "moment/locale/he";
+// import moment from "moment";
 import { LoadingContextProvider } from "./src/context/LoadingContext";
 export default function App() {
   const [fontsLoaded] = useFonts({
-    "Changa-Bold": require("./src/assets/fonts/Changa-Bold.ttf"),
-    "Changa-Bold": require("./src/assets/fonts/Changa-Bold.ttf"),
+    "Cairo-Bold": require("./src/assets/fonts/Cairo-Medium.ttf"),
+    "Cairo-Regular": require("./src/assets/fonts/Cairo-Regular.ttf"),
     "Rubik-Bold": require("./src/assets/fonts/Rubik-Bold.ttf"),
     "Rubik-Medium": require("./src/assets/fonts/Rubik-Medium.ttf"),
     "Rubik-Regular": require("./src/assets/fonts/Rubik-Regular.ttf"),

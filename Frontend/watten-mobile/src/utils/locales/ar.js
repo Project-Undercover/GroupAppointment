@@ -61,4 +61,5 @@ export default {
   no_history: "لا توجد ورشات في الأرشيف",
 
   session_ended: "ورشة انتهة",
+  empty: "لا يوجد",
 };

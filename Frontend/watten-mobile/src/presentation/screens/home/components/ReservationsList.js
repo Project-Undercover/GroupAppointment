@@ -10,7 +10,7 @@ const ReservationsList = ({ data }) => {
     <View style={styles.container}>
       <TextComponent mediumBold style={styles.textTitle}>
         {t("upcoming_sessions") + " - "}
-        {data?.length ? data?.length : "אין"}
+        {data?.length ? data?.length : t("empty")}
       </TextComponent>
       {data?.map((session) => {
         return <ReservationCard key={session?.id} session={session} />;

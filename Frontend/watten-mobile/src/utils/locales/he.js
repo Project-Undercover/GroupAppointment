@@ -61,4 +61,6 @@ export default {
   no_history: "אין מפגשים בארכיון",
 
   session_ended: "הפגישה הסתיימה",
+
+  empty: "אין",
 };

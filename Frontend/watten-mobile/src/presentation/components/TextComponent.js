@@ -1,12 +1,9 @@
 import { View, Text } from "react-native";
 import React, { useMemo } from "react";
-// import { useTranslation } from "react-i18next";
 import theme from "../../utils/theme";
+import i18next from "i18next";
 
 const TextComponent = ({ children, style, bold, semiBold, mediumBold }) => {
-  // const { i18n } = useTranslation();
-  const lang = "en";
-
   const getFontWeight = useMemo(() => {
     if (bold) {
       return theme.FONTS.primaryFontBold;
@@ -21,12 +18,12 @@ const TextComponent = ({ children, style, bold, semiBold, mediumBold }) => {
   }, [bold, semiBold, mediumBold]);
 
   const getFontBasedOnLanguage = useMemo(() => {
-    return lang === "en"
+    return i18next.language === "he"
       ? getFontWeight
-      : bold
+      : bold || semiBold || mediumBold
       ? theme.FONTS.secondaryFontBold
       : theme.FONTS.primaryFontRegular;
-  }, [lang, bold, semiBold, mediumBold]);
+  }, [i18next.language, bold, semiBold, mediumBold]);
   const combinedStyles = [
     { fontFamily: getFontBasedOnLanguage, textAlign: "left" },
     ...(Array.isArray(style) ? style : [style]),
