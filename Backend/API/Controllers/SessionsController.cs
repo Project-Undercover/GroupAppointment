@@ -60,12 +60,7 @@ namespace API.Controllers
             string langKey = Headers.GetLanguage(Request.Headers);
 
             User user = HttpContext.GetUser<User>();
-            var request = new DataTableDTOs.SessionDT(new Searches.SessionDT(userId: user.Id, startDate: dto.CustomSearch?.startDate, endDate: dto.CustomSearch?.endDate, searchTerm: dto.CustomSearch?.searchTerm));
-            request.take = dto.take;
-            request.skip = dto.skip;
-
-
-            (int count, IEnumerable<GetAllDT> list) data = await _sessionService.GetAllDT(request);
+            (int count, IEnumerable<UserSession> list) data = await _sessionService.GetUserSessions(dto, user);
             string message = _translationService.GetByKey(TranslationKeys.SuccessFetch, langKey, nameof(Session));
             return Ok(MessageResponseFactory.Create(message, data, dto));
         }

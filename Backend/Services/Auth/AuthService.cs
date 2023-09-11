@@ -88,6 +88,8 @@ namespace Services.Auth
                 return new UserDTOs.Responses.VerifyCode()
                 {
                     userId = user.Id,
+                    firstName = user.FirstName,
+                    lastName = user.LastName,
                     jwt = tokenData.token,
                     expiresAt = tokenData.expireAt
                 };

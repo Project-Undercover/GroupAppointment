@@ -107,6 +107,27 @@ namespace Infrastructure.DTOs.Sessions
                 public string instructor { get; set; }
                 public bool isAvailable { get; set; }
             }
+
+
+            public record UserSession : EntityDTO
+            {
+                public string title { get; set; }
+                public string? image { get; set; }
+                public int ParticipantsCount { get; set; }
+                public int MaxParticipants { get; set; }
+                public DateTimeOffset StartDate { get; set; }
+                public DateTimeOffset EndDate { get; set; }
+                public string? locationName { get; set; }
+                public string instructor { get; set; }
+                public bool isAvailable { get; set; }
+                public List<Child> children { get; set; }
+
+                public record Child
+                {
+                    public Guid id { get; set; }
+                    public string name { get; set; }
+                }
+            }
         }
     }
 }
