@@ -6,7 +6,8 @@ import ReservationInfo from "./ReservationInfo";
 import Spacer from "../../../components/Spacer";
 import { useTranslation } from "react-i18next";
 import moment from "moment";
-const ReservationCard = ({ session }) => {
+import { windowWidth } from "../../../../utils/dimensions";
+const ReservationCard = ({ session, isHistory }) => {
   const {
     maxParticipants,
     participantsCount,
@@ -25,14 +26,16 @@ const ReservationCard = ({ session }) => {
         <TextComponent mediumBold style={styles.headerText}>
           {t("instructure") + " - " + session?.instructor}
         </TextComponent>
-        {/* <View style={styles.timerContainer}>
+        <View style={styles.timerContainer}>
           <TextComponent mediumBold style={styles.timerText}>
-            {moment(endDate).diff(
-              moment()?.format("yyyy-MM-DDTHH:mm:ssZ"),
-              "hours"
-            ) + t("min")}
+            {!isHistory
+              ? moment(endDate).diff(
+                  moment()?.format("yyyy-MM-DDTHH:mm:ssZ"),
+                  "hours"
+                ) + t("min")
+              : t("session_ended")}
           </TextComponent>
-        </View> */}
+        </View>
       </View>
       <Spacer space={7} />
       <View className="flex-row items-start">
@@ -61,6 +64,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 20,
     borderRadius: 14,
+    width: windowWidth * 0.9,
+    alignSelf: "stretch",
     ...theme.SHADOW.lightShadow,
   },
   headerText: {

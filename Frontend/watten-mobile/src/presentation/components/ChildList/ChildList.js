@@ -10,7 +10,7 @@ const ChildList = ({ data }) => {
       style={{ flex: 1, width: "100%" }}
       showsHorizontalScrollIndicator={false}
     >
-      {data.map((child) => {
+      {data?.map((child) => {
         return <ChildCard value={child?.name} key={child?.id} />;
       })}
     </ScrollView>

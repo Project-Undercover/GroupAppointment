@@ -3,7 +3,10 @@ import SessionRepository from "../repository/SessionRepository";
 import { useLoadingContext } from "../hooks/useLoadingContext";
 import { useAlertsContext } from "../hooks/useAlertsContext";
 import { useTranslation } from "react-i18next";
-import { FETCH_SESSIONS_SUCCESS } from "../constants/actionTypes";
+import {
+  FETCH_HISTORY_SUCCESS,
+  FETCH_SESSIONS_SUCCESS,
+} from "../constants/actionTypes";
 const SessionActions = () => {
   const sessionRepository = SessionRepository();
   const { setLoading } = useLoadingContext();
@@ -18,7 +21,6 @@ const SessionActions = () => {
           startDate,
           endDate,
         });
-        console.log("---", startDate, endDate);
         dispatch({ type: FETCH_SESSIONS_SUCCESS, payload: response?.data });
       } catch (error) {
         console.log(error?.data);
@@ -28,8 +30,25 @@ const SessionActions = () => {
       setLoading(false);
     };
   };
+  const fetchHistorySessions = ({ startDate, endDate }) => {
+    return async (dispatch) => {
+      setLoading(true);
+      try {
+        const response = await sessionRepository.getUserSessions({
+          startDate,
+          endDate,
+        });
+        dispatch({ type: FETCH_HISTORY_SUCCESS, payload: response?.data });
+      } catch (error) {
+        console.log(error?.data);
+        const messg = error?.data?.message ? error?.data?.message : t("error");
+        showError(messg);
+      }
+      setLoading(false);
+    };
+  };
 
-  return { fetchSessions };
+  return { fetchSessions, fetchHistorySessions };
 };
 
 export default SessionActions;

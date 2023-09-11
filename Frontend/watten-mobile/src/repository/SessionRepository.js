@@ -10,7 +10,15 @@ const SessionRepository = () => {
     return data;
   };
 
-  return { getSessions };
+  const getUserSessions = async (customSearch) => {
+    const data = await apiCall("Sessions/GetUserSessions", RequestMethod.POST, {
+      customSearch,
+    });
+
+    return data;
+  };
+
+  return { getSessions, getUserSessions };
 };
 
 export default SessionRepository;

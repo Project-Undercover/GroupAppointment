@@ -5,7 +5,7 @@ import theme from "../../../../utils/theme";
 
 const ProfileInfoRow = ({
   icon,
-  value,
+  value = "",
   selectInput,
   disabled = true,
   onPress,

@@ -57,4 +57,6 @@ export default {
   error: "الرجاء معاودة المحاولة في وقت لاحق",
 
   no_sessions: "لا توجد ورشة في هذا اليوم",
+
+  session_ended: "ورشة انتهة",
 };

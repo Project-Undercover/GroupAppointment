@@ -57,4 +57,6 @@ export default {
   error: "אנא נסה שוב מאוחר יותר",
 
   no_sessions: "לא קיים מפגש בתאריך זה",
+
+  session_ended: "הפגישה הסתיימה",
 };
