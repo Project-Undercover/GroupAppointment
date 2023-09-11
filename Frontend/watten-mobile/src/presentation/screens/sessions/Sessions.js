@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import TextComponent from "../../components/TextComponent";
 import theme from "../../../utils/theme";
 import { useLoadingContext } from "../../../hooks/useLoadingContext";
+import globalStyles from "../../../utils/theme/globalStyles";
 const Sessions = () => {
   const [date, setDate] = useState(moment());
   const { loading } = useLoadingContext();
@@ -64,7 +65,7 @@ const Sessions = () => {
               className="w-20 h-20"
               source={require("../../../assets/icons/empty.png")}
             />
-            <TextComponent style={styles.noSessionsText}>
+            <TextComponent style={globalStyles.noSessionsText}>
               {t("no_sessions")}
             </TextComponent>
           </View>
@@ -82,9 +83,4 @@ const Sessions = () => {
 
 export default Sessions;
 
-const styles = StyleSheet.create({
-  noSessionsText: {
-    fontSize: 20,
-    color: theme.COLORS.red,
-  },
-});
+const styles = StyleSheet.create({});

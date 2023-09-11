@@ -11,6 +11,7 @@ import HistoryList from "./components/HistoryList";
 import theme from "../../../utils/theme";
 import { useLoadingContext } from "../../../hooks/useLoadingContext";
 import TextComponent from "../../components/TextComponent";
+import globalStyles from "../../../utils/theme/globalStyles";
 const History = () => {
   const { t } = useTranslation();
   const { historySessions } = useSelector((state) => state.sessions);
@@ -39,7 +40,7 @@ const History = () => {
             className="w-20 h-20"
             source={require("../../../assets/icons/empty.png")}
           />
-          <TextComponent style={styles.noSessionsText}>
+          <TextComponent style={globalStyles.noSessionsText}>
             {t("no_history")}
           </TextComponent>
         </View>
@@ -55,10 +56,3 @@ const History = () => {
 };
 
 export default History;
-
-const styles = StyleSheet.create({
-  noSessionsText: {
-    fontSize: 20,
-    color: theme.COLORS.red,
-  },
-});

@@ -17,6 +17,10 @@ const globalStyles = StyleSheet.create({
     fontFamily: theme.FONTS.primaryFontRegular,
     textAlign: I18nManager.isRTL ? "right" : "left",
   },
+  noSessionsText: {
+    fontSize: 20,
+    color: theme.COLORS.primary,
+  },
 });
 
 export default globalStyles;
