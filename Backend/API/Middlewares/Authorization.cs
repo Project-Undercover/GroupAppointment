@@ -37,14 +37,10 @@ namespace API.Middlewares
                     if (!user.IsActive)
                         throw new ForbiddenException(TranslationKeys.InActiveUser);
                 }
-                catch (Exception e)
+                catch (Exception e) when (e is not BaseException)
                 {
                     var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<User>>();
                     logger.LogError(e.Message);
-
-                    if (e is BaseException) throw;
-
-
                     throw new UnAuthorizedException(TranslationKeys.UnAuthorized);
                 }
             }

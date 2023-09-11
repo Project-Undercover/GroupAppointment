@@ -26,7 +26,42 @@ namespace Services.Appointments
 
 
 
+        public async Task<(int count, List<SessionsDTOs.Responses.UserSession> data)> GetUserSessions(DataTableDTOs.UserSessionDT dto, User user)
+        {
+            ISpecification<Session> specification = _unitOfWork.Repository<Session>().QuerySpecification.Where(s => s.Participants.Any(s => s.UserId == user.Id));
 
+
+            if (dto.CustomSearch != null)
+            {
+                var (from, to, searchTerm) = dto.CustomSearch;
+
+
+                if (!string.IsNullOrEmpty(searchTerm))
+                    specification.Where(s =>
+                            s.Title.Contains(dto.CustomSearch.searchTerm)
+                            || s.Participants.Any(s => s.Child.Name.Contains(searchTerm) || (s.User.FirstName + " " + s.User.LastName).Contains(searchTerm)));
+
+                if (from.HasValue)
+                    specification.Where(s => s.StartDate >= from);
+
+                if (to.HasValue)
+                    specification.Where(s => s.EndDate <= to);
+            }
+
+            specification
+                .Include(nameof(Session.Instructors))
+                .Include(nameof(Session.Instructors) + "." + nameof(Instructor.User))
+                .Include(nameof(Session.Participants))
+                .Include(nameof(Session.Participants) + "." + nameof(Participant.Child))
+                .ApplyOrderings(s => s.OrderByDescending(s => s.CreatedAt))
+                .SkipAndTake(dto.skip, dto.take);
+
+            var (count, data) = await _unitOfWork.Repository<Session>().Find(specification);
+            data.ToList().ForEach(s => s.Participants = s.Participants.Where(s => s.UserId == user.Id).ToList()); // only user children 
+            var mappedData = _mapper.Map<List<SessionsDTOs.Responses.UserSession>>(data);
+
+            return (count, mappedData);
+        }
 
         public async Task<(int count, List<SessionsDTOs.Responses.GetAllDT> data)> GetAllDT(DataTableDTOs.SessionDT dto)
         {
