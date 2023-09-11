@@ -22,7 +22,7 @@ const TextComponent = ({ children, style, bold, semiBold, mediumBold }) => {
       ? getFontWeight
       : bold || semiBold || mediumBold
       ? theme.FONTS.secondaryFontBold
-      : theme.FONTS.primaryFontRegular;
+      : theme.FONTS.secondaryFontRegular;
   }, [i18next.language, bold, semiBold, mediumBold]);
   const combinedStyles = [
     { fontFamily: getFontBasedOnLanguage, textAlign: "left" },

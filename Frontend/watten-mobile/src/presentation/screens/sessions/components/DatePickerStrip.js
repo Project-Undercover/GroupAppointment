@@ -6,6 +6,7 @@ import theme from "../../../../utils/theme";
 import { useSelector } from "react-redux";
 import "moment/locale/ar";
 import "moment/locale/he";
+import i18next from "i18next";
 const DatePickerStrip = ({ date, handleChangeDate }) => {
   const { language } = useSelector((state) => state?.auth);
   const [locale, setLocale] = useState({
@@ -28,7 +29,10 @@ const DatePickerStrip = ({ date, handleChangeDate }) => {
         calendarHeaderStyle={{
           color: theme.COLORS.secondaryPrimary,
           fontSize: 17,
-          fontFamily: theme.FONTS.primaryFontSemibold,
+          fontFamily:
+            i18next.language === "ar"
+              ? theme.FONTS.secondaryFontBold
+              : theme.FONTS.primaryFontSemibold,
           marginBottom: 5,
         }}
         dateNumberStyle={{ color: theme.COLORS.primary, fontSize: 13 }}

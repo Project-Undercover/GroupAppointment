@@ -27,7 +27,10 @@ const History = () => {
     }, [])
   );
   const handleRefreshSessions = () => {
-    const endDate = moment().startOf("day")?.format("yyyy-MM-DDTHH:mm:ssZ");
+    const endDate = moment()
+      .locale("he")
+      .startOf("day")
+      ?.format("yyyy-MM-DDTHH:mm:ssZ");
     dispatch(sessionActions.fetchHistorySessions({ startDate: null, endDate }));
   };
   return (
