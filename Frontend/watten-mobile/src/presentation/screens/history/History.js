@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Image } from "react-native";
 import { useCallback } from "react";
 import CustomeStatusBar from "../../components/CustomeStatusBar";
 import DefaultHeader from "../../components/DefaultHeader";
@@ -8,16 +8,18 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import SessionActions from "../../../actions/SessionActions";
 import HistoryList from "./components/HistoryList";
+import theme from "../../../utils/theme";
+import { useLoadingContext } from "../../../hooks/useLoadingContext";
+import TextComponent from "../../components/TextComponent";
 const History = () => {
   const { t } = useTranslation();
   const { historySessions } = useSelector((state) => state.sessions);
   const sessionActions = SessionActions();
+  const { loading } = useLoadingContext();
   const dispatch = useDispatch();
   useFocusEffect(
     useCallback(() => {
       const endDate = moment().startOf("day")?.format("yyyy-MM-DDTHH:mm:ssZ");
-      console.log(endDate);
-      // fetchSessions(moment());
       dispatch(
         sessionActions.fetchHistorySessions({ startDate: null, endDate })
       );
@@ -31,14 +33,32 @@ const History = () => {
     <View className="flex-1">
       <CustomeStatusBar />
       <DefaultHeader title={t("history")} />
-      <HistoryList
-        data={historySessions}
-        handleRefreshSessions={handleRefreshSessions}
-      />
+      {historySessions?.length === 0 && !loading ? (
+        <View className="flex-1 items-center mt-10">
+          <Image
+            className="w-20 h-20"
+            source={require("../../../assets/icons/empty.png")}
+          />
+          <TextComponent style={styles.noSessionsText}>
+            {t("no_history")}
+          </TextComponent>
+        </View>
+      ) : (
+        <HistoryList
+          data={historySessions}
+          loading={loading}
+          handleRefreshSessions={handleRefreshSessions}
+        />
+      )}
     </View>
   );
 };
 
 export default History;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  noSessionsText: {
+    fontSize: 20,
+    color: theme.COLORS.red,
+  },
+});

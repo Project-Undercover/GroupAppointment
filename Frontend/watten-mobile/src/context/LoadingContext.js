@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import LottieView from "lottie-react-native";
-import { View, StyleSheet } from "react-native";
+
+import { View, StyleSheet, ActivityIndicator } from "react-native";
 export const LoadingContext = createContext(false);
 
 export const LoadingContextProvider = ({ children }) => {
@@ -13,15 +14,15 @@ export const LoadingContextProvider = ({ children }) => {
       value={{ loading, setLoading, loadingSkelton, setLoadingSkelton }}
     >
       {children}
-
       {loading && (
         <View style={styles.centeredContainer}>
-          <LottieView
+          <ActivityIndicator size="large" color="black" />
+          {/* <LottieView
             source={loaderSource}
             autoPlay
             loop
             style={styles.animation}
-          />
+          /> */}
         </View>
       )}
     </LoadingContext.Provider>
@@ -30,7 +31,7 @@ export const LoadingContextProvider = ({ children }) => {
 const styles = StyleSheet.create({
   centeredContainer: {
     position: "absolute",
-    backgroundColor: "rgba(0, 0, 0,0.1)",
+    // backgroundColor: "rgba(0, 0, 0,0.1)",
     top: 0,
     bottom: 0,
     left: 0,

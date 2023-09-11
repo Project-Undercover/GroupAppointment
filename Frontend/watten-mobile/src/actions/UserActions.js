@@ -44,13 +44,8 @@ const UserActions = () => {
           children,
           mobileNumber,
         });
-        console.log(response);
 
         NavigateUsers();
-        // dispatch({
-        //   type: FETCH_USERS_SUCCESS,
-        //   payload: response?.data,
-        // });
       } catch (error) {
         console.log(error?.data);
         const messg = error?.data?.message ? error?.data?.message : t("error");
@@ -80,7 +75,6 @@ const UserActions = () => {
       setLoading(true);
       try {
         const response = await userRepository.getUserHomeData({ startDate });
-        console.log(response);
         dispatch({
           type: FETCH_USER_HOME_DATA_SUCCESS,
           payload: response?.data,

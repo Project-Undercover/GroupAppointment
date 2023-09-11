@@ -6,7 +6,7 @@ import {
   ScrollView,
   I18nManager,
 } from "react-native";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import CustomeStatusBar from "../../components/CustomeStatusBar";
 import AppHeader from "../../components/AppHeader";
 import theme from "../../../utils/theme";
@@ -65,6 +65,12 @@ const Profile = () => {
     dispatch(authActions.changeLanguage(lang));
     setLanguage(lang);
   };
+
+  const FullName = useMemo(() => {
+    if (!userProfile?.firstName && !userProfile?.lastName) return "";
+
+    return userProfile?.firstName + " " + userProfile?.lastName;
+  }, [userProfile]);
   return (
     <View className="flex-1">
       <CustomeStatusBar />
@@ -98,7 +104,7 @@ const Profile = () => {
         <View className="w-full">
           <ProfileInfoCard title={t("user_details")}>
             <ProfileInfoRow
-              value={userProfile?.firstName + " " + userProfile?.lastName}
+              value={FullName}
               icon={
                 <Feather name="user" color={theme.COLORS.primary} size={18} />
               }

@@ -3,7 +3,7 @@ import React from "react";
 import Spacer from "../../../components/Spacer";
 import theme from "../../../../utils/theme";
 import ReservationCard from "../../home/components/ReservationCard";
-const HistoryList = ({ data, handleRefreshSessions }) => {
+const HistoryList = ({ data, handleRefreshSessions, loading }) => {
   return (
     <View className="flex-1 p-2">
       <Spacer space={4} />
@@ -18,7 +18,7 @@ const HistoryList = ({ data, handleRefreshSessions }) => {
           padding: 5,
         }}
         ItemSeparatorComponent={<Spacer space={6} />}
-        data={data}
+        data={loading ? [] : data}
         keyExtractor={(item) => item?.id}
         refreshControl={
           <RefreshControl

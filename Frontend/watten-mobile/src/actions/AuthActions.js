@@ -8,6 +8,7 @@ import {
   VERIFY_SUCCESS,
   LOGOUT_SUCCESS,
   CHANGE_LANG_SUCCESS,
+  USER_IN_STORAGE_SUCCESS,
 } from "../constants/actionTypes";
 import { useNavigation } from "@react-navigation/native";
 import { useAlertsContext } from "../hooks/useAlertsContext";
@@ -35,13 +36,10 @@ const AuthActions = () => {
         const response = await authRepository.login({
           phone,
         });
-        console.log(response);
         dispatch({
           type: LOGIN_SUCCESS,
           payload: { requestId: response?.data?.verificationId, phone: phone },
         });
-        // setTimeout(() => {
-        // }, 1000);
       } catch (error) {
         const messg = error?.data?.message ? error?.data?.message : t("error");
         showError(messg);
@@ -90,11 +88,6 @@ const AuthActions = () => {
         .catch((error) => {
           console.log(error);
         });
-      // try {
-      //   Updates.reloadAsync();
-      // } catch (e) {
-      //   console.log(e);
-      // }
     };
   };
 
@@ -112,6 +105,10 @@ const AuthActions = () => {
         // const authData = await getDataFromStorage();
         const authData = await getDataFromStorage();
         if (authData?.user && authData?.token) {
+          dispatch({
+            type: USER_IN_STORAGE_SUCCESS,
+            payload: authData?.user,
+          });
           NavigateHome();
         } else {
           NavigateEntry();

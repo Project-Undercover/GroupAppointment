@@ -11,7 +11,6 @@ const AuthRepository = () => {
   };
 
   const verifyCode = async ({ code, requestId }) => {
-    console.log("----", code, requestId);
     const data = await apiCall("Auth/VerifyCode", RequestMethod.POST, {
       requestId,
       code,

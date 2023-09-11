@@ -5,6 +5,7 @@ import {
   VERIFY_SUCCESS,
   LOGOUT_SUCCESS,
   CHANGE_LANG_SUCCESS,
+  USER_IN_STORAGE_SUCCESS,
 } from "../constants/actionTypes";
 import { storeData } from "../utils/storage";
 
@@ -52,6 +53,13 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         language: action.payload,
+      };
+    case USER_IN_STORAGE_SUCCESS:
+      console.log("---", action.payload);
+      return {
+        ...state,
+        user: action.payload,
+        isLoggedIn: true,
       };
 
     case LOGOUT_SUCCESS:

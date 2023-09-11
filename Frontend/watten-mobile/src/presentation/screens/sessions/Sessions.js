@@ -12,8 +12,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import TextComponent from "../../components/TextComponent";
 import theme from "../../../utils/theme";
+import { useLoadingContext } from "../../../hooks/useLoadingContext";
 const Sessions = () => {
   const [date, setDate] = useState(moment());
+  const { loading } = useLoadingContext();
   const { sessions } = useSelector((state) => state.sessions);
   const sessionActions = SessionActions();
   const dispatch = useDispatch();
@@ -56,7 +58,7 @@ const Sessions = () => {
       <View className="flex-1">
         <DatePickerStrip date={date} handleChangeDate={handleChangeDate} />
         <AddSessionBar date={date} />
-        {sessions?.length === 0 ? (
+        {sessions?.length === 0 && !loading ? (
           <View className="flex-1 items-center mt-10">
             <Image
               className="w-20 h-20"
@@ -69,6 +71,7 @@ const Sessions = () => {
         ) : (
           <SessionList
             data={sessions}
+            loading={loading}
             handleRefreshSessions={handleRefreshSessions}
           />
         )}

@@ -10,9 +10,11 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 import UserActions from "../../../actions/UserActions";
+
 const Home = ({ navigation }) => {
   const { t } = useTranslation();
   const { userHomeData } = useSelector((state) => state.users);
+  const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const userActions = UserActions();
 
@@ -33,7 +35,10 @@ const Home = ({ navigation }) => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
       >
-        <WelcomeBanner username={"Sabreen"} date={moment().format("LL")} />
+        <WelcomeBanner
+          username={user?.firstName}
+          date={moment().format("LL")}
+        />
         <View className="p-4 flex-row justify-around">
           <StatCard
             value={userHomeData?.sessionsCount}

@@ -3,7 +3,9 @@ import React from "react";
 import UserCard from "./UserCard";
 import Spacer from "../../../components/Spacer";
 import theme from "../../../../utils/theme";
+import { useLoadingContext } from "../../../../hooks/useLoadingContext";
 const UsersList = ({ data, handleRefreshUsers }) => {
+  const { loading } = useLoadingContext();
   return (
     <View className="flex-1">
       <FlatList
@@ -12,11 +14,10 @@ const UsersList = ({ data, handleRefreshUsers }) => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingBottom: 100,
-
           padding: 5,
         }}
         ItemSeparatorComponent={<Spacer space={6} />}
-        data={data}
+        data={loading ? [] : data}
         keyExtractor={(item) => item?.id}
         refreshControl={
           <RefreshControl

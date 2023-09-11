@@ -57,6 +57,8 @@ export default {
   error: "الرجاء معاودة المحاولة في وقت لاحق",
 
   no_sessions: "لا توجد ورشة في هذا اليوم",
+  no_sessions_default: "لا توجد ورشات",
+  no_history: "لا توجد ورشات في الأرشيف",
 
   session_ended: "ورشة انتهة",
 };

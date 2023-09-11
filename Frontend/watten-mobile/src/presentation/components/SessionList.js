@@ -3,11 +3,11 @@ import React from "react";
 import SessionCard from "./SessionCard/SessionCard";
 import Spacer from "./Spacer";
 import theme from "../../utils/theme";
-const SessionList = ({ data, handleRefreshSessions }) => {
+import { useLoadingContext } from "../../hooks/useLoadingContext";
+const SessionList = ({ data, handleRefreshSessions, loading }) => {
   return (
     <View className="flex-1">
       <Spacer space={4} />
-
       <FlatList
         onEndReachedThreshold={0.5}
         style={{ flex: 1 }}
@@ -19,7 +19,7 @@ const SessionList = ({ data, handleRefreshSessions }) => {
           padding: 5,
         }}
         ItemSeparatorComponent={<Spacer space={6} />}
-        data={data}
+        data={loading ? [] : data}
         keyExtractor={(item) => item?.id}
         refreshControl={
           <RefreshControl

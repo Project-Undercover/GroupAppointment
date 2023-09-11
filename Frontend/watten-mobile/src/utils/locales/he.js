@@ -57,6 +57,8 @@ export default {
   error: "אנא נסה שוב מאוחר יותר",
 
   no_sessions: "לא קיים מפגש בתאריך זה",
+  no_sessions_default: "אין מפגשים",
+  no_history: "אין מפגשים בארכיון",
 
   session_ended: "הפגישה הסתיימה",
 };
