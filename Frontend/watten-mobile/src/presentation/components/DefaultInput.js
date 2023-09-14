@@ -1,8 +1,10 @@
 import { View, Text, TextInput, StyleSheet, I18nManager } from "react-native";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import theme from "../../utils/theme";
 import TextComponent from "./TextComponent";
 import globalStyles from "../../utils/theme/globalStyles";
+import i18next from "i18next";
+
 const DefaultInput = ({
   label,
   value,
@@ -17,6 +19,11 @@ const DefaultInput = ({
   onFocus = () => {},
   onChange = () => {},
 }) => {
+  const getFontFamily = useMemo(() => {
+    return i18next.language === "ar"
+      ? theme.FONTS.secondaryFontRegular
+      : theme.FONTS.primaryFontRegular;
+  }, [i18next.language]);
   const ref = useRef();
   return (
     <View style={[styles.wrapper, { ...wrapperStyle }]}>
@@ -30,7 +37,10 @@ const DefaultInput = ({
             onFocus={() => onFocus(ref)}
             onChangeText={onChange}
             editable={editable}
-            style={[globalStyles.input, { ...inputStyle }]}
+            style={[
+              globalStyles.input,
+              { fontFamily: getFontFamily, ...inputStyle },
+            ]}
             placeholder={placeholder}
             underlineColorAndroid="transparent"
             keyboardType={keyboardType}
