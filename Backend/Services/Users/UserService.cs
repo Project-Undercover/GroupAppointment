@@ -8,6 +8,7 @@ using Infrastructure.Entities.DataTables;
 using Infrastructure.Entities.Sessions;
 using Infrastructure.Entities.Users;
 using Infrastructure.Exceptions;
+using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
 
 namespace Services.Users
@@ -55,6 +56,13 @@ namespace Services.Users
 
             var homeData = new UserDTOs.Responses.HomeData { childrenCount = childrenCount, finishedSessions = finishedSessions, sessionsCount = count, sessions = mappedData };
             return homeData;
+        }
+
+
+        public async Task<IEnumerable<UserDTOs.Responses.Child>> GetChildren(User user)
+        {
+            var (count, children) = await _unitOfWork.Repository<Child>().Find(s => s.UserId == user.Id);
+            return _mapper.Map<List<UserDTOs.Responses.Child>>(children);
         }
 
         public async Task<(int count, IEnumerable<UserDTOs.Responses.GetAllDT> data)> GetAllDT(DataTableDTOs.UsersDT dto, User user)
@@ -178,7 +186,6 @@ namespace Services.Users
             await _unitOfWork.Repository<Child>().AddAsync(child);
             await _unitOfWork.Commit();
         }
-
         public async Task DeleteChild(Guid id)
         {
             Child child = await _unitOfWork.Repository<Child>().GetByIdAsync(id);
@@ -188,7 +195,6 @@ namespace Services.Users
             await _unitOfWork.Repository<Child>().DeleteAsync(child);
             await _unitOfWork.Commit();
         }
-
         public async Task EditProfileImage(Guid userId, IFileProxy imageFile)
         {
             User user = await _unitOfWork.Repository<User>().GetByIdAsync(userId);
@@ -196,5 +202,13 @@ namespace Services.Users
             await _unitOfWork.Repository<User>().UpdateAsync(user);
             await _unitOfWork.Commit();
         }
+
+
+
+
+
+
+      
+
     }
 }

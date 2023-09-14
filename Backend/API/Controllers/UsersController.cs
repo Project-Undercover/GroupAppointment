@@ -65,9 +65,31 @@ namespace Fly.SMS.API.Controllers
 
             data.list.ToList().ForEach(s => s.roleName = _translationService.GetByKey(s.roleName, langKey));
 
-            string message = _translationService.GetByKey(TranslationKeys.SuccessFetch, langKey, "User");
+            string message = _translationService.GetByKey(TranslationKeys.SuccessFetch, langKey);
             return Ok(MessageResponseFactory.Create(message, data, dto));
         }
+
+
+
+        /// <summary>
+        /// Get User Children
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [AuthorizeUser]
+        [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<List<UserDTOs.Responses.Child>>))]
+        [HttpPost, Route("GetChildren")]
+        public async Task<IActionResult> GetChildren()
+        {
+            string langKey = Headers.GetLanguage(Request.Headers);
+            User user = HttpContext.GetUser<User>();
+
+            IEnumerable<UserDTOs.Responses.Child> data = await _userService.GetChildren(user);
+
+            string message = _translationService.GetByKey(TranslationKeys.SuccessFetch, langKey);
+            return Ok(MessageResponseFactory.Create(message, data));
+        }
+
 
 
 
@@ -85,7 +107,7 @@ namespace Fly.SMS.API.Controllers
             string langKey = Headers.GetLanguage(Request.Headers);
 
             UserDTOs.Responses.GetById data = await _userService.GetById(id);
-            string message = _translationService.GetByKey(TranslationKeys.SuccessFetch, langKey, "User");
+            string message = _translationService.GetByKey(TranslationKeys.SuccessFetch, langKey);
             return Ok(MessageResponseFactory.Create(message, data));
         }
 
@@ -99,7 +121,7 @@ namespace Fly.SMS.API.Controllers
             string langKey = Headers.GetLanguage(Request.Headers);
 
             UserDTOs.Responses.GetById data = await _userService.GetById(user.Id);
-            string message = _translationService.GetByKey(TranslationKeys.SuccessFetch, langKey, "User");
+            string message = _translationService.GetByKey(TranslationKeys.SuccessFetch, langKey);
             return Ok(MessageResponseFactory.Create(message, data));
         }
 

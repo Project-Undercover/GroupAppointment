@@ -70,13 +70,14 @@ namespace Persistence.SQL.Repositories
 
         public ISpecification<TEntity> QuerySpecification => new BaseSpecification<TEntity>();
 
+
         public async Task<(int count, IEnumerable<TEntity> data)> Find(Expression<Func<TEntity, bool>>? filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, int skip = 0, int take = -1, params string[] inlcluds)
         {
             _context.Database.EnsureCreated();
             IQueryable<TEntity> query = _dbSet.AsNoTracking();
 
             if (filter != null)
-                query.Where(filter);
+                query = query.Where(filter);
 
             foreach (var includeProperty in inlcluds)
                 query = query.Include(includeProperty);

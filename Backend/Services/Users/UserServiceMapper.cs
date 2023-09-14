@@ -29,7 +29,7 @@ namespace Services.Users
             CreateMap<User, UserDTOs.Responses.GetById>();
             CreateMap<Child, UserDTOs.Responses.GetById.Child>();
 
-
+            CreateMap<Child, UserDTOs.Responses.Child>();
 
 
             CreateMap<Session, UserDTOs.Responses.HomeData.Session>()
