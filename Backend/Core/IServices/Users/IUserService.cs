@@ -7,6 +7,7 @@ namespace Core.IServices.Users
 {
     public interface IUserService
     {
+        Task<IEnumerable<UserDTOs.Responses.Child>> GetChildren(User user);
         Task<UserDTOs.Responses.HomeData> GetHomeData(UserDTOs.Requests.HomeData dto, User user);
         Task<(int count, IEnumerable<UserDTOs.Responses.GetAllDT> data)> GetAllDT(DataTableDTOs.UsersDT dto, User user);
         Task<UserDTOs.Responses.GetById> GetById(Guid id);

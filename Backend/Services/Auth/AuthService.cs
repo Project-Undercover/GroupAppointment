@@ -18,7 +18,6 @@ namespace Services.Auth
         private readonly IEmailService _emailService;
         private readonly ITokenGenerator _tokenGenerator;
 
-
         public AuthService(
             IUnitOfWork unitOfWork,
             IMapper mapper,

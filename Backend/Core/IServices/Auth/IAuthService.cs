@@ -12,6 +12,5 @@ namespace Core.IServices.Auth
         Task<UserDTOs.Responses.BaseLogin> Login(UserDTOs.Requests.Login dto);
         Task<UserDTOs.Responses.VerifyCode?> VerifyCode(Guid requestId, string code);
         Task<Guid> SendVerificationAgain(UserDTOs.Requests.SendVerificationCodeAgain dto);
-        Task<UserDTOs.Responses.SendVerification> SendVerificationRequest(UserDTOs.Requests.SendVerification dto);
     }
 }

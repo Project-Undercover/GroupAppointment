@@ -44,11 +44,14 @@ namespace Infrastructure.DTOs.Users
 
 
             public record Login(string username);
-
             public record SendVerification(string username, VerificationType type);
             public record SendVerificationCodeAgain(Guid requestId);
             public record VerifiyCode(string code, Guid requestId);
+
+
+            public record SetPasswordRequest(string username, string oldPassowrd);
             public record SetPassword(string password, Guid requestId, string code);
+
 
             public record AddChild(Guid userId, string name);
             public record DeleteChild(Guid userId, Guid childId);
@@ -134,7 +137,11 @@ namespace Infrastructure.DTOs.Users
             }
 
 
-
+            public record Child
+            {
+                public Guid id { get; set; }
+                public string name { get; set; }
+            }
 
             public record VerifyCode
             {
