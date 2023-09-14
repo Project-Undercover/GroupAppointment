@@ -6,6 +6,7 @@ import {
   FETCH_USER_PROFILE_SUCCESS,
   FILTER_USERS,
   FETCH_USER_HOME_DATA_SUCCESS,
+  FETCH_USER_CHILDREN_SUCCESS,
 } from "../constants/actionTypes";
 import { useLoadingContext } from "../hooks/useLoadingContext";
 import { useNavigation } from "@react-navigation/native";
@@ -55,6 +56,19 @@ const UserActions = () => {
     };
   };
 
+  const fetchChildren = () => {
+    return async (dispatch) => {
+      try {
+        const response = await userRepository.getChildren();
+        dispatch({
+          type: FETCH_USER_CHILDREN_SUCCESS,
+          payload: response?.data,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  };
   const fetchProfile = () => {
     return async (dispatch) => {
       setLoading(true);
@@ -103,6 +117,7 @@ const UserActions = () => {
     createUser,
     fetchProfile,
     fetchUserHomeData,
+    fetchChildren,
   };
 };
 

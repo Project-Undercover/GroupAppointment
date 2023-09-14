@@ -14,11 +14,18 @@ import TextComponent from "../../components/TextComponent";
 import theme from "../../../utils/theme";
 import { useLoadingContext } from "../../../hooks/useLoadingContext";
 import globalStyles from "../../../utils/theme/globalStyles";
+import SessionBottomSheet from "../../components/SessionBottomSheet/SessionBottomSheet";
+import UserActions from "../../../actions/UserActions";
+
 const Sessions = () => {
   const [date, setDate] = useState(moment());
   const { loading } = useLoadingContext();
   const { sessions } = useSelector((state) => state.sessions);
+  const { userChildren } = useSelector((state) => state.users);
   const sessionActions = SessionActions();
+  const userActions = UserActions();
+  const [showSessionSheet, setShowSessionSheet] = useState(false);
+  const [currentSession, setCurrentSession] = useState(null);
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
@@ -30,6 +37,7 @@ const Sessions = () => {
   useFocusEffect(
     useCallback(() => {
       fetchSessions(moment());
+      fetchChildren();
       setDate(moment());
     }, [])
   );
@@ -38,6 +46,10 @@ const Sessions = () => {
     const interval = timeInterval(date?.locale("he"));
     dispatch(sessionActions.fetchSessions({ ...interval }));
   };
+  const fetchChildren = () => {
+    dispatch(userActions.fetchChildren());
+  };
+
   const timeInterval = (date) => {
     const startDate = moment(date)
       .startOf("day")
@@ -52,32 +64,51 @@ const Sessions = () => {
     fetchSessions(date.locale("he"));
   };
 
+  const handlePressSession = (session) => {
+    setCurrentSession(session);
+    setShowSessionSheet(true);
+  };
+
+  const handleCloseSessionSheet = () => {
+    setShowSessionSheet(false);
+  };
+
   return (
-    <View className="flex-1">
-      <CustomeStatusBar />
-      <AppHeader />
+    <>
       <View className="flex-1">
-        <DatePickerStrip date={date} handleChangeDate={handleChangeDate} />
-        <AddSessionBar date={date} />
-        {sessions?.length === 0 && !loading ? (
-          <View className="flex-1 items-center mt-10">
-            <Image
-              className="w-20 h-20"
-              source={require("../../../assets/icons/empty.png")}
+        <CustomeStatusBar />
+        <AppHeader />
+        <View className="flex-1">
+          <DatePickerStrip date={date} handleChangeDate={handleChangeDate} />
+          <AddSessionBar date={date} />
+          {sessions?.length === 0 && !loading ? (
+            <View className="flex-1 items-center mt-10">
+              <Image
+                className="w-20 h-20"
+                source={require("../../../assets/icons/empty.png")}
+              />
+              <TextComponent style={globalStyles.noSessionsText}>
+                {t("no_sessions")}
+              </TextComponent>
+            </View>
+          ) : (
+            <SessionList
+              data={sessions}
+              loading={loading}
+              handlePressSession={handlePressSession}
+              handleRefreshSessions={handleRefreshSessions}
             />
-            <TextComponent style={globalStyles.noSessionsText}>
-              {t("no_sessions")}
-            </TextComponent>
-          </View>
-        ) : (
-          <SessionList
-            data={sessions}
-            loading={loading}
-            handleRefreshSessions={handleRefreshSessions}
+          )}
+        </View>
+        {showSessionSheet ? (
+          <SessionBottomSheet
+            handleShowSheet={handleCloseSessionSheet}
+            session={currentSession}
+            userChildren={userChildren}
           />
-        )}
+        ) : null}
       </View>
-    </View>
+    </>
   );
 };
 

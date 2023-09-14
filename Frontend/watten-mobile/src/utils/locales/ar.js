@@ -62,4 +62,6 @@ export default {
 
   session_ended: "ورشة انتهة",
   empty: "لا يوجد",
+
+  book_now: "تسجيل للورشة",
 };

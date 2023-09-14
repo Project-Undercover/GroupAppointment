@@ -36,8 +36,12 @@ const UserRepository = () => {
     const data = await apiCall("Users/GetProfile", RequestMethod.GET);
     return data;
   };
+  const getChildren = async () => {
+    const data = await apiCall("Users/GetChildren", RequestMethod.POST);
+    return data;
+  };
 
-  return { getUsers, createUser, getProfile, getUserHomeData };
+  return { getUsers, createUser, getProfile, getUserHomeData, getChildren };
 };
 
 export default UserRepository;

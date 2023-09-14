@@ -12,7 +12,13 @@ import {
 import theme from "../../../../utils/theme";
 import Spacer from "../../../components/Spacer";
 import ChildList from "../../../components/ChildList/ChildList";
-const ReservationInfo = ({ startTime, endTime, locationName, children }) => {
+const ReservationInfo = ({
+  startTime,
+  endTime,
+  locationName,
+  children,
+  showCloseChildIcon = false,
+}) => {
   return (
     <View className="flex-1">
       <View style={styles.infoContainer}>
@@ -58,7 +64,7 @@ const ReservationInfo = ({ startTime, endTime, locationName, children }) => {
             size={19}
           />
           <Spacer space={5} />
-          <ChildList data={children} />
+          <ChildList data={children} showCloseChildIcon={showCloseChildIcon} />
         </View>
       </View>
     </View>

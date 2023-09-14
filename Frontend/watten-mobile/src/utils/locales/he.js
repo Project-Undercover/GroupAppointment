@@ -63,4 +63,6 @@ export default {
   session_ended: "הפגישה הסתיימה",
 
   empty: "אין",
+
+  book_now: "הרשמה לפגישה",
 };

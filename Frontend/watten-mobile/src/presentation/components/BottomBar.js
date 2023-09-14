@@ -185,7 +185,6 @@ const styles = StyleSheet.create({
   activeTabAnimation: {
     transform: [{ scale: 1.1 }],
   },
-  activeTab: {},
   activeTabText: {
     color: theme.COLORS.white,
   },

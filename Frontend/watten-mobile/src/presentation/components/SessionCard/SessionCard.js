@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, TouchableOpacity, View, Image } from "react-native";
 import React, { useMemo } from "react";
 import theme from "../../../utils/theme";
 import * as Progress from "react-native-progress";
@@ -7,7 +7,7 @@ import SessionInfo from "./SessionInfo";
 import { useTranslation } from "react-i18next";
 import moment from "moment";
 
-const SessionCard = ({ session }) => {
+const SessionCard = ({ session, handlePressSession }) => {
   const {
     maxParticipants,
     participantsCount,
@@ -24,7 +24,11 @@ const SessionCard = ({ session }) => {
   }, [session]);
 
   return (
-    <View style={styles.container}>
+    <TouchableOpacity
+      style={styles.container}
+      activeOpacity={0.8}
+      onPress={() => handlePressSession(session)}
+    >
       <View style={styles.imagePartContainer}>
         <View style={styles.imgContainer}>
           <Image
@@ -56,7 +60,7 @@ const SessionCard = ({ session }) => {
         endTime={moment(endDate).format("LT")}
         locationName={locationName}
       />
-    </View>
+    </TouchableOpacity>
   );
 };
 

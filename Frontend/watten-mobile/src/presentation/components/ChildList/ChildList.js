@@ -3,7 +3,7 @@ import React from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import ChildCard from "./components/ChildCard";
 
-const ChildList = ({ data }) => {
+const ChildList = ({ data, showCloseChildIcon }) => {
   return (
     <ScrollView
       horizontal={true}
@@ -11,7 +11,13 @@ const ChildList = ({ data }) => {
       showsHorizontalScrollIndicator={false}
     >
       {data?.map((child) => {
-        return <ChildCard value={child?.name} key={child?.id} />;
+        return (
+          <ChildCard
+            value={child?.name}
+            key={child?.id}
+            showCloseChildIcon={showCloseChildIcon}
+          />
+        );
       })}
     </ScrollView>
   );

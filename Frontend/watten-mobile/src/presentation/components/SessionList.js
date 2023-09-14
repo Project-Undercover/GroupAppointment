@@ -3,8 +3,12 @@ import React from "react";
 import SessionCard from "./SessionCard/SessionCard";
 import Spacer from "./Spacer";
 import theme from "../../utils/theme";
-import { useLoadingContext } from "../../hooks/useLoadingContext";
-const SessionList = ({ data, handleRefreshSessions, loading }) => {
+const SessionList = ({
+  data,
+  handleRefreshSessions,
+  loading,
+  handlePressSession,
+}) => {
   return (
     <View className="flex-1">
       <Spacer space={4} />
@@ -29,7 +33,9 @@ const SessionList = ({ data, handleRefreshSessions, loading }) => {
             }}
           />
         }
-        renderItem={({ item }) => <SessionCard session={item} />}
+        renderItem={({ item }) => (
+          <SessionCard session={item} handlePressSession={handlePressSession} />
+        )}
       />
     </View>
   );

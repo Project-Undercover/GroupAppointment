@@ -102,9 +102,12 @@ const AuthActions = () => {
   const checkUserInStorage = () => {
     return async (dispatch) => {
       try {
-        // const authData = await getDataFromStorage();
         const authData = await getDataFromStorage();
-        if (authData?.user && authData?.token) {
+        const currentDate = moment();
+        const tokenIsValid = moment(authData?.user?.expiresAt).isAfter(
+          currentDate
+        );
+        if (tokenIsValid && authData?.user && authData?.token) {
           dispatch({
             type: USER_IN_STORAGE_SUCCESS,
             payload: authData?.user,

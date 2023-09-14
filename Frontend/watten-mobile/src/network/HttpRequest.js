@@ -9,7 +9,6 @@ export default async function HttpRequest(
   data,
   contentType = "application/json"
 ) {
-  //   const token = await getToken();
   const token = await getToken();
   const lang = await getLanguageFromStorage();
   return axios

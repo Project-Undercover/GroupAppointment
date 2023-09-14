@@ -88,11 +88,7 @@ const AppDrawer = () => {
       }}
       drawerContent={(props) => <DrawerContent {...props} />}
     >
-      <Drawer.Screen
-        name={"app-tabs"}
-        component={AppBottomTabs}
-        options={{ headerShown: false }}
-      />
+      <Drawer.Screen name={"app-tabs"} component={AppBottomTabs} />
       <Drawer.Screen name="history" component={History} />
     </Drawer.Navigator>
   );

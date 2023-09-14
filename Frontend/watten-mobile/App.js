@@ -8,9 +8,7 @@ import store from "./src/stores/configureStore";
 import Navigation from "./src/navigation";
 import { useFonts } from "expo-font";
 import i18next from "./src/utils/i18n";
-// import "moment/locale/ar";
-// import "moment/locale/he";
-// import moment from "moment";
+
 import { LoadingContextProvider } from "./src/context/LoadingContext";
 export default function App() {
   const [fontsLoaded] = useFonts({
