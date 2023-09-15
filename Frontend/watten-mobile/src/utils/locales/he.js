@@ -69,6 +69,7 @@ export default {
 
   date_error: "תאריך ההתחלה גדול או שווה מתאריך סיום",
   user_status: "סטטוס משתמש",
+  user_role: "תפקיד משתמש",
   validation: {
     firstName: "שם פרטי הינו שדה חובה",
     lastName: "שם משפחה הינו שדה חובה",

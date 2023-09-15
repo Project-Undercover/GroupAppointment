@@ -239,9 +239,7 @@ const UserManager = ({ route }) => {
         )}
         <Spacer space={15} />
         <View style={styles.dropContainer}>
-          <TextComponent style={styles.label}>
-            {t("session_instructure")}
-          </TextComponent>
+          <TextComponent style={styles.label}>{t("user_role")}</TextComponent>
           <DropDownPicker
             open={openRolesSelector}
             value={selectedRole}

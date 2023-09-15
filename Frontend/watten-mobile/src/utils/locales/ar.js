@@ -68,4 +68,5 @@ export default {
 
   date_error: "تاريخ البداية اكبر من تاريخ النهاية",
   user_status: "حالة المستخدم",
+  user_role: "دور المستخدم",
 };
