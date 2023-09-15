@@ -41,9 +41,9 @@ const ReservationInfo = ({
             />
           }
           value={
-            moment(startTime).format("LT") +
+            moment(endTime).format("LT") +
             " - " +
-            moment(endTime).format("LT")
+            moment(startTime).format("LT")
           }
         />
         <InfoRow

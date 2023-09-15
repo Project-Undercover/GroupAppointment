@@ -1,5 +1,5 @@
 import { StyleSheet, Image, View, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useMemo } from "react";
 import TextComponent from "../../../components/TextComponent";
 import { Feather } from "@expo/vector-icons";
 import theme from "../../../../utils/theme";
@@ -23,6 +23,11 @@ const UserCard = ({ user }) => {
     });
   };
 
+  const UserStatusColor = useMemo(() => {
+    const color = user?.isActive ? theme.COLORS.green : theme.COLORS.red;
+    return color;
+  }, [user]);
+
   return (
     <TouchableOpacity
       style={styles.container}
@@ -34,6 +39,9 @@ const UserCard = ({ user }) => {
           style={styles.userImage}
           source={require("../../../../assets/icons/user.png")}
         />
+        <View
+          style={[styles.point, { backgroundColor: UserStatusColor }]}
+        ></View>
         <View className="mx-3">
           <TextComponent mediumBold>
             {user?.firstName + " " + user?.lastName}
@@ -74,5 +82,12 @@ const styles = StyleSheet.create({
   icon: {
     width: 25,
     height: 25,
+  },
+  point: {
+    width: 10,
+    height: 10,
+    marginHorizontal: 5,
+    borderRadius: 30,
+    ...theme.SHADOW.lightShadow,
   },
 });
