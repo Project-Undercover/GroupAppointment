@@ -11,13 +11,9 @@ import {
 } from "react-native";
 import { useState, useRef } from "react";
 import DefaultInput from "../../../components/DefaultInput";
-import {
-  Entypo,
-  Feather,
-  Ionicons,
-  MaterialCommunityIcons,
-  AntDesign,
-} from "@expo/vector-icons";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Feather, MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 import theme from "../../../../utils/theme";
 import TextComponent from "../../../components/TextComponent";
 import Spacer from "../../../components/Spacer";
@@ -27,21 +23,32 @@ import DefaultButton from "../../../components/DefaultButton";
 import UploadImageCard from "./UploadImageCard";
 import { useTranslation } from "react-i18next";
 import { windowWidth } from "../../../../utils/dimensions";
-const Inputs = () => {
-  const [openInstructorsSelector, setpenInstructorsSelector] = useState(false);
+import { validationSchema } from "../../../../utils/validations/validationSchema";
+import { useDispatch } from "react-redux";
+import SessionActions from "../../../../actions/SessionActions";
+import moment from "moment";
+import globalStyles from "../../../../utils/theme/globalStyles";
+const Inputs = ({ date, instructors }) => {
+  const [openInstructorsSelector, setopenInstructorsSelector] = useState(false);
+  const dispatch = useDispatch();
+  const [image, setImage] = useState(null);
+  const sessionActions = SessionActions();
   const { t } = useTranslation();
-  const [value, setValue] = useState(["wissam"]);
-  const [items, setItems] = useState([
-    { label: "wissam", value: "wissam" },
-    { label: "tarek", value: "tarek" },
-  ]);
-  const [date, setDate] = useState(new Date());
+  const [selectedInstructors, setSelectedInstructors] = useState([]);
+
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [mode, setMode] = useState("date");
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const scrollViewRef = useRef(null);
-  const startTimeRef = useRef(null);
+  const [datesError, setDatesError] = useState(false);
+
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+  });
 
   const toggleTimePicker = (ref) => {
     if (showTimePicker) return;
@@ -49,14 +56,10 @@ const Inputs = () => {
   };
 
   const handleChangeStartTime = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    // setShowTimePicker(false);
-    setStartDate(currentDate);
+    setStartDate(selectedDate);
   };
   const handleChangeEndTime = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    // setShowTimePicker(false);
-    setEndDate(currentDate);
+    setEndDate(selectedDate);
   };
   const handleWithoutFeedback = () => {
     if (showTimePicker) {
@@ -64,42 +67,112 @@ const Inputs = () => {
     }
     Keyboard.dismiss();
   };
-  const scrollTo = (inputRef) => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-      scrollViewRef.current.scrollTo({
-        y: inputRef.current.offsetTop,
-        animated: true,
+  const onSubmit = (data) => {
+    if (!isValidDates(startDate, endDate)) {
+      setDatesError(true);
+      return;
+    }
+
+    const formData = createSessionFormData(data);
+
+    dispatch(sessionActions.createSession(formData));
+  };
+  const isValidDates = (startDate, endDate) => {
+    setDatesError(false);
+
+    const sDate = moment(startDate, "YYYY-MM-DDTHH:mm:ss.sssZ");
+    const eDate = moment(endDate, "YYYY-MM-DDTHH:mm:ss.sssZ");
+    const diffTime = eDate.diff(sDate, "minutes");
+
+    return diffTime > 0;
+  };
+  const compineDT = (date, time) => {
+    let d = moment(date).format("yyyy-MM-DD");
+    let t = moment(time).format("HH:mm");
+    return moment(d + " " + t).format("YYYY-MM-DDTHH:mm:ss.sssZ");
+  };
+
+  const createSessionFormData = (data) => {
+    const sessionFormData = new FormData();
+    if (image) {
+      const fileUriParts = image.split(".");
+      const fileType = fileUriParts[fileUriParts.length - 1];
+      sessionFormData.append("imageFile", {
+        uri: image,
+        name: `imageFileName.${fileType}`,
+        type: `image/${fileType}`,
       });
     }
+    const _startDate = compineDT(date, startDate);
+    const _endDate = compineDT(date, endDate);
+
+    sessionFormData.append("title", data?.title);
+    sessionFormData.append("startDate", _startDate);
+    sessionFormData.append("endDate", _endDate);
+    sessionFormData.append("maxParticipants", data?.maxParticipants);
+    sessionFormData.append("locationName", data?.locationName);
+    sessionFormData.append("instructors", selectedInstructors);
+    return sessionFormData;
   };
+
+  console.log(selectedInstructors);
   return (
     <TouchableWithoutFeedback onPress={handleWithoutFeedback}>
       <ScrollView
         style={{ flex: 1 }}
-        ref={scrollViewRef}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
       >
         <View className="flex-start flex-1" style={{ rowGap: 20 }}>
-          <DefaultInput
-            placeholder={t("enter") + " " + t("session_title")}
-            label={t("session_title")}
-            icon={
-              <MaterialCommunityIcons
-                name="subtitles-outline"
-                color={theme.COLORS.primary}
-                size={20}
+          <Controller
+            control={control}
+            rules={{ required: true }}
+            render={({ field: { onChange, value, onBlur } }) => (
+              <DefaultInput
+                placeholder={t("enter") + " " + t("session_title")}
+                label={t("session_title")}
+                onChange={onChange}
+                value={value}
+                icon={
+                  <MaterialCommunityIcons
+                    name="subtitles-outline"
+                    color={theme.COLORS.primary}
+                    size={20}
+                  />
+                }
               />
-            }
+            )}
+            name="title"
+            defaultValue={""}
           />
-          <DefaultInput
-            placeholder={t("enter") + " " + t("session_address")}
-            label={t("session_address")}
-            icon={
-              <Feather name="user" color={theme.COLORS.primary} size={20} />
-            }
+          {errors.title && (
+            <TextComponent style={globalStyles.errorText}>
+              {t(errors.title.message)}
+            </TextComponent>
+          )}
+
+          <Controller
+            control={control}
+            rules={{ required: true }}
+            render={({ field: { onChange, value, onBlur } }) => (
+              <DefaultInput
+                placeholder={t("enter") + " " + t("session_address")}
+                label={t("session_address")}
+                onChange={onChange}
+                value={value}
+                icon={
+                  <Feather name="user" color={theme.COLORS.primary} size={20} />
+                }
+              />
+            )}
+            name="locationName"
+            defaultValue=""
           />
+          {errors?.locationName && (
+            <TextComponent style={globalStyles.errorText}>
+              {t(errors?.locationName?.message)}
+            </TextComponent>
+          )}
 
           <View style={styles.dropContainer}>
             <TextComponent style={styles.label}>
@@ -107,12 +180,16 @@ const Inputs = () => {
             </TextComponent>
             <DropDownPicker
               open={openInstructorsSelector}
-              value={value}
+              value={selectedInstructors}
               listMode="SCROLLVIEW"
-              items={items}
-              setOpen={setpenInstructorsSelector}
-              setValue={setValue}
-              setItems={setItems}
+              // items={instructors}
+              setOpen={setopenInstructorsSelector}
+              setValue={setSelectedInstructors}
+              // setItems={setItems}
+              items={instructors.map((instructor) => ({
+                label: instructor?.name,
+                value: instructor?.id,
+              }))}
               stickyHeader
               dropDownContainerStyle={{
                 borderWidth: 1,
@@ -121,7 +198,7 @@ const Inputs = () => {
                 zIndex: 999,
               }}
               multiple={true}
-              style={styles.input}
+              style={globalStyles.dropDownInput}
               maxHeight={300}
               mode="BADGE"
               placeholderStyle={{
@@ -129,30 +206,46 @@ const Inputs = () => {
                 fontSize: 14,
                 fontFamily: theme.FONTS.primaryFontRegular,
                 textAlign: "left",
-                // textAlign: I18nManager.isRTL ? "right" : "left",
               }}
-              placeholder={t("session_instructure")}
+              // placeholder={t("session_instructure")}
               badgeDotColors={[theme.COLORS.primary]}
             />
           </View>
 
-          <DefaultInput
-            placeholder={t("enter") + " " + t("session_max")}
-            label={t("session_max")}
-            icon={
-              <Feather name="user" color={theme.COLORS.primary} size={20} />
-            }
+          <Controller
+            control={control}
+            rules={{ required: true }}
+            render={({ field: { onChange, value, onBlur } }) => (
+              <DefaultInput
+                placeholder={t("enter") + " " + t("session_max")}
+                label={t("session_max")}
+                onChange={onChange}
+                value={value}
+                keyboardType="numeric"
+                icon={
+                  <Feather name="user" color={theme.COLORS.primary} size={20} />
+                }
+              />
+            )}
+            name="maxParticipants"
+            defaultValue=""
           />
+          {errors?.maxParticipants && (
+            <TextComponent style={globalStyles.errorText}>
+              {t(errors?.maxParticipants.message)}
+            </TextComponent>
+          )}
+
           <View className="flex-row  justify-between">
             <DefaultInput
               containerStyle={{ width: windowWidth * 0.4 }}
               placeholder={t("enter") + " " + t("session_start")}
               label={t("session_start")}
-              onFocus={toggleTimePicker}
+              // onFocus={toggleTimePicker}
               component={
                 <DateTimePicker
                   testID="dateTimePicker"
-                  value={date}
+                  value={startDate}
                   mode={"time"}
                   is24Hour={true}
                   display={"calendar"}
@@ -171,7 +264,7 @@ const Inputs = () => {
               placeholder={t("enter") + " " + t("session_end")}
               label={t("session_end")}
               containerStyle={{ width: windowWidth * 0.4 }}
-              onFocus={toggleTimePicker}
+              // onFocus={toggleTimePicker}
               component={
                 <DateTimePicker
                   testID="dateTimePicker"
@@ -192,10 +285,22 @@ const Inputs = () => {
             />
           </View>
 
-          <UploadImageCard />
+          {datesError && (
+            <TextComponent style={globalStyles.errorText}>
+              {t("date_error")}
+            </TextComponent>
+          )}
+          <UploadImageCard
+            handleSelectImage={(image) => setImage(image)}
+            image={image}
+          />
           <Spacer space={5} />
           <View className="items-center">
-            <DefaultButton text={t("create_session")} />
+            <DefaultButton
+              text={t("create_session")}
+              // onPress={onSubmit}
+              onPress={handleSubmit(onSubmit)}
+            />
           </View>
         </View>
       </ScrollView>

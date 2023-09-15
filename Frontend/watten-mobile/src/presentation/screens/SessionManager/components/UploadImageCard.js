@@ -2,8 +2,8 @@ import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import theme from "../../../../utils/theme";
 import * as ImagePicker from "expo-image-picker";
-const UploadImageCard = () => {
-  const [image, setImage] = useState();
+const UploadImageCard = ({ image, handleSelectImage }) => {
+  // const [image, setImage] = useState();
 
   const selectImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -14,14 +14,15 @@ const UploadImageCard = () => {
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      handleSelectImage(result.assets[0].uri);
     }
   };
   return (
     <TouchableOpacity style={styles.container} onPress={selectImage}>
       <Image
         style={styles.image}
-        source={require("../../../../assets/icons/image.png")}
+        source={{ uri: image }}
+        defaultSource={require("../../../../assets/icons/image.png")}
       />
     </TouchableOpacity>
   );

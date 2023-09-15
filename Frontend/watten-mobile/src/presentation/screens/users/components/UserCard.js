@@ -4,7 +4,10 @@ import TextComponent from "../../../components/TextComponent";
 import { Feather } from "@expo/vector-icons";
 import theme from "../../../../utils/theme";
 import ExternalActions from "../../../../actions/ExternalActions";
+import { useNavigation } from "@react-navigation/native";
+import { Mode } from "../../../../utils/Enums";
 const UserCard = ({ user }) => {
+  const navigation = useNavigation();
   const externalActions = ExternalActions();
   const handleOpenWhatsApp = () => {
     externalActions.openWhatsApp({ phoneNumber: user?.mobileNumber });
@@ -13,8 +16,19 @@ const UserCard = ({ user }) => {
     externalActions.callPhone({ phoneNumber: user?.mobileNumber });
   };
 
+  const handleNavigateEditUser = () => {
+    navigation.navigate("user-manager", {
+      mode: Mode.Edit,
+      user: user,
+    });
+  };
+
   return (
-    <View style={styles.container}>
+    <TouchableOpacity
+      style={styles.container}
+      activeOpacity={0.6}
+      onPress={handleNavigateEditUser}
+    >
       <View className="flex-row items-center">
         <Image
           style={styles.userImage}
@@ -39,7 +53,7 @@ const UserCard = ({ user }) => {
           />
         </TouchableOpacity>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

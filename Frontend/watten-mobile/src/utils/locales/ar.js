@@ -63,5 +63,9 @@ export default {
   session_ended: "ورشة انتهة",
   empty: "لا يوجد",
 
+  logout: "خروج",
   book_now: "تسجيل للورشة",
+
+  date_error: "تاريخ البداية اكبر من تاريخ النهاية",
+  user_status: "حالة المستخدم",
 };

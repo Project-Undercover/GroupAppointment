@@ -8,7 +8,7 @@ import store from "./src/stores/configureStore";
 import Navigation from "./src/navigation";
 import { useFonts } from "expo-font";
 import i18next from "./src/utils/i18n";
-
+import NetInfo from "@react-native-community/netinfo";
 import { LoadingContextProvider } from "./src/context/LoadingContext";
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -21,7 +21,20 @@ export default function App() {
   });
 
   // useEffect(() => {
-  //   moment.locale(i18next.language);
+  //   const unsubscribe = NetInfo.addEventListener((state) => {
+  //     console.log(state);
+  //     if (!state.isConnected) {
+  //       console.log("Unable to connect");
+  //       // Handle no internet connection globally
+  //       // e.g., show a banner, disable certain features, etc.
+  //     } else {
+  //       console.log("connected");
+  //     }
+  //   });
+
+  //   return () => {
+  //     unsubscribe();
+  //   };
   // }, []);
   if (!fontsLoaded) {
     return null;

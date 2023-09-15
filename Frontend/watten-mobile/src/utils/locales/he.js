@@ -63,6 +63,26 @@ export default {
   session_ended: "הפגישה הסתיימה",
 
   empty: "אין",
+  logout: "יציאה",
 
   book_now: "הרשמה לפגישה",
+
+  date_error: "תאריך ההתחלה גדול או שווה מתאריך סיום",
+  user_status: "סטטוס משתמש",
+  validation: {
+    firstName: "שם פרטי הינו שדה חובה",
+    lastName: "שם משפחה הינו שדה חובה",
+    mobileNumber: {
+      required: "מספר טלפון הינו שדה חובה",
+      matches: "מספר טלפון להכיל רק מספרים",
+    },
+    mobile_ten_digits_required: "מספר נייד חייב להיות 10 ספרות",
+    sessionTitle: "כותרת הפגישה הינו שדה חובה",
+    sessionLocation: "מיקום הפגישה הינו שדה חובה",
+
+    maxPart: {
+      required: "מקסימום משתתפים הינו שדה חובה",
+      matches: "מקסימום משתתפים להכיל רק מספרים",
+    },
+  },
 };

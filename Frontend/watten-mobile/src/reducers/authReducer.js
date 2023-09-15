@@ -55,7 +55,6 @@ const authReducer = (state = initialState, action) => {
         language: action.payload,
       };
     case USER_IN_STORAGE_SUCCESS:
-      console.log("---", action.payload);
       return {
         ...state,
         user: action.payload,

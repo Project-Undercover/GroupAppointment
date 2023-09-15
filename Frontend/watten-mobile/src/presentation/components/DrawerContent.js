@@ -69,7 +69,7 @@ const DrawerContent = ({ navigation }) => {
         </View>
         <View className="items-center gap-2  mb-10">
           <DefaultButton
-            text={"יציאה"}
+            text={t("logout")}
             containerStyle={{ width: "90%" }}
             onPress={handleLogout}
           />

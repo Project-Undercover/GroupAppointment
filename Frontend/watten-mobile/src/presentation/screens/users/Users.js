@@ -23,11 +23,9 @@ const Users = ({ navigation }) => {
   useFocusEffect(
     useCallback(() => {
       dispatch(userActions.fetchUsers());
+      dispatch(userActions.fetchRoles());
     }, [])
   );
-  useEffect(() => {
-    dispatch(userActions.fetchUsers());
-  }, []);
 
   const filterUsers = (value) => {
     dispatch(userActions.filterUsers(value));
@@ -41,6 +39,7 @@ const Users = ({ navigation }) => {
   const clearInput = () => {
     setSearchInput("");
   };
+
   return (
     <View className="flex-1">
       <CustomeStatusBar />

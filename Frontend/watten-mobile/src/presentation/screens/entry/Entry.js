@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   Keyboard,
   TouchableWithoutFeedback,
+  StatusBar,
 } from "react-native";
 import React from "react";
 import Login from "./components/Login";
@@ -12,11 +13,13 @@ import theme from "../../../utils/theme";
 import Spacer from "../../components/Spacer";
 import OTP from "./components/OTP";
 import { useSelector } from "react-redux";
+import CustomeStatusBar from "../../components/CustomeStatusBar";
 const Entry = () => {
   const { isLoggedIn } = useSelector((state) => state.auth);
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View className="flex-1 bg-white border-2">
+      <View className="flex-1 bg-white">
+        <StatusBar barStyle="dark-content" backgroundColor="white" />
         <SafeAreaView />
         <View className="flex-1 items-center">
           <Image

@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
-import { useMemo } from "react";
+import { StyleSheet, View } from "react-native";
+import { useEffect, useMemo, useState } from "react";
 import CustomeStatusBar from "../../components/CustomeStatusBar";
 import DefaultHeader from "../../components/DefaultHeader";
 import { Mode } from "../../../utils/Enums";
@@ -10,13 +10,23 @@ import Inputs from "./components/Inputs";
 import globalStyles from "../../../utils/theme/globalStyles";
 import Spacer from "../../components/Spacer";
 import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import SessionActions from "../../../actions/SessionActions";
+
 const SessionManager = ({ route, navigation }) => {
+  const sessionActions = SessionActions();
+  const dispatch = useDispatch();
+  const { instructors } = useSelector((state) => state.sessions);
   const { mode, date } = route.params;
   const { t } = useTranslation();
 
   const ManagerTitle = useMemo(() => {
     return mode === Mode.Add ? "create_session" : "edit_session";
   }, [mode]);
+
+  useEffect(() => {
+    dispatch(sessionActions.fetchInstructors());
+  }, []);
 
   return (
     <View className="flex-1">
@@ -30,7 +40,7 @@ const SessionManager = ({ route, navigation }) => {
           <View style={globalStyles.underLine}></View>
         </View>
         <Spacer space={20} />
-        <Inputs />
+        <Inputs date={date} instructors={instructors} />
       </View>
     </View>
   );

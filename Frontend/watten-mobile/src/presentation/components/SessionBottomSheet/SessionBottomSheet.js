@@ -33,7 +33,6 @@ const SessionBottomSheet = ({
     ),
     []
   );
-  console.log(userChildren);
   return (
     <BottomSheet
       backdropComponent={renderBackdrop}

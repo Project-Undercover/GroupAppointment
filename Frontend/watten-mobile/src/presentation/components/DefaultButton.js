@@ -24,7 +24,7 @@ const DefaultButton = ({
 
 const styles = StyleSheet.create({
   button: {
-    width: 301,
+    width: "100%",
     height: 50,
     borderRadius: 13,
     borderWidth: 1,
@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
     fontFamily: theme.FONTS.primaryFontBold,
     fontSize: 16,
     color: theme.COLORS.white,
+    padding: 4,
   },
 });
 

@@ -4,6 +4,7 @@ import {
   FILTER_USERS,
   FETCH_USER_HOME_DATA_SUCCESS,
   FETCH_USER_CHILDREN_SUCCESS,
+  FETCH_ROLES_SUCCESS,
 } from "../constants/actionTypes";
 const initialState = {
   users: [],
@@ -11,6 +12,7 @@ const initialState = {
   userProfile: {},
   userHomeData: {},
   userChildren: [],
+  roles: [],
   error: null,
 };
 
@@ -36,6 +38,11 @@ const usersReducer = (state = initialState, action) => {
       return {
         ...state,
         userChildren: action.payload,
+      };
+    case FETCH_ROLES_SUCCESS:
+      return {
+        ...state,
+        roles: action.payload,
       };
     case FILTER_USERS:
       const searchInput = action.payload.toLowerCase();

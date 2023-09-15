@@ -24,11 +24,9 @@ const Drawer = createDrawerNavigator();
 export const SessionsStack = () => {
   return (
     <SessionStack.Navigator
-      tabBarOptions={{
-        gestureEnabled: false,
-      }}
       screenOptions={{
         headerShown: false,
+        gestureEnabled: false,
       }}
       initialRouteName={"sessions"}
     >
@@ -50,6 +48,7 @@ export const UsersStack = () => {
       }}
       screenOptions={{
         headerShown: false,
+        gestureEnabled: false,
       }}
       initialRouteName={"users"}
     >

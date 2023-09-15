@@ -21,6 +21,24 @@ const globalStyles = StyleSheet.create({
     fontSize: 20,
     color: theme.COLORS.primary,
   },
+  errorText: {
+    fontSize: 12,
+    textAlign: "left",
+    color: theme.COLORS.red,
+    paddingStart: 5,
+  },
+
+  dropDownInput: {
+    height: 48,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: theme.COLORS.secondary2,
+    borderRadius: 5,
+    overflow: "hidden",
+  },
 });
 
 export default globalStyles;

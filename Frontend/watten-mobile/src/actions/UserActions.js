@@ -7,6 +7,7 @@ import {
   FILTER_USERS,
   FETCH_USER_HOME_DATA_SUCCESS,
   FETCH_USER_CHILDREN_SUCCESS,
+  FETCH_ROLES_SUCCESS,
 } from "../constants/actionTypes";
 import { useLoadingContext } from "../hooks/useLoadingContext";
 import { useNavigation } from "@react-navigation/native";
@@ -38,6 +39,7 @@ const UserActions = () => {
   const createUser = ({ firstName, lastName, children, mobileNumber }) => {
     return async (dispatch) => {
       setLoading(true);
+
       try {
         const response = await userRepository.createUser({
           firstName,
@@ -45,7 +47,7 @@ const UserActions = () => {
           children,
           mobileNumber,
         });
-
+        showSuccess(response?.message);
         NavigateUsers();
       } catch (error) {
         console.log(error?.data);
@@ -87,6 +89,7 @@ const UserActions = () => {
   const fetchUserHomeData = (startDate) => {
     return async (dispatch) => {
       setLoading(true);
+
       try {
         const response = await userRepository.getUserHomeData({ startDate });
         dispatch({
@@ -102,6 +105,48 @@ const UserActions = () => {
     };
   };
 
+  const editUser = ({
+    id,
+    firstName,
+    lastName,
+    children,
+    mobileNumber,
+    isActive,
+    role,
+  }) => {
+    return async (dispatch) => {
+      setLoading(true);
+      try {
+        const response = await userRepository.editUser({
+          id,
+          firstName,
+          lastName,
+          children,
+          mobileNumber,
+          isActive,
+          role,
+        });
+        showSuccess(response?.message);
+        NavigateUsers();
+      } catch (error) {
+        console.log(error?.data);
+        const messg = error?.data?.message ? error?.data?.message : t("error");
+        showError(messg);
+      }
+      setLoading(false);
+    };
+  };
+
+  const fetchRoles = () => {
+    return async (dispatch) => {
+      try {
+        const response = await userRepository.getRoles();
+        dispatch({ type: FETCH_ROLES_SUCCESS, payload: response?.data });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  };
   const NavigateUsers = () => {
     navigation.goBack();
   };
@@ -118,6 +163,8 @@ const UserActions = () => {
     fetchProfile,
     fetchUserHomeData,
     fetchChildren,
+    editUser,
+    fetchRoles,
   };
 };
 

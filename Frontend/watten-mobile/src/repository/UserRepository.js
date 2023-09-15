@@ -41,7 +41,41 @@ const UserRepository = () => {
     return data;
   };
 
-  return { getUsers, createUser, getProfile, getUserHomeData, getChildren };
+  const getRoles = async () => {
+    const data = await apiCall("Enums/Roles", RequestMethod.GET);
+    return data;
+  };
+
+  const editUser = async ({
+    id,
+    firstName,
+    lastName,
+    mobileNumber,
+    children,
+    isActive,
+    role,
+  }) => {
+    const data = await apiCall("Users/Edit", RequestMethod.POST, {
+      id,
+      firstName,
+      lastName,
+      mobileNumber,
+      children,
+      isActive,
+      role,
+    });
+    return data;
+  };
+
+  return {
+    getUsers,
+    createUser,
+    getProfile,
+    getUserHomeData,
+    getChildren,
+    editUser,
+    getRoles,
+  };
 };
 
 export default UserRepository;

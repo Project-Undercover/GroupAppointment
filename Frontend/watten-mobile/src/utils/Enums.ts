@@ -15,3 +15,9 @@ export enum Language {
 
   Hebrew = "he",
 }
+
+export enum UserRoles {
+  Admin = 0,
+  Instructor = 1,
+  Parent = 2,
+}

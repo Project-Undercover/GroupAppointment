@@ -15,6 +15,7 @@ import DefaultButton from "../../../components/DefaultButton";
 import AuthActions from "../../../../actions/AuthActions";
 import { useDispatch, useSelector } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
+
 const OTP = ({ number = "0547973441" }) => {
   const { isLoading, user } = useSelector((state) => state.auth);
   const authActions = AuthActions();
@@ -23,7 +24,7 @@ const OTP = ({ number = "0547973441" }) => {
   const { t } = useTranslation();
   const [code, setCode] = useState("");
 
-  const handleVerify = () => {
+  const handleVerify = (code) => {
     dispatch(authActions.verifyCode(code));
   };
 
@@ -53,14 +54,12 @@ const OTP = ({ number = "0547973441" }) => {
           autoFocusOnLoad
           codeInputFieldStyle={styles.underlineStyleBase}
           codeInputHighlightStyle={styles.underlineStyleHighLighted}
-          onCodeFilled={(code) => {
-            console.log(`Code is ${code}, you are good to go!`);
-          }}
+          onCodeFilled={(code) => handleVerify(code)}
         />
       </View>
       <DefaultButton
         text={t("verify")}
-        onPress={handleVerify}
+        onPress={() => handleVerify(code)}
         disabled={isLoading}
         icon={isLoading ? <ActivityIndicator /> : null}
       />
