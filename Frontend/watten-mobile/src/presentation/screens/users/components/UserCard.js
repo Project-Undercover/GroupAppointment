@@ -35,13 +35,17 @@ const UserCard = ({ user }) => {
       onPress={handleNavigateEditUser}
     >
       <View className="flex-row items-center">
-        <Image
-          style={styles.userImage}
-          source={require("../../../../assets/icons/user.png")}
-        />
-        <View
-          style={[styles.point, { backgroundColor: UserStatusColor }]}
-        ></View>
+
+        <View>
+          <View
+            style={[styles.point, , { backgroundColor: UserStatusColor, position: 'absolute', zIndex: 2 }]}
+          ></View>
+          <Image
+            style={styles.userImage}
+            source={require("../../../../assets/icons/user.png")}
+          />
+        </View>
+
         <View className="mx-3">
           <TextComponent mediumBold>
             {user?.firstName + " " + user?.lastName}
