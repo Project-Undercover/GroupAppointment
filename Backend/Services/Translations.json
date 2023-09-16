@@ -65,7 +65,7 @@
 
   "MaxVerificationAttempts": {
     "EN": "Maximum verification requests has been reached, please try again in few minutes",
-    "HE": "הגעת למספר מקסמלי של בקשות אימות, אנא נסה שוב עוד מעט",
+    "HE": "הגעת למספר מקסמלי של בקשות אימות, אנא נסה שוב מאוחר יותר",
     "AR": "قمت بارسال طلب التصديق عدة مرات, انتظر وحاول مرة اخرى"
   },
   "Success": {

@@ -6,28 +6,26 @@ using System.Linq.Expressions;
 
 namespace API.Middlewares
 {
-    //public class FieldAuthorization<T> : Attribute, IAuthorizationFilter where T : Entity
-    //{
+    public class FieldAuthorization<T> : Attribute, IAuthorizationFilter where T : Entity
+    {
 
-    //    public Expression<Func<T, bool>> _authExpression;
+        //public Expression<Func<T, bool>> _authExpression;
 
-    //    public FieldAuthorization(Expression<Func<T, bool>> authExpression)
-    //    {
-    //        _authExpression = authExpression;
-    //    }
+        //public FieldAuthorization(Expression<Func<T, bool>> authExpression)
+        //{
+        //    _authExpression = authExpression;
+        //}
 
-    //    public void OnAuthorization(AuthorizationFilterContext context)
-    //    {
+        public void OnAuthorization(AuthorizationFilterContext context)
+        {
 
-    //        context.HttpContext.Request.
-    //        User user = context.HttpContext.GetUser<User>();
-
+        //    User user = context.HttpContext.GetUser<User>();
 
 
-    //        _authExpression.Compile()
+        //    _authExpression.Compile().Invoke();
 
 
 
-    //    }
-    //}
+        }
+    }
 }
