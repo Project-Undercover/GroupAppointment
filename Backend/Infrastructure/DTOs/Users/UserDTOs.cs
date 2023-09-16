@@ -69,7 +69,7 @@ namespace Infrastructure.DTOs.Users
             public record Login : BaseLogin
             {
                 public Guid userId { get; set; }
-                public DateTime expiresAt { get; set; }
+                public DateTimeOffset expiresAt { get; set; }
                 public string token { get; set; }
             }
 
@@ -148,7 +148,7 @@ namespace Infrastructure.DTOs.Users
                 public string jwt { get; set; }
                 public Guid userId { get; set; }
                 public string firstName { get; set; }
-                public DateTime expiresAt { get; set; }
+                public DateTimeOffset expiresAt { get; set; }
                 public string lastName { get; set; }
                 public UserRole role { get; set; }
             }

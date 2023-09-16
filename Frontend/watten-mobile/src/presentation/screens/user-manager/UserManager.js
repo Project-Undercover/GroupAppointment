@@ -128,6 +128,8 @@ const UserManager = ({ route }) => {
       <CustomeStatusBar />
       <DefaultHeader title={ManagerTitle} />
       <ScrollView
+        automaticallyAdjustKeyboardInsets={true}
+        showsVerticalScrollIndicator={false}
         className="flex-1"
         contentContainerStyle={{
           paddingBottom: 120,

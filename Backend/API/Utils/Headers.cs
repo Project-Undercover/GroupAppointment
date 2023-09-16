@@ -4,7 +4,7 @@ namespace API.Utils
 {
     public static class Headers
     {
-      
+
         public static Guid GetUserIdFromToken(IHeaderDictionary headers)
         {
             try
@@ -25,7 +25,7 @@ namespace API.Utils
         public static string GetLanguage(IHeaderDictionary headers)
         {
             string? lang = headers["Language"];
-            return string.IsNullOrEmpty(lang) ? "EN" : lang;
+            return string.IsNullOrEmpty(lang) ? "EN" : lang.ToUpper();
         }
     }
 }

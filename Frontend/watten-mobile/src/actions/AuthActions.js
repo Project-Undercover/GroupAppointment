@@ -77,11 +77,12 @@ const AuthActions = () => {
     return async (dispatch) => {
       if (i18next.language === lang) return;
 
+      moment.locale(lang);
+      
       i18next
         .changeLanguage(lang)
         .then(() => {
           console.log("language changed successfully", lang);
-          // moment.locale(lang);
           storeLanguage(lang);
           dispatch({ type: CHANGE_LANG_SUCCESS, payload: lang });
         })
