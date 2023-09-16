@@ -127,6 +127,17 @@
   },
 
 
+  "FirstName": {
+    "EN": "First Name",
+    "HE": "שם פרטי",
+    "AR": "الاسم الشخصي"
+  },
+  "LastName": {
+    "EN": "Last Name",
+    "HE": "שם משפחה",
+    "AR": "اسم العائلة"
+  },
+
   "HomeData": {
     "EN": "Home info",
     "HE": "מידע ראשי",

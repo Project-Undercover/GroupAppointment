@@ -13,7 +13,10 @@ namespace Infrastructure.DTOs.Users
 
             public record Create
             {
+                [StringLength(80, MinimumLength = 2)]
                 public string firstName { get; set; }
+
+                [StringLength(80, MinimumLength = 2)]
                 public string lastName { get; set; }
 
                 [EmailAddress(ErrorMessage = "Invalid Email Address")]
