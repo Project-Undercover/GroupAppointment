@@ -18,7 +18,9 @@ namespace Core.IPersistence.IRepositories
 
 
         Task AddAsync(TEntity entity);
+        Task AddRangeAsync(IEnumerable<TEntity> entities);
         Task DeleteAsync(TEntity entityToDelete);
+        Task DeleteRangeAsync(IEnumerable<TEntity> entities);
         Task UpdateAsync(TEntity entityToUpdate, params string[] exclude);
         Task<bool> Exists(Expression<Func<TEntity, bool>> filter);
         Task<int> CountAsync(Expression<Func<TEntity, bool>> filter);

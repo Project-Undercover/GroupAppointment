@@ -2,15 +2,16 @@
 using Core.IPersistence;
 using Core.IServices.Sessions;
 using Core.IUtils;
+using Infrastructure.DTOs.DataTables;
 using Infrastructure.DTOs.Sessions;
-using Infrastructure.DTOs.Users;
-using Infrastructure.Entities.DataTables;
 using Infrastructure.Entities.Sessions;
 using Infrastructure.Entities.Users;
 using Infrastructure.Exceptions;
 using Infrastructure.Utils;
+using Infrastructure.Enums;
+using System.Security.Cryptography.X509Certificates;
 
-namespace Services.Appointments
+namespace Services.Sessions
 {
     public class SessionsService : ISessionService
     {
@@ -63,7 +64,7 @@ namespace Services.Appointments
             return (count, mappedData);
         }
 
-        public async Task<(int count, List<SessionsDTOs.Responses.GetAllDT> data)> GetAllDT(DataTableDTOs.SessionDT dto)
+        public async Task<(int count, List<SessionsDTOs.Responses.GetAllDT> data)> GetAllDT(DataTableDTOs.SessionDT dto, User user)
         {
             ISpecification<Session> specification = _unitOfWork.Repository<Session>().QuerySpecification;
 
@@ -77,9 +78,6 @@ namespace Services.Appointments
 
                 if (!string.IsNullOrEmpty(searchTerm))
                     specification
-                        .Include(nameof(Session.Participants))
-                        .Include(nameof(Session.Participants) + "." + nameof(Participant.User))
-                        .Include(nameof(Session.Participants) + "." + nameof(Participant.Child))
                         .Where(s =>
                             s.Title.Contains(dto.CustomSearch.searchTerm)
                             || s.Participants.Any(s => s.Child.Name.Contains(searchTerm) || (s.User.FirstName + " " + s.User.LastName).Contains(searchTerm)));
@@ -92,12 +90,17 @@ namespace Services.Appointments
             }
 
             specification
+                .Include(nameof(Session.Participants))
+                .Include(nameof(Session.Participants) + "." + nameof(Participant.User))
+                .Include(nameof(Session.Participants) + "." + nameof(Participant.Child))
                 .Include(nameof(Session.Instructors))
                 .Include(nameof(Session.Instructors) + "." + nameof(Instructor.User))
                 .ApplyOrderings(s => s.OrderByDescending(s => s.CreatedAt))
                 .SkipAndTake(dto.skip, dto.take);
 
             var (count, data) = await _unitOfWork.Repository<Session>().Find(specification);
+            data.ToList().ForEach(s => s.Participants = s.Participants.Where(s => s.UserId == user.Id).ToList()); // only user children 
+
             var mappedData = _mapper.Map<List<SessionsDTOs.Responses.GetAllDT>>(data);
 
             return (count, mappedData);
@@ -116,6 +119,20 @@ namespace Services.Appointments
             return _mapper.Map<SessionsDTOs.Responses.GetById>(session);
         }
 
+
+        public async Task<List<SessionsDTOs.Responses.Instructor>> GetInstructors()
+        {
+            var (count, instructors) = await _unitOfWork
+                .Repository<User>()
+                .Find(s => s.Role == Enums.UserRole.Admin || s.Role == Enums.UserRole.Instructor);
+
+            return _mapper.Map<List<SessionsDTOs.Responses.Instructor>>(instructors);
+        }
+        public async Task<List<SessionsDTOs.Responses.Child>> GetSessionParticipants(Guid sessionId)
+        {
+            var (count, participants) = await _unitOfWork.Repository<Participant>().Find(s => s.SessionId == sessionId, includes: new string[] { nameof(Participant.Child) });
+            return _mapper.Map<List<SessionsDTOs.Responses.Child>>(participants);
+        }
 
         public async Task ValidateSession(SessionsDTOs.Requests.Create dto)
         {
@@ -194,23 +211,33 @@ namespace Services.Appointments
         }
 
 
-        public async Task AddParticipant(SessionsDTOs.Requests.AddParticipant dto)
+        public async Task AddParticipants(SessionsDTOs.Requests.AddParticipant dto)
         {
-            Child child = await _unitOfWork.Repository<Child>().GetByIdAsync(dto.ChildId);
-            Participant participant = _mapper.Map<Participant>(dto);
-            participant.UserId = child.UserId;
-
             Session session = await _unitOfWork.Repository<Session>().GetByIdAsync(dto.SessionId);
-
-            bool alreadyParticiping = await _unitOfWork.Repository<Participant>().Exists(s => s.SessionId == dto.SessionId && s.ChildId == dto.ChildId);
-            if (alreadyParticiping) throw new ValidationException(TranslationKeys.ChildAlreadyParticipating);
-
             if (session.ParticipantsCount == session.MaxParticipants)
                 throw new ValidationException("SessionIsFull");
 
-            session.ParticipantsCount++;
+            if (session.ParticipantsCount + dto.Children.Count() > session.MaxParticipants)
+                throw new ValidationException("SessionNoEnoughRoom");
 
-            await _unitOfWork.Repository<Participant>().AddAsync(participant);
+
+            List<Participant> participants = new();
+            foreach (var childId in dto.Children)
+            {
+                Child child = await _unitOfWork.Repository<Child>().GetByIdAsync(childId);
+
+                bool alreadyParticiping = await _unitOfWork.Repository<Participant>().Exists(s => s.SessionId == dto.SessionId && s.ChildId == childId);
+                if (alreadyParticiping) throw new ValidationException(TranslationKeys.ChildAlreadyParticipating);
+
+                Participant participant = _mapper.Map<Participant>(dto);
+                participant.ChildId = childId;
+                participant.UserId = child.UserId;
+                participants.Add(participant);
+            }
+
+            session.ParticipantsCount += dto.Children.Count();
+
+            await _unitOfWork.Repository<Participant>().AddRangeAsync(participants);
             await _unitOfWork.Repository<Session>().UpdateAsync(session);
             await _unitOfWork.Commit();
         }
@@ -229,6 +256,19 @@ namespace Services.Appointments
 
             if (user.IsAdmin && participant.UserId != user.Id)
                 Console.WriteLine($"{participant.User.FirstName} {participant.User.LastName} has been removed from appointment {participant.Session.StartDate}-{participant.Session.EndDate}");
+        }
+
+
+
+        public async Task DeleteUserSessionParticipants(Guid sessionId, User user)
+        {
+            var (count, participants) = await _unitOfWork.Repository<Participant>().Find(s => s.UserId == user.Id && s.SessionId == sessionId);
+            Session session = await _unitOfWork.Repository<Session>().GetByIdAsync(sessionId);
+            session.ParticipantsCount -= participants.Count();
+
+            await _unitOfWork.Repository<Session>().UpdateAsync(session);
+            await _unitOfWork.Repository<Participant>().DeleteRangeAsync(participants);
+            await _unitOfWork.Commit();
         }
 
 

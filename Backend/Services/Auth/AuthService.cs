@@ -90,7 +90,8 @@ namespace Services.Auth
                     firstName = user.FirstName,
                     lastName = user.LastName,
                     jwt = tokenData.token,
-                    expiresAt = tokenData.expireAt
+                    expiresAt = tokenData.expireAt,
+                    role = user.Role
                 };
             }
 

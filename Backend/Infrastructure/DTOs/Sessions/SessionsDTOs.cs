@@ -12,7 +12,7 @@ namespace Infrastructure.DTOs.Sessions
             public record AddParticipant
             {
                 public Guid SessionId { get; set; }
-                public Guid ChildId { get; set; }
+                public List<Guid> Children { get; set; }
             }
             public record Create
             {
@@ -53,6 +53,21 @@ namespace Infrastructure.DTOs.Sessions
 
         public class Responses
         {
+
+            public class Instructor
+            {
+                public Guid id { get; set; }
+                public string name { get; set; }
+            }
+
+
+            public class Child
+            {
+                public Guid id { get; set; }
+                public string name { get; set; }
+            }
+
+
             public record GetById : EntityDTO
             {
                 public string title { get; set; }
@@ -106,6 +121,13 @@ namespace Infrastructure.DTOs.Sessions
                 public string? locationName { get; set; }
                 public string instructor { get; set; }
                 public bool isAvailable { get; set; }
+                public List<Child> children { get; set; }
+
+                public record Child
+                {
+                    public Guid id { get; set; }
+                    public string name { get; set; }
+                }
             }
 
 

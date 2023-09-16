@@ -1,6 +1,6 @@
 ﻿using Core.IUtils;
+using Infrastructure.DTOs.DataTables;
 using Infrastructure.DTOs.Users;
-using Infrastructure.Entities.DataTables;
 using Infrastructure.Entities.Users;
 
 namespace Core.IServices.Users

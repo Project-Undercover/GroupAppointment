@@ -112,7 +112,11 @@
     "AR": "الولد مشترك بالجلسة"
   },
 
-
+  "SessionNoEnoughRoom": {
+    "EN": "This session has no enough room left",
+    "HE": "אין מספיק מקום",
+    "AR": "لا يوجد اماكن كافية"
+  },
 
 
 
@@ -154,7 +158,8 @@
 
   "Login": {
     "EN": "Login",
-    "HE": "כניסה למערכת"
+    "HE": "כניסה למערכת",
+    "AR": "تسجيل الدخول"
   },
   "Email": {
     "EN": "Email",
@@ -163,7 +168,8 @@
   },
   "User": {
     "EN": "User",
-    "HE": "משתמש"
+    "HE": "משתמש",
+    "AR": "مستخدم"
   },
   "Session": {
     "EN": "Session",

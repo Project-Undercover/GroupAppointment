@@ -3,10 +3,12 @@ using API.Utils;
 using Core.IServices.Sessions;
 using Core.IUtils;
 using Infrastructure.DTOs;
-using Infrastructure.Entities.DataTables;
+using Infrastructure.DTOs.DataTables;
+using Infrastructure.DTOs.Sessions;
 using Infrastructure.Entities.Users;
 using Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using static API.Middlewares.Authorization;
 using static Infrastructure.DTOs.Sessions.SessionsDTOs.Requests;
 using static Infrastructure.DTOs.Sessions.SessionsDTOs.Responses;
@@ -34,19 +36,15 @@ namespace API.Controllers
 
 
 
-        /// <summary>
-        /// Admin only
-        /// </summary>
-        /// <param name="dto"></param>
-        /// <returns></returns>
-        [AuthorizeUser(UserRole.Admin)]
+        [AuthorizeUser]
         [ProducesResponseType(200, Type = typeof(MessageResponseWithDataTable<IEnumerable<GetAllDT>>))]
         [HttpPost, Route("GetAllDT")]
         public async Task<IActionResult> GetAllDT(DataTableDTOs.SessionDT dto)
         {
             string langKey = Headers.GetLanguage(Request.Headers);
+            User user = HttpContext.GetUser<User>();
 
-            (int count, IEnumerable<GetAllDT> list) data = await _sessionService.GetAllDT(dto);
+            (int count, IEnumerable<GetAllDT> list) data = await _sessionService.GetAllDT(dto, user);
             string message = _translationService.GetByKey(TranslationKeys.SuccessFetch, langKey, nameof(Session));
             return Ok(MessageResponseFactory.Create(message, data, dto));
         }
@@ -66,6 +64,19 @@ namespace API.Controllers
         }
 
 
+        [AuthorizeUser(UserRole.Admin, UserRole.Instructor)]
+        [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<IEnumerable<SessionsDTOs.Responses.Child>>))]
+        [HttpGet, Route("GetSessionParticipants")]
+        public async Task<IActionResult> GetSessionParticipants(Guid sessionId)
+        {
+            string langKey = Headers.GetLanguage(Request.Headers);
+
+            IEnumerable<SessionsDTOs.Responses.Child> data = await _sessionService.GetSessionParticipants(sessionId);
+            string message = _translationService.GetByKey(TranslationKeys.SuccessFetch, langKey);
+            return Ok(MessageResponseFactory.Create(message, data));
+        }
+
+
         /// <summary>
         /// Admin only
         /// </summary>
@@ -82,6 +93,27 @@ namespace API.Controllers
             string message = _translationService.GetByKey(TranslationKeys.SuccessFetch, langKey, nameof(Session));
             return Ok(MessageResponseFactory.Create(message, data));
         }
+
+
+
+        /// <summary>
+        /// Admin only
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [AuthorizeUser(UserRole.Admin)]
+        [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<List<SessionsDTOs.Responses.Instructor>>))]
+        [HttpGet, Route("GetInstructors")]
+        public async Task<IActionResult> GetInstructors()
+        {
+            string langKey = Headers.GetLanguage(Request.Headers);
+
+            List<SessionsDTOs.Responses.Instructor> data = await _sessionService.GetInstructors();
+            string message = _translationService.GetByKey(TranslationKeys.SuccessFetch, langKey);
+            return Ok(MessageResponseFactory.Create(message, data));
+        }
+
+
 
 
         /// <summary>
@@ -143,15 +175,15 @@ namespace API.Controllers
 
 
         [AuthorizeUser(allowAll = true)]
-        [HttpPost, Route("AddParticipant")]
-        public async Task<IActionResult> AddParticipant(AddParticipant dto)
+        [HttpPost, Route("AddParticipants")]
+        public async Task<IActionResult> AddParticipants(AddParticipant dto)
         {
             User user = HttpContext.GetUser<User>();
-            if (!user.IsAdmin && !user.Children.Any(s => s.Id == dto.ChildId)) throw new ForbiddenException(TranslationKeys.UnAuthorized);
+            if (!user.IsAdmin && dto.Children.Any(s => !user.Children.Select(s => s.Id).Contains(s))) throw new ForbiddenException(TranslationKeys.UnAuthorized);
 
             string langKey = Headers.GetLanguage(Request.Headers);
 
-            await _sessionService.AddParticipant(dto);
+            await _sessionService.AddParticipants(dto);
 
             string message = _translationService.GetByKey(TranslationKeys.Created, langKey, nameof(Participant));
             return Ok(MessageResponseFactory.Create(message));
@@ -170,6 +202,20 @@ namespace API.Controllers
             await _sessionService.DeleteParticipant(id, user);
 
             string message = _translationService.GetByKey(TranslationKeys.Deleted, langKey, nameof(Participant));
+            return Ok(MessageResponseFactory.Create(message));
+        }
+
+
+        [AuthorizeUser(allowAll = true)]
+        [HttpDelete, Route("DeleteUserSessionParticipants/{sessionId}")]
+        public async Task<IActionResult> DeleteUserSessionParticipants(Guid sessionId)
+        {
+            User user = HttpContext.GetUser<User>();
+            string langKey = Headers.GetLanguage(Request.Headers);
+
+            await _sessionService.DeleteUserSessionParticipants(sessionId, user);
+
+            string message = _translationService.GetByKey(TranslationKeys.Deleted, langKey, "Participants");
             return Ok(MessageResponseFactory.Create(message));
         }
     }

@@ -2,7 +2,7 @@
 using Infrastructure.Utils;
 using System.Linq.Expressions;
 using System.Xml.Linq;
-using static Infrastructure.Entities.DataTables.DataTableDTOs;
+using static Infrastructure.DTOs.DataTables.DataTableDTOs;
 
 namespace Infrastructure.Utils
 {

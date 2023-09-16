@@ -1,4 +1,4 @@
-﻿using Infrastructure.Entities.DataTables;
+﻿using Infrastructure.DTOs.DataTables;
 using System;
 using System.Collections.Generic;
 using System.Linq;

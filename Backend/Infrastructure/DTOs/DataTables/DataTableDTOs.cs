@@ -3,9 +3,9 @@ using Infrastructure.Entities.Shared;
 using Infrastructure.Exceptions;
 using Infrastructure.Utils;
 using System.Xml.Linq;
-using static Infrastructure.Entities.DataTables.DataTableDTOs;
+using static Infrastructure.DTOs.DataTables.DataTableDTOs;
 
-namespace Infrastructure.Entities.DataTables
+namespace Infrastructure.DTOs.DataTables
 {
 
 

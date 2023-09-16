@@ -157,12 +157,26 @@ namespace Persistence.SQL.Repositories
             _context.Database.EnsureCreated();
             await _dbSet.AddAsync(entity);
         }
+
+        public async Task AddRangeAsync(IEnumerable<TEntity> entities)
+        {
+            _context.Database.EnsureCreated();
+            await _dbSet.AddRangeAsync(entities);
+        }
+
         public Task DeleteAsync(TEntity entity)
         {
             _context.Database.EnsureCreated();
             _dbSet.Remove(entity);
             return Task.CompletedTask;
         }
+        public Task DeleteRangeAsync(IEnumerable<TEntity> entities)
+        {
+            _context.Database.EnsureCreated();
+            _dbSet.RemoveRange(entities);
+            return Task.CompletedTask;
+        }
+
         public async Task UpdateAsync(TEntity entity, params string[] exclude)
         {
             _context.Database.EnsureCreated();

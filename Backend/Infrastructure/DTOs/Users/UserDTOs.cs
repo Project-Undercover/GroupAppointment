@@ -81,7 +81,6 @@ namespace Infrastructure.DTOs.Users
                 public int childrenCount { get; set; }
                 public int sessionsCount { get; set; }
                 public List<Session> sessions { get; set; }
-                public int finishedSessions { get; set; }
 
                 public record Session : EntityDTO
                 {
@@ -114,6 +113,7 @@ namespace Infrastructure.DTOs.Users
                 public bool isActive { get; set; } = true;
                 public int role { get; set; }
                 public string roleName { get; set; }
+                public List<Child> Children { get; set; } = new List<Child>();
             }
 
 
@@ -150,6 +150,7 @@ namespace Infrastructure.DTOs.Users
                 public string firstName { get; set; }
                 public DateTime expiresAt { get; set; }
                 public string lastName { get; set; }
+                public UserRole role { get; set; }
             }
 
             public record SendVerificationAgain

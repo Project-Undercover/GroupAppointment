@@ -1,6 +1,6 @@
 ﻿using static Infrastructure.Enums.Enums;
 
-namespace Infrastructure.Entities.DataTables
+namespace Infrastructure.DTOs.DataTables
 {
     public class Searches
     {

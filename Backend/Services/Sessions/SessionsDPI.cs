@@ -1,7 +1,6 @@
 ﻿using Core.IServices.Sessions;
 using Core.IServices.Users;
 using Microsoft.Extensions.DependencyInjection;
-using Services.Appointments;
 using Services.Users;
 using System;
 using System.Collections.Generic;

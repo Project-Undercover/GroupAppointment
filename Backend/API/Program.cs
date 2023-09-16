@@ -6,11 +6,11 @@ using API;
 using API.Middlewares;
 using API.Swagger;
 using Infrastructure;
-using Persistence;
 using Services;
 using API.Utils;
 using Microsoft.Extensions.FileProviders;
 using Infrastructure.DTOs;
+using Persistence.SQL;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -2,9 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Persistence.SQL;
 
-namespace Persistence
+namespace Persistence.SQL
 {
     public static class PersistenceDPI
     {
@@ -18,7 +17,7 @@ namespace Persistence
         public static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("Default");
-            
+
             services.AddDbContext<AppDbContext>(options =>
                options.UseSqlServer(connectionString,
                    builder => builder.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName).UseNetTopologySuite()));

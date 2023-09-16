@@ -2,9 +2,9 @@
 using Core.IPersistence;
 using Core.IServices.Users;
 using Core.IUtils;
+using Infrastructure.DTOs.DataTables;
 using Infrastructure.DTOs.Sessions;
 using Infrastructure.DTOs.Users;
-using Infrastructure.Entities.DataTables;
 using Infrastructure.Entities.Sessions;
 using Infrastructure.Entities.Users;
 using Infrastructure.Exceptions;
@@ -37,7 +37,9 @@ namespace Services.Users
         public async Task<UserDTOs.Responses.HomeData> GetHomeData(UserDTOs.Requests.HomeData dto, User user)
         {
             int childrenCount = await _unitOfWork.Repository<Child>().CountAsync(s => s.UserId == user.Id);
-            int finishedSessions = await _unitOfWork.Repository<Session>().CountAsync(s => s.Participants.Any(s => s.UserId == user.Id));
+            int finishedSessionsCount = await _unitOfWork.Repository<Session>()
+                .CountAsync(s => s.Participants.Any(s => s.UserId == user.Id) && s.EndDate <= DateTime.Now);
+
 
             ISpecification<Session> specification = _unitOfWork.Repository<Session>().QuerySpecification;
             specification
@@ -54,7 +56,10 @@ namespace Services.Users
             data.ToList().ForEach(s => s.Participants = s.Participants.Where(s => s.UserId == user.Id).ToList()); // only user children 
             var mappedData = _mapper.Map<List<UserDTOs.Responses.HomeData.Session>>(data);
 
-            var homeData = new UserDTOs.Responses.HomeData { childrenCount = childrenCount, finishedSessions = finishedSessions, sessionsCount = count, sessions = mappedData };
+
+
+
+            var homeData = new UserDTOs.Responses.HomeData { childrenCount = childrenCount, sessionsCount = finishedSessionsCount, sessions = mappedData };
             return homeData;
         }
 
@@ -88,6 +93,7 @@ namespace Services.Users
             }
 
             specification
+                .Include(nameof(User.Children))
                 .ApplyOrderings(s => s.OrderByDescending(s => s.IsActive).ThenByDescending(s => s.CreatedAt))
                 .SkipAndTake(dto.skip, dto.take);
 
@@ -132,11 +138,11 @@ namespace Services.Users
             if (user is null)
                 throw new NotFoundException("NotFound", nameof(User));
 
-            bool emailExists = await _unitOfWork.Repository<User>().Exists(s => s.Email == dto.Email && s.Id != user.Id);
+            bool emailExists = await _unitOfWork.Repository<User>().Exists(s => !string.IsNullOrEmpty(s.Email) && s.Email == dto.Email && s.Id != user.Id);
             if (emailExists)
                 throw new ValidationException("AlreadyExists", nameof(User.Email));
 
-            bool mobileNumberExists = await _unitOfWork.Repository<User>().Exists(s => s.MobileNumber == dto.Email && s.Id != user.Id);
+            bool mobileNumberExists = await _unitOfWork.Repository<User>().Exists(s => s.MobileNumber == dto.mobileNumber && s.Id != user.Id);
             if (mobileNumberExists)
                 throw new ValidationException("AlreadyExists", nameof(User.MobileNumber));
 
@@ -202,13 +208,5 @@ namespace Services.Users
             await _unitOfWork.Repository<User>().UpdateAsync(user);
             await _unitOfWork.Commit();
         }
-
-
-
-
-
-
-      
-
     }
 }

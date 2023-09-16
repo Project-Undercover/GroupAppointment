@@ -3,15 +3,15 @@ using API.Utils;
 using Core.IServices.Users;
 using Core.IUtils;
 using Infrastructure.DTOs;
+using Infrastructure.DTOs.DataTables;
 using Infrastructure.DTOs.Users;
-using Infrastructure.Entities.DataTables;
 using Infrastructure.Entities.Users;
 using Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using static API.Middlewares.Authorization;
 using static Infrastructure.Enums.Enums;
 
-namespace Fly.SMS.API.Controllers
+namespace API.Controllers
 {
 
     [ProducesResponseType(200, Type = typeof(MessageResponse))]
