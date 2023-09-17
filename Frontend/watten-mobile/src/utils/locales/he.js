@@ -66,10 +66,14 @@ export default {
   logout: "יציאה",
 
   book_now: "הרשמה לפגישה",
+  unbook: "בטל הרשמה",
+  booked_success: "נרשמתה בהצלחה ל",
+  unbooked_success: "הרשמה בוטלה בהצלחה ל",
 
   date_error: "תאריך ההתחלה גדול או שווה מתאריך סיום",
   user_status: "סטטוס משתמש",
   user_role: "תפקיד משתמש",
+  close: "סגור",
   validation: {
     firstName: "שם פרטי הינו שדה חובה",
     lastName: "שם משפחה הינו שדה חובה",

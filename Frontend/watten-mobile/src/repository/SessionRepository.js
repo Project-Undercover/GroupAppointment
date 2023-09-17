@@ -12,6 +12,24 @@ const SessionRepository = () => {
     return data;
   };
 
+  const addParticipants = async ({ sessionId, children }) => {
+    const data = await apiCall("Sessions/AddParticipants", RequestMethod.POST, {
+      sessionId,
+      children,
+    });
+
+    return data;
+  };
+
+  const unBookSession = async ({ sessionId }) => {
+    const data = await apiCall(
+      `Sessions/DeleteUserSessionParticipants/${sessionId}`,
+      RequestMethod.DELETE
+    );
+
+    return data;
+  };
+
   const getSessions = async (customSearch) => {
     const data = await apiCall("Sessions/GetAllDT", RequestMethod.POST, {
       customSearch,
@@ -32,7 +50,14 @@ const SessionRepository = () => {
     const data = await apiCall("Sessions/GetInstructors", RequestMethod.GET);
     return data;
   };
-  return { createSession, getSessions, getUserSessions, getInstructors };
+  return {
+    createSession,
+    getSessions,
+    getUserSessions,
+    getInstructors,
+    addParticipants,
+    unBookSession,
+  };
 };
 
 export default SessionRepository;

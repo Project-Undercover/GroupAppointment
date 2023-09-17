@@ -16,9 +16,12 @@ import { useLoadingContext } from "../../../hooks/useLoadingContext";
 import globalStyles from "../../../utils/theme/globalStyles";
 import SessionBottomSheet from "../../components/SessionBottomSheet/SessionBottomSheet";
 import UserActions from "../../../actions/UserActions";
+import SuccessModal from "../../components/Modals/SuccessModal";
 
 const Sessions = () => {
   const [date, setDate] = useState(moment());
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [currentSuccessTitle, setCurrentSuccessTitle] = useState("");
   const { loading } = useLoadingContext();
   const { sessions } = useSelector((state) => state.sessions);
   const { userChildren } = useSelector((state) => state.users);
@@ -73,6 +76,11 @@ const Sessions = () => {
     setShowSessionSheet(false);
   };
 
+  const handleShowSuccessModal = (title) => {
+    handleRefreshSessions();
+    setCurrentSuccessTitle(title);
+    setShowSuccessModal(true);
+  };
   return (
     <>
       <View className="flex-1">
@@ -105,9 +113,16 @@ const Sessions = () => {
             handleShowSheet={handleCloseSessionSheet}
             session={currentSession}
             userChildren={userChildren}
+            handleShowSuccessModal={handleShowSuccessModal}
           />
         ) : null}
       </View>
+      <SuccessModal
+        visible={showSuccessModal}
+        message={currentSuccessTitle}
+        // title={currentSuccessTitle}
+        setShowModal={setShowSuccessModal}
+      />
     </>
   );
 };

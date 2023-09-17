@@ -18,6 +18,7 @@ const ReservationInfo = ({
   locationName,
   children,
   showCloseChildIcon = false,
+  handleRemoveChild,
 }) => {
   return (
     <View className="flex-1">
@@ -64,7 +65,11 @@ const ReservationInfo = ({
             size={19}
           />
           <Spacer space={5} />
-          <ChildList data={children} showCloseChildIcon={showCloseChildIcon} />
+          <ChildList
+            data={children}
+            showCloseChildIcon={showCloseChildIcon}
+            handleRemoveChild={handleRemoveChild}
+          />
         </View>
       </View>
     </View>

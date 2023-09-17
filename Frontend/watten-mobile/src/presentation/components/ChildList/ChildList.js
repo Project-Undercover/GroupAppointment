@@ -1,9 +1,8 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { useEffect, useState } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import ChildCard from "./components/ChildCard";
 
-const ChildList = ({ data, showCloseChildIcon }) => {
+const ChildList = ({ data, showCloseChildIcon, handleRemoveChild }) => {
   return (
     <ScrollView
       horizontal={true}
@@ -16,6 +15,7 @@ const ChildList = ({ data, showCloseChildIcon }) => {
             value={child?.name}
             key={child?.id}
             showCloseChildIcon={showCloseChildIcon}
+            handleRemoveChild={() => handleRemoveChild(child?.id)}
           />
         );
       })}

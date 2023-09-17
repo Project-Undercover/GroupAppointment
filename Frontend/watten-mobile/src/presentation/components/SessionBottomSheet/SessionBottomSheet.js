@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { View, Image, StyleSheet } from "react-native";
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import TextComponent from "../TextComponent";
@@ -7,20 +7,24 @@ import Header from "./components/Header";
 import ReservationInfo from "../../screens/home/components/ReservationInfo";
 import DefaultButton from "../DefaultButton";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+import SessionActions from "../../../actions/SessionActions";
+import SuccessModal from "../Modals/SuccessModal";
 
 const SessionBottomSheet = ({
   session,
   userChildren,
+  handleShowSuccessModal,
   handleShowSheet = () => {},
 }) => {
+  const dispatch = useDispatch();
+  const [selectedChildren, setSelectedChildren] = useState(userChildren);
+  const sessionActions = SessionActions();
+
   const { t } = useTranslation();
   const bottomSheetModalRef = useRef(null);
 
   const snapPoints = useMemo(() => ["50%"], []);
-
-  const handlePresentModalPress = useCallback(() => {
-    bottomSheetModalRef.current?.present();
-  }, []);
 
   const handleSheetChanges = useCallback((index) => {}, []);
   const renderBackdrop = useCallback(
@@ -33,6 +37,48 @@ const SessionBottomSheet = ({
     ),
     []
   );
+
+  const handleRemoveChild = (id) => {
+    const filteredData = selectedChildren?.filter((child) => child.id !== id);
+    setSelectedChildren(filteredData);
+  };
+
+  const handleBookSession = () => {
+    const _children = selectedChildren.map((child) => child.id);
+    dispatch(
+      sessionActions.bookSession({
+        children: _children,
+        sessionId: session?.id,
+        handleShowSuccess: () =>
+          handleShowSuccessModal(session?.title + "-" + t("booked_success")),
+      })
+    );
+    handleShowSheet();
+  };
+
+  const handleUnbookSession = () => {
+    dispatch(
+      sessionActions.unBookSession({
+        // children: _children,
+        sessionId: session?.id,
+        handleShowSuccess: () =>
+          handleShowSuccessModal(session?.title + "-" + t("unbooked_success")),
+      })
+    );
+    handleShowSheet();
+  };
+  const IsBooked = useMemo(() => {
+    return session?.children && session?.children?.length > 0;
+  }, [session]);
+
+  const ButtonAction = useMemo(() => {
+    return IsBooked ? handleUnbookSession : handleBookSession;
+  }, [session]);
+
+  const ButtonText = useMemo(() => {
+    return IsBooked ? t("unbook") : t("book_now");
+  }, [session]);
+
   return (
     <BottomSheet
       backdropComponent={renderBackdrop}
@@ -58,13 +104,14 @@ const SessionBottomSheet = ({
             instructor={session?.instructor}
             startTime={session?.startDate}
             endTime={session?.endDate}
-            children={userChildren}
-            showCloseChildIcon={true}
+            children={selectedChildren}
+            showCloseChildIcon={!IsBooked}
             locationName={session?.locationName}
+            handleRemoveChild={handleRemoveChild}
           />
         </View>
         <View className="items-center w-full my-5">
-          <DefaultButton text={t("book_now")} />
+          <DefaultButton text={ButtonText} onPress={ButtonAction} />
         </View>
       </View>
     </BottomSheet>

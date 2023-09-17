@@ -84,6 +84,38 @@ const SessionActions = () => {
     };
   };
 
+  const bookSession = ({ sessionId, children, handleShowSuccess }) => {
+    return async (dispatch) => {
+      setLoading(true);
+      try {
+        console.log(sessionId, children);
+        const response = await sessionRepository.addParticipants({
+          sessionId,
+          children,
+        });
+        handleShowSuccess();
+      } catch (error) {
+        console.log(error);
+      }
+      setLoading(false);
+    };
+  };
+
+  const unBookSession = ({ sessionId, handleShowSuccess }) => {
+    return async (dispatch) => {
+      setLoading(true);
+      try {
+        const response = await sessionRepository.unBookSession({
+          sessionId,
+        });
+        handleShowSuccess();
+      } catch (error) {
+        console.log(error);
+      }
+      setLoading(false);
+    };
+  };
+
   const NavigateSession = () => {
     navigation.goBack();
   };
@@ -93,6 +125,8 @@ const SessionActions = () => {
     fetchHistorySessions,
     createSession,
     fetchInstructors,
+    bookSession,
+    unBookSession,
   };
 };
 

@@ -65,8 +65,10 @@ export default {
 
   logout: "خروج",
   book_now: "تسجيل للورشة",
+  unbook: "الغاء التسجيل",
 
   date_error: "تاريخ البداية اكبر من تاريخ النهاية",
   user_status: "حالة المستخدم",
   user_role: "دور المستخدم",
+  close: "اغلاق",
 };
