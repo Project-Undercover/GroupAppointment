@@ -119,7 +119,11 @@
   },
 
 
-
+  "NotificationSent": {
+    "EN": "Notification sent successfully",
+    "HE": "התראה נשלחה בהצלחה",
+    "AR": "الاشعار أرسل بنجاح"
+  },
   "Children": {
     "EN": "Children",
     "HE": "ילדים",

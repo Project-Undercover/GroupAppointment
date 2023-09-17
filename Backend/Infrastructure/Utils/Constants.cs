@@ -31,5 +31,10 @@ namespace Infrastructure.Utils
         public const int VerificationCodeDuration = 2;
         public const int VerificationCodeLength = 5;
         public const int CodeExpirationTimeInMin = 6;
+        public const string FireBaseURL = "https://fcm.googleapis.com/fcm/";
+        public const string FirebaseKey = "AAAAi1P0S-c:APA91bG4qOOeoUVJC-4HvdQcceequiJS4q6JujzgXi1P3HvfT4_vt3MSJh8aVa617zUfQ7xiq0u8WuxTRrP750TS7Ta2rXMJl8ivzPQDDlPlOMNLSDh95emTuT3O7pOvCnVVYIL-cB2Q";
+        
+        //public const string GoogleApiKey = "AIzaSyD_d5xbS_WhZxLOIHekh5JOYWgk-QD7AZA";
+        //public const string GoogleGeocodeUrl = "https://maps.googleapis.com/maps/api/geocode/";
     }
 }

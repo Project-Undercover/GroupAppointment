@@ -6,10 +6,9 @@ using Infrastructure.DTOs.DataTables;
 using Infrastructure.DTOs.Sessions;
 using Infrastructure.Entities.Sessions;
 using Infrastructure.Entities.Users;
+using Infrastructure.Enums;
 using Infrastructure.Exceptions;
 using Infrastructure.Utils;
-using Infrastructure.Enums;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Services.Sessions
 {

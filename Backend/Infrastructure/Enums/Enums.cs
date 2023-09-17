@@ -36,5 +36,15 @@ namespace Infrastructure.Enums
             SessionImages,
             UserImages,
         }
+
+
+        public enum NotificationType
+        {
+            Notification, Data, DataAndNotification
+        }
+        public enum NotificationSendType
+        {
+            Token, Topic
+        }
     }
 }
