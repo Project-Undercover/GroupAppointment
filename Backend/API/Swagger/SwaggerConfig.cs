@@ -12,6 +12,21 @@ namespace API.Swagger
 
         public static IServiceCollection AddSwaggerWithConfig(this IServiceCollection services, string env)
         {
+            //services.AddApiVersioning(options =>
+            //{
+            //    options.AssumeDefaultVersionWhenUnspecified = true;
+            //    options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
+            //});
+
+            //services.AddApiVersioning(opt =>
+            //{
+            //    opt.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
+            //    opt.AssumeDefaultVersionWhenUnspecified = true;
+            //    opt.ReportApiVersions = true;
+            //    opt.ApiVersionReader = ApiVersionReader.Combine(new UrlSegmentApiVersionReader(),
+            //                                                    new HeaderApiVersionReader("x-api-version"),
+            //                                                    new MediaTypeApiVersionReader("x-api-version"));
+            //});
 
             services.AddSwaggerGen(config =>
             {

@@ -38,7 +38,6 @@ builder.Services.AddCors(options =>
 });
 
 
-
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<CustomValidationErrorFilter>(); // Add the custom filter here
@@ -51,7 +50,10 @@ var app = builder.Build();
 //if (app.Environment.InDevelopment())
 //{
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(c =>
+{
+    c.ConfigObject.AdditionalItems.Add("persistAuthorization", app.Environment.InDevelopment() ? "true" : null);
+});
 //}
 
 

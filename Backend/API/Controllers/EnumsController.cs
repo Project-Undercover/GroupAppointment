@@ -8,7 +8,7 @@ using static Infrastructure.Enums.Enums;
 
 namespace API.Controllers
 {
-    [ProducesResponseType(200, Type = typeof(MessageResponse))]
+    [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<List<EnumDTOs.EnumValues>>))]
     [ProducesResponseType(404, Type = typeof(MessageResponse))]
     [ProducesResponseType(400, Type = typeof(MessageResponse))]
     [AuthorizeUser(UserRole.Admin)]
@@ -29,17 +29,27 @@ namespace API.Controllers
 
 
 
-        [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<List<EnumDTOs.EnumValues>>))]
         [HttpGet, Route("Roles")]
         public async Task<IActionResult> Roles()
         {
             string langKey = Headers.GetLanguage(Request.Headers);
 
             List<EnumDTOs.EnumValues> data = _enumService.GetValues(typeof(UserRole), langKey);
-            string message = _translationService.GetByKey(TranslationKeys.SuccessFetch, langKey, "User");
+            string message = _translationService.GetByKey(TranslationKeys.SuccessFetch, langKey);
             return Ok(MessageResponseFactory.Create(message, data));
         }
 
+
+
+        [HttpGet, Route("SessionStatuses")]
+        public async Task<IActionResult> SessionStatuses()
+        {
+            string langKey = Headers.GetLanguage(Request.Headers);
+
+            List<EnumDTOs.EnumValues> data = _enumService.GetValues(typeof(SessionStatus), langKey);
+            string message = _translationService.GetByKey(TranslationKeys.SuccessFetch, langKey);
+            return Ok(MessageResponseFactory.Create(message, data));
+        }
 
 
     }

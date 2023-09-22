@@ -43,18 +43,22 @@ namespace Services.Sessions
                 .ForMember(s => s.name, opt => opt.MapFrom(s => s.FirstName + " " + s.LastName));
 
             CreateMap<Session, SessionsDTOs.Responses.GetAllDT>()
-                .ForMember(s => s.instructor, opt => opt.MapFrom(s => s.Instructors.Select(s => s.User.FirstName + " " + s.User.LastName).FirstOrDefault()))
+                .ForMember(s => s.isParticipating, opt => opt.Ignore())
+                .ForMember(s => s.instructors, opt => opt.MapFrom(s => s.Instructors.Select(s => new SessionsDTOs.Responses.GetAllDT.Instructor { id = s.User.Id, name = s.User.FirstName + " " + s.User.LastName }).ToList()))
                 .ForMember(s => s.children, opt => opt.MapFrom(s => s.Participants.Select(s => new SessionsDTOs.Responses.GetAllDT.Child { id = s.ChildId, name = s.Child.Name }).ToList()));
 
 
             CreateMap<Session, SessionsDTOs.Responses.UserSession>()
                 .ForMember(s => s.children, opt => opt.MapFrom(s => s.Participants.Select(s => new SessionsDTOs.Responses.UserSession.Child { id = s.ChildId, name = s.Child.Name }).ToList()))
-                .ForMember(s => s.instructor, opt => opt.MapFrom(s => s.Instructors.Select(s => s.User.FirstName + " " + s.User.LastName).FirstOrDefault()));
+                .ForMember(s => s.instructors, opt => opt.MapFrom(s => s.Instructors.Select(s => s.User.FirstName + " " + s.User.LastName).ToList()));
 
 
-            CreateMap<Participant, SessionsDTOs.Responses.Child>()
+            CreateMap<Participant, SessionsDTOs.Responses.SessionPaticipant.Child>()
                 .ForMember(s => s.name, opt => opt.MapFrom(s => s.Child.Name))
                 .ForMember(s => s.id, opt => opt.MapFrom(s => s.Child.Id));
+
+            CreateMap<User, SessionsDTOs.Responses.SessionPaticipant.User>()
+                .ForMember(s => s.name, opt => opt.MapFrom(s => s.FirstName + " " + s.LastName));
         }
     }
 }

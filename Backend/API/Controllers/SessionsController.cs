@@ -65,13 +65,13 @@ namespace API.Controllers
 
 
         [AuthorizeUser(UserRole.Admin, UserRole.Instructor)]
-        [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<IEnumerable<SessionsDTOs.Responses.Child>>))]
+        [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<IEnumerable<SessionPaticipant>>))]
         [HttpGet, Route("GetSessionParticipants")]
         public async Task<IActionResult> GetSessionParticipants(Guid sessionId)
         {
             string langKey = Headers.GetLanguage(Request.Headers);
 
-            IEnumerable<SessionsDTOs.Responses.Child> data = await _sessionService.GetSessionParticipants(sessionId);
+            IEnumerable<SessionPaticipant> data = await _sessionService.GetSessionParticipants(sessionId);
             string message = _translationService.GetByKey(TranslationKeys.SuccessFetch, langKey);
             return Ok(MessageResponseFactory.Create(message, data));
         }

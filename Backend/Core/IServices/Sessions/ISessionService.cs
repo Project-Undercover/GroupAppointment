@@ -9,7 +9,7 @@ namespace Core.IServices.Sessions
     {
         Task<(int count, List<SessionsDTOs.Responses.GetAllDT> data)> GetAllDT(DataTableDTOs.SessionDT dto, User user);
         Task<(int count, List<SessionsDTOs.Responses.UserSession> data)> GetUserSessions(DataTableDTOs.UserSessionDT dto, User user);
-        Task<List<SessionsDTOs.Responses.Child>> GetSessionParticipants(Guid sessionId);
+        Task<List<SessionsDTOs.Responses.SessionPaticipant>> GetSessionParticipants(Guid sessionId);
         Task<SessionsDTOs.Responses.GetById> GetById(Guid id);
         Task<List<SessionsDTOs.Responses.Instructor>> GetInstructors();
         Task Create(IFileProxy? imageFile, SessionsDTOs.Requests.Create dto);
