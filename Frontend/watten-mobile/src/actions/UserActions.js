@@ -16,12 +16,12 @@ import { useTranslation } from "react-i18next";
 const UserActions = () => {
   const userRepository = UserRepository();
   const { showSuccess, showError } = useAlertsContext();
-  const { setLoading } = useLoadingContext();
+  const { setLoading, setLoadingSkelton } = useLoadingContext();
   const navigation = useNavigation();
   const { t } = useTranslation();
   const fetchUsers = (customeSearch) => {
     return async (dispatch) => {
-      setLoading(true);
+      setLoadingSkelton(true);
       try {
         const response = await userRepository.getUsers(customeSearch);
         dispatch({
@@ -32,7 +32,7 @@ const UserActions = () => {
         const messg = error?.data?.message ? error?.data?.message : t("error");
         showError(messg);
       }
-      setLoading(false);
+      setLoadingSkelton(false);
     };
   };
 

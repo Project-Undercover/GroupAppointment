@@ -6,8 +6,9 @@ import TextComponent from "../TextComponent";
 import SessionInfo from "./SessionInfo";
 import { useTranslation } from "react-i18next";
 import moment from "moment";
+import { SessionStatus } from "../../../utils/Enums";
 
-const SessionCard = ({ session, handlePressSession }) => {
+const SessionCard = ({ session, handlePressSession, handleExpandImage }) => {
   const {
     maxParticipants,
     participantsCount,
@@ -16,27 +17,32 @@ const SessionCard = ({ session, handlePressSession }) => {
     locationName,
     instructor,
     title,
+    image,
+    status,
   } = session;
   const { t } = useTranslation();
-
   const progress = useMemo(() => {
     return participantsCount / maxParticipants;
   }, [session]);
-
   return (
     <TouchableOpacity
       style={styles.container}
       activeOpacity={0.8}
       onPress={() => handlePressSession(session)}
+      disabled={status?.value !== SessionStatus.Available}
     >
       <View style={styles.imagePartContainer}>
-        <View style={styles.imgContainer}>
+        <TouchableOpacity
+          disabled={!image}
+          style={styles.imgContainer}
+          onPress={() => handleExpandImage(session)}
+        >
           <Image
             style={styles.img}
             defaultSource={require("../../../assets/icons/image.png")}
             source={{ uri: session.image }}
           />
-        </View>
+        </TouchableOpacity>
         <View style={styles.participantsContainer}>
           <TextComponent style={styles.progressText}>
             {t("participantes") +
@@ -55,6 +61,7 @@ const SessionCard = ({ session, handlePressSession }) => {
       <SessionInfo
         t={t}
         instructor={instructor}
+        statusName={status?.name}
         title={title}
         startTime={moment(startDate).format("LT")}
         endTime={moment(endDate).format("LT")}

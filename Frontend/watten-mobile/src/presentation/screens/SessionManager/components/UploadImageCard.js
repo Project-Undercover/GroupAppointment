@@ -2,9 +2,8 @@ import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import theme from "../../../../utils/theme";
 import * as ImagePicker from "expo-image-picker";
+import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
 const UploadImageCard = ({ image, handleSelectImage }) => {
-  // const [image, setImage] = useState();
-
   const selectImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -14,7 +13,12 @@ const UploadImageCard = ({ image, handleSelectImage }) => {
     });
 
     if (!result.canceled) {
-      handleSelectImage(result.assets[0].uri);
+      const manipulatedImage = await manipulateAsync(
+        result?.assets[0]?.uri,
+        [{ resize: { width: 800, height: 800 } }],
+        { compress: 0.8, format: SaveFormat.JPEG }
+      );
+      handleSelectImage(manipulatedImage?.uri);
     }
   };
   return (
@@ -43,5 +47,6 @@ const styles = StyleSheet.create({
   image: {
     width: 100,
     height: 100,
+    borderRadius: 4,
   },
 });

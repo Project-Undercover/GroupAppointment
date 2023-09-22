@@ -17,7 +17,6 @@ const Home = ({ navigation }) => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const userActions = UserActions();
-
   useFocusEffect(
     useCallback(() => {
       const startDate = moment()

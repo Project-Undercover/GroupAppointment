@@ -74,6 +74,7 @@ export default {
   user_status: "סטטוס משתמש",
   user_role: "תפקיד משתמש",
   close: "סגור",
+  select: "בחר",
   validation: {
     firstName: "שם פרטי הינו שדה חובה",
     lastName: "שם משפחה הינו שדה חובה",

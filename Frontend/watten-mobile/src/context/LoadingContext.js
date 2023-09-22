@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import LottieView from "lottie-react-native";
 
 import { View, StyleSheet, ActivityIndicator } from "react-native";
+import { windowHeight, windowWidth } from "../utils/dimensions";
 export const LoadingContext = createContext(false);
 
 export const LoadingContextProvider = ({ children }) => {
@@ -29,10 +30,9 @@ export const LoadingContextProvider = ({ children }) => {
 const styles = StyleSheet.create({
   centeredContainer: {
     position: "absolute",
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
+    top: windowHeight * 0.5,
+    height: 30,
+    width: "100%",
     justifyContent: "center",
     alignItems: "center",
   },

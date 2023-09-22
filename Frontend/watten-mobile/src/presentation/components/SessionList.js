@@ -7,6 +7,7 @@ const SessionList = ({
   data,
   handleRefreshSessions,
   loading,
+  handleExpandImage,
   handlePressSession,
 }) => {
   return (
@@ -34,7 +35,11 @@ const SessionList = ({
           />
         }
         renderItem={({ item }) => (
-          <SessionCard session={item} handlePressSession={handlePressSession} />
+          <SessionCard
+            session={item}
+            handlePressSession={handlePressSession}
+            handleExpandImage={handleExpandImage}
+          />
         )}
       />
     </View>

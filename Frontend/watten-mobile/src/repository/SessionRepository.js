@@ -12,6 +12,16 @@ const SessionRepository = () => {
     return data;
   };
 
+  const editSession = async (formData) => {
+    const data = await apiCall(
+      "Sessions/Edit",
+      RequestMethod.POST,
+      formData,
+      "multipart/form-data"
+    );
+    return data;
+  };
+
   const addParticipants = async ({ sessionId, children }) => {
     const data = await apiCall("Sessions/AddParticipants", RequestMethod.POST, {
       sessionId,
@@ -46,17 +56,25 @@ const SessionRepository = () => {
     return data;
   };
 
+  const getSessionParticipants = async (sessionId) => {
+    const url = `Sessions/GetSessionParticipants?sessionId=${sessionId}`;
+    const data = await apiCall(url, RequestMethod.GET);
+    return data;
+  };
+
   const getInstructors = async () => {
     const data = await apiCall("Sessions/GetInstructors", RequestMethod.GET);
     return data;
   };
   return {
     createSession,
+    editSession,
     getSessions,
     getUserSessions,
     getInstructors,
     addParticipants,
     unBookSession,
+    getSessionParticipants,
   };
 };
 

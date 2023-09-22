@@ -17,18 +17,26 @@ import globalStyles from "../../../utils/theme/globalStyles";
 import SessionBottomSheet from "../../components/SessionBottomSheet/SessionBottomSheet";
 import UserActions from "../../../actions/UserActions";
 import SuccessModal from "../../components/Modals/SuccessModal";
+import ParticipantsBottomSheet from "../../components/ParticipantsBottomSheet/ParticipantsBottomSheet";
+import ImageExpandModal from "../../components/Modals/ImageExpandModal";
+import ListSkeltons from "../../components/ListSkeltons";
 
 const Sessions = () => {
   const [date, setDate] = useState(moment());
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
+
   const [currentSuccessTitle, setCurrentSuccessTitle] = useState("");
-  const { loading } = useLoadingContext();
+  const { loadingSkelton } = useLoadingContext();
   const { sessions } = useSelector((state) => state.sessions);
   const { userChildren } = useSelector((state) => state.users);
+
   const sessionActions = SessionActions();
   const userActions = UserActions();
   const [showSessionSheet, setShowSessionSheet] = useState(false);
+  const [showPartSheet, setShowPartSheet] = useState(false);
   const [currentSession, setCurrentSession] = useState(null);
+
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
@@ -71,6 +79,9 @@ const Sessions = () => {
     setCurrentSession(session);
     setShowSessionSheet(true);
   };
+  const handleShowPartSheet = () => {
+    setShowPartSheet((prev) => !prev);
+  };
 
   const handleCloseSessionSheet = () => {
     setShowSessionSheet(false);
@@ -81,6 +92,10 @@ const Sessions = () => {
     setCurrentSuccessTitle(title);
     setShowSuccessModal(true);
   };
+  const handleExpandImage = (session) => {
+    setCurrentSession(session);
+    setShowImageModal(true);
+  };
   return (
     <>
       <View className="flex-1">
@@ -89,7 +104,16 @@ const Sessions = () => {
         <View className="flex-1">
           <DatePickerStrip date={date} handleChangeDate={handleChangeDate} />
           <AddSessionBar date={date} />
-          {sessions?.length === 0 && !loading ? (
+          {loadingSkelton ? (
+            <ListSkeltons
+              numOfItems={20}
+              itemWidth={"100%"}
+              itemHeight={130}
+              itemRadius={5}
+            />
+          ) : null}
+
+          {sessions?.length === 0 && !loadingSkelton ? (
             <View className="flex-1 items-center mt-10">
               <Image
                 className="w-20 h-20"
@@ -101,9 +125,10 @@ const Sessions = () => {
             </View>
           ) : (
             <SessionList
-              data={sessions}
-              loading={loading}
+              data={loadingSkelton ? [] : sessions}
+              loading={loadingSkelton}
               handlePressSession={handlePressSession}
+              handleExpandImage={handleExpandImage}
               handleRefreshSessions={handleRefreshSessions}
             />
           )}
@@ -114,6 +139,13 @@ const Sessions = () => {
             session={currentSession}
             userChildren={userChildren}
             handleShowSuccessModal={handleShowSuccessModal}
+            handleShowPartSheet={handleShowPartSheet}
+          />
+        ) : null}
+        {showPartSheet ? (
+          <ParticipantsBottomSheet
+            handleShowSheet={handleShowPartSheet}
+            sessionId={currentSession?.id}
           />
         ) : null}
       </View>
@@ -122,6 +154,11 @@ const Sessions = () => {
         message={currentSuccessTitle}
         // title={currentSuccessTitle}
         setShowModal={setShowSuccessModal}
+      />
+      <ImageExpandModal
+        visible={showImageModal}
+        image={currentSession?.image}
+        setShowModal={setShowImageModal}
       />
     </>
   );

@@ -8,7 +8,7 @@ const WelcomeBanner = ({ username, date }) => {
     <View className="p-5 mt-5 items-start">
       <View className="flex-row items-center gap-4">
         <TextComponent mediumBold style={styles.textMain}>
-          {t("greeting") + "," + username}
+          {t("greeting") + ", " + username}
         </TextComponent>
         <Image
           className="w-10 h-10"

@@ -21,3 +21,10 @@ export enum UserRoles {
   Instructor = 1,
   Parent = 2,
 }
+
+export enum SessionStatus {
+  Available = 0,
+  Full = 1,
+  Finished = 2,
+  Canceled = 3,
+}

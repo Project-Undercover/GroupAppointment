@@ -46,6 +46,13 @@ const theme = {
     primaryFontRegular: "Rubik-Regular",
   },
 
+  STATUS: {
+    0: {
+      text: "",
+      background: "",
+    },
+  },
+
   SHADOW: {
     lightShadow: {
       shadowColor: "#000",
@@ -153,41 +160,6 @@ const theme = {
       shadowOpacity: 0.25,
       shadowRadius: 3.84,
       elevation: 5,
-    },
-  },
-
-  ORDER_STATIS: {
-    new_order: {
-      main: "#16A34A",
-      text: "white",
-      description: "new_order",
-      next: "accpet_order",
-    },
-    take_order: {
-      2: {
-        main: "#fb923c",
-        text: "white",
-        description: "preparing_order",
-        next: "pick_up_order",
-      },
-      3: {
-        main: "#ec4899",
-        text: "white",
-        description: "order_ready",
-        next: "pick_up_order",
-      },
-    },
-    delivered: {
-      main: "#0c4a6e",
-      text: "white",
-      description: "order_picked",
-      next: "complete_order",
-    },
-    order_completed: {
-      main: "#A3A3A3",
-      text: "white",
-      description: "delivered_to_customer",
-      next: "delivered_to_customer",
     },
   },
 };

@@ -10,6 +10,8 @@ import { useFonts } from "expo-font";
 import i18next from "./src/utils/i18n";
 import NetInfo from "@react-native-community/netinfo";
 import { LoadingContextProvider } from "./src/context/LoadingContext";
+import "moment/locale/he";
+import "moment/locale/ar";
 export default function App() {
   const [fontsLoaded] = useFonts({
     "Cairo-Bold": require("./src/assets/fonts/Cairo-Medium.ttf"),

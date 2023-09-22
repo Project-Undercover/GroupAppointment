@@ -17,12 +17,15 @@ const SessionManager = ({ route, navigation }) => {
   const sessionActions = SessionActions();
   const dispatch = useDispatch();
   const { instructors } = useSelector((state) => state.sessions);
-  const { mode, date } = route.params;
+  const { mode, session, date } = route.params;
   const { t } = useTranslation();
 
-  const ManagerTitle = useMemo(() => {
+  const ManagerTitle = () => {
     return mode === Mode.Add ? "create_session" : "edit_session";
-  }, [mode]);
+  };
+  const ManagerDate = () => {
+    return session?.startDate ? session?.startDate : date;
+  };
 
   useEffect(() => {
     dispatch(sessionActions.fetchInstructors());
@@ -31,16 +34,21 @@ const SessionManager = ({ route, navigation }) => {
   return (
     <View className="flex-1">
       <CustomeStatusBar />
-      <DefaultHeader title={t(ManagerTitle)} />
+      <DefaultHeader title={t(ManagerTitle())} />
       <View className="px-4 py-5 flex-1">
         <View className="w-auto" style={{ alignSelf: "flex-start" }}>
           <TextComponent mediumBold style={styles.dateText}>
-            {moment(date).format("LL")}
+            {moment(ManagerDate()).format("LL")}
           </TextComponent>
           <View style={globalStyles.underLine}></View>
         </View>
         <Spacer space={20} />
-        <Inputs date={date} instructors={instructors} />
+        <Inputs
+          date={date}
+          instructors={instructors}
+          mode={mode}
+          session={session}
+        />
       </View>
     </View>
   );

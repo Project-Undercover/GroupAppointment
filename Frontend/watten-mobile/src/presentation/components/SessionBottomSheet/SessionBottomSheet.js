@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { View, Image, StyleSheet } from "react-native";
+import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import TextComponent from "../TextComponent";
 import theme from "../../../utils/theme";
@@ -7,21 +7,26 @@ import Header from "./components/Header";
 import ReservationInfo from "../../screens/home/components/ReservationInfo";
 import DefaultButton from "../DefaultButton";
 import { useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import SessionActions from "../../../actions/SessionActions";
 import SuccessModal from "../Modals/SuccessModal";
+import { Feather } from "@expo/vector-icons";
+import { Mode, UserRoles } from "../../../utils/Enums";
+import { useNavigation } from "@react-navigation/native";
 
 const SessionBottomSheet = ({
   session,
   userChildren,
   handleShowSuccessModal,
+  handleShowPartSheet = () => {},
   handleShowSheet = () => {},
 }) => {
   const dispatch = useDispatch();
   const [selectedChildren, setSelectedChildren] = useState(userChildren);
   const sessionActions = SessionActions();
-
+  const role = useSelector((state) => state.auth.user.role);
   const { t } = useTranslation();
+  const navigation = useNavigation();
   const bottomSheetModalRef = useRef(null);
 
   const snapPoints = useMemo(() => ["50%"], []);
@@ -39,6 +44,8 @@ const SessionBottomSheet = ({
   );
 
   const handleRemoveChild = (id) => {
+    if (selectedChildren?.length <= 1) return;
+
     const filteredData = selectedChildren?.filter((child) => child.id !== id);
     setSelectedChildren(filteredData);
   };
@@ -50,7 +57,7 @@ const SessionBottomSheet = ({
         children: _children,
         sessionId: session?.id,
         handleShowSuccess: () =>
-          handleShowSuccessModal(session?.title + "-" + t("booked_success")),
+          handleShowSuccessModal(t("booked_success") + "-" + session?.title),
       })
     );
     handleShowSheet();
@@ -59,25 +66,32 @@ const SessionBottomSheet = ({
   const handleUnbookSession = () => {
     dispatch(
       sessionActions.unBookSession({
-        // children: _children,
         sessionId: session?.id,
         handleShowSuccess: () =>
-          handleShowSuccessModal(session?.title + "-" + t("unbooked_success")),
+          handleShowSuccessModal(t("unbooked_success") + "-" + session?.title),
       })
     );
     handleShowSheet();
   };
-  const IsBooked = useMemo(() => {
-    return session?.children && session?.children?.length > 0;
-  }, [session]);
+  const IsParticipating = () => {
+    return session?.isParticipating;
+  };
 
-  const ButtonAction = useMemo(() => {
-    return IsBooked ? handleUnbookSession : handleBookSession;
-  }, [session]);
+  const ButtonAction = () => {
+    return IsParticipating() ? handleUnbookSession : handleBookSession;
+  };
 
-  const ButtonText = useMemo(() => {
-    return IsBooked ? t("unbook") : t("book_now");
-  }, [session]);
+  const ButtonText = () => {
+    return IsParticipating() ? t("unbook") : t("book_now");
+  };
+
+  const handleNavigateEditSession = () => {
+    navigation.navigate("session-manager", {
+      mode: Mode.Edit,
+      session: session,
+    });
+    handleShowSheet();
+  };
 
   return (
     <BottomSheet
@@ -91,12 +105,32 @@ const SessionBottomSheet = ({
     >
       <View style={styles.contentContainer}>
         <Header title={session?.title} onClose={handleShowSheet} />
-        <View className="flex-row items-center gap-2">
-          <Image
-            style={styles.image}
-            source={require("../../../assets/icons/user.png")}
-          />
-          <TextComponent style={styles.text}>{"Sabreen arar"}</TextComponent>
+        <View className="flex-row items-center justify-between  w-full">
+          <View className="flex-row items-center gap-2">
+            <Image
+              style={styles.image}
+              source={require("../../../assets/icons/user.png")}
+            />
+            <TextComponent style={styles.text}>
+              {session?.instructor}
+            </TextComponent>
+          </View>
+          {role === UserRoles.Admin ? (
+            <View className="flex-row gap-2">
+              <TouchableOpacity
+                style={styles.buttonAction}
+                onPress={handleNavigateEditSession}
+              >
+                <Feather name="edit" size={18} color={theme.COLORS.primary} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.buttonAction}
+                onPress={handleShowPartSheet}
+              >
+                <Feather name="users" size={18} color={theme.COLORS.primary} />
+              </TouchableOpacity>
+            </View>
+          ) : null}
         </View>
         <View style={styles.spreator}></View>
         <View className="w-full">
@@ -105,13 +139,23 @@ const SessionBottomSheet = ({
             startTime={session?.startDate}
             endTime={session?.endDate}
             children={selectedChildren}
-            showCloseChildIcon={!IsBooked}
+            showCloseChildIcon={
+              !IsParticipating() && selectedChildren?.length > 1
+            }
             locationName={session?.locationName}
             handleRemoveChild={handleRemoveChild}
           />
         </View>
         <View className="items-center w-full my-5">
-          <DefaultButton text={ButtonText} onPress={ButtonAction} />
+          <DefaultButton
+            text={ButtonText()}
+            onPress={ButtonAction()}
+            containerStyle={
+              IsParticipating() && {
+                backgroundColor: "black",
+              }
+            }
+          />
         </View>
       </View>
     </BottomSheet>
@@ -145,6 +189,14 @@ const styles = StyleSheet.create({
     backgroundColor: theme.COLORS.primary,
     marginVertical: 5,
     marginBottom: 10,
+  },
+  buttonAction: {
+    backgroundColor: "white",
+    borderRadius: 5,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 2,
+    ...theme.SHADOW.lightShadow,
   },
 });
 

@@ -1,15 +1,11 @@
 import {
   StyleSheet,
-  Text,
   View,
-  I18nManager,
   TouchableWithoutFeedback,
   Keyboard,
-  Button,
-  Pressable,
   ScrollView,
 } from "react-native";
-import { useState, useRef } from "react";
+import { useState, useMemo, useEffect } from "react";
 import DefaultInput from "../../../components/DefaultInput";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -28,18 +24,20 @@ import { useDispatch } from "react-redux";
 import SessionActions from "../../../../actions/SessionActions";
 import moment from "moment";
 import globalStyles from "../../../../utils/theme/globalStyles";
-const Inputs = ({ date, instructors }) => {
-  const [openInstructorsSelector, setopenInstructorsSelector] = useState(false);
-  const dispatch = useDispatch();
-  const [image, setImage] = useState(null);
+import { Mode } from "../../../../utils/Enums";
+const Inputs = ({ date, instructors, session, mode }) => {
   const sessionActions = SessionActions();
+  const dispatch = useDispatch();
   const { t } = useTranslation();
-  const [selectedInstructors, setSelectedInstructors] = useState([]);
 
+  const [openInstructorsSelector, setopenInstructorsSelector] = useState(false);
+  const [image, setImage] = useState(null);
+  const [selectedInstructors, setSelectedInstructors] = useState([]);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [datesError, setDatesError] = useState(false);
+  const [enableChangeImage, setEnableSwitchImage] = useState(false);
 
   const {
     handleSubmit,
@@ -48,6 +46,13 @@ const Inputs = ({ date, instructors }) => {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(validationSchema),
+    defaultValues: useMemo(() => {
+      return {
+        title: session?.title,
+        locationName: session?.locationName,
+        maxParticipants: session?.maxParticipants.toString(),
+      };
+    }, [session]),
   });
 
   const toggleTimePicker = (ref) => {
@@ -67,16 +72,7 @@ const Inputs = ({ date, instructors }) => {
     }
     Keyboard.dismiss();
   };
-  const onSubmit = (data) => {
-    if (!isValidDates(startDate, endDate)) {
-      setDatesError(true);
-      return;
-    }
 
-    const formData = createSessionFormData(data);
-
-    dispatch(sessionActions.createSession(formData));
-  };
   const isValidDates = (startDate, endDate) => {
     setDatesError(false);
 
@@ -92,9 +88,28 @@ const Inputs = ({ date, instructors }) => {
     return moment(d + " " + t).format("YYYY-MM-DDTHH:mm:ss.sssZ");
   };
 
+  const handleCreateSession = (data) => {
+    if (!isValidDates(startDate, endDate)) {
+      setDatesError(true);
+      return;
+    }
+
+    const formData = createSessionFormData(data);
+    dispatch(sessionActions.createSession(formData));
+  };
+
+  const handleEditSession = (data) => {
+    if (!isValidDates(startDate, endDate)) {
+      setDatesError(true);
+      return;
+    }
+
+    const formData = createSessionFormData(data);
+    dispatch(sessionActions.editSession(formData));
+  };
   const createSessionFormData = (data) => {
     const sessionFormData = new FormData();
-    if (image) {
+    if (image && enableChangeImage) {
       const fileUriParts = image.split(".");
       const fileType = fileUriParts[fileUriParts.length - 1];
       sessionFormData.append("imageFile", {
@@ -103,9 +118,12 @@ const Inputs = ({ date, instructors }) => {
         type: `image/${fileType}`,
       });
     }
+    if (!IsAddMode()) {
+      sessionFormData.append("id", session?.id);
+      sessionFormData.append("isAvailable", true);
+    }
     const _startDate = compineDT(date, startDate);
     const _endDate = compineDT(date, endDate);
-
     sessionFormData.append("title", data?.title);
     sessionFormData.append("startDate", _startDate);
     sessionFormData.append("endDate", _endDate);
@@ -115,12 +133,39 @@ const Inputs = ({ date, instructors }) => {
     return sessionFormData;
   };
 
-  console.log(selectedInstructors);
+  const IsAddMode = () => {
+    return mode === Mode.Add;
+  };
+  const ManagerTitle = () => {
+    return IsAddMode() ? "create_session" : "edit_session";
+  };
+  const ConfrimFunction = () => {
+    return IsAddMode() ? handleCreateSession : handleEditSession;
+  };
+
+  const handleSelectImage = (image) => {
+    setImage(image);
+    setEnableSwitchImage(true);
+  };
+
+  useEffect(() => {
+    if (!session) return;
+    const defualtInstructors = session?.instructors?.map(
+      (instructor) => instructor?.id
+    );
+
+    setStartDate(new Date(session?.startDate));
+    setEndDate(new Date(session?.endDate));
+    setImage(session?.image);
+    setSelectedInstructors(defualtInstructors);
+  }, [session]);
+
   return (
     <TouchableWithoutFeedback onPress={handleWithoutFeedback}>
       <ScrollView
         style={{ flex: 1 }}
         showsVerticalScrollIndicator={false}
+        automaticallyAdjustKeyboardInsets={true}
         contentContainerStyle={{ paddingBottom: 120 }}
       >
         <View className="flex-start flex-1" style={{ rowGap: 20 }}>
@@ -182,20 +227,22 @@ const Inputs = ({ date, instructors }) => {
               open={openInstructorsSelector}
               value={selectedInstructors}
               listMode="SCROLLVIEW"
-              // items={instructors}
               setOpen={setopenInstructorsSelector}
               setValue={setSelectedInstructors}
-              // setItems={setItems}
               items={instructors.map((instructor) => ({
                 label: instructor?.name,
                 value: instructor?.id,
               }))}
+              placeholder={t("select")}
               stickyHeader
               dropDownContainerStyle={{
                 borderWidth: 1,
                 borderColor: theme.COLORS.secondary2,
                 padding: 10,
                 zIndex: 999,
+              }}
+              listItemLabelStyle={{
+                textAlign: "left",
               }}
               multiple={true}
               style={globalStyles.dropDownInput}
@@ -207,7 +254,6 @@ const Inputs = ({ date, instructors }) => {
                 fontFamily: theme.FONTS.primaryFontRegular,
                 textAlign: "left",
               }}
-              // placeholder={t("session_instructure")}
               badgeDotColors={[theme.COLORS.primary]}
             />
           </View>
@@ -264,7 +310,6 @@ const Inputs = ({ date, instructors }) => {
               placeholder={t("enter") + " " + t("session_end")}
               label={t("session_end")}
               containerStyle={{ width: windowWidth * 0.4 }}
-              // onFocus={toggleTimePicker}
               component={
                 <DateTimePicker
                   testID="dateTimePicker"
@@ -291,15 +336,14 @@ const Inputs = ({ date, instructors }) => {
             </TextComponent>
           )}
           <UploadImageCard
-            handleSelectImage={(image) => setImage(image)}
+            handleSelectImage={handleSelectImage}
             image={image}
           />
           <Spacer space={5} />
           <View className="items-center">
             <DefaultButton
-              text={t("create_session")}
-              // onPress={onSubmit}
-              onPress={handleSubmit(onSubmit)}
+              text={t(ManagerTitle())}
+              onPress={handleSubmit(ConfrimFunction())}
             />
           </View>
         </View>

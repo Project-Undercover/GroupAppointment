@@ -12,14 +12,16 @@ import { useTranslation } from "react-i18next";
 import UserActions from "../../../actions/UserActions";
 import { useDispatch, useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
-
+import UsersSkelton from "./components/UsersSkelton";
+import { useLoadingContext } from "../../../hooks/useLoadingContext";
+import CustomeSkeleton from "../../components/CustomeSkeleton";
 const Users = ({ navigation }) => {
   const { t } = useTranslation();
   const { searchedUsers } = useSelector((state) => state.users);
   const [searchInput, setSearchInput] = useState("");
   const dispatch = useDispatch();
   const userActions = UserActions();
-
+  const { loadingSkelton } = useLoadingContext();
   useFocusEffect(
     useCallback(() => {
       dispatch(userActions.fetchUsers());
@@ -56,10 +58,13 @@ const Users = ({ navigation }) => {
             <Feather name="search" color={theme.COLORS.primary} size={20} />
           }
         />
+
         <Spacer space={8} />
+        {loadingSkelton ? <UsersSkelton numOfItems={10} /> : null}
         <UsersList
           data={searchedUsers}
           handleRefreshUsers={handleRefreshUsers}
+          loading={loadingSkelton}
         />
       </View>
     </View>

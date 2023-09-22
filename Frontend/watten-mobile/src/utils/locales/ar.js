@@ -71,4 +71,6 @@ export default {
   user_status: "حالة المستخدم",
   user_role: "دور المستخدم",
   close: "اغلاق",
+
+  select: "اختر",
 };

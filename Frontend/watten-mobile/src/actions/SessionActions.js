@@ -7,12 +7,13 @@ import {
   FETCH_HISTORY_SUCCESS,
   FETCH_INSTRUCTORS_SUCCESS,
   FETCH_SESSIONS_SUCCESS,
+  FETCH_SESSION_PARTICIPANTS_SUCCESS,
 } from "../constants/actionTypes";
 import { useNavigation } from "@react-navigation/native";
 
 const SessionActions = () => {
   const sessionRepository = SessionRepository();
-  const { setLoading } = useLoadingContext();
+  const { setLoading, setLoadingSkelton } = useLoadingContext();
   const { showError, showSuccess } = useAlertsContext();
   const { t } = useTranslation();
   const navigation = useNavigation();
@@ -26,7 +27,22 @@ const SessionActions = () => {
         showSuccess(response?.message);
         NavigateSession();
       } catch (error) {
-        // console.log(error);
+        const messg = error?.data?.message ? error?.data?.message : t("error");
+        showError(messg);
+      }
+      setLoading(false);
+    };
+  };
+
+  const editSession = (formData) => {
+    return async (dispatch) => {
+      setLoading(true);
+      try {
+        const response = await sessionRepository.editSession(formData);
+        console.log(response);
+        showSuccess(response?.message);
+        NavigateSession();
+      } catch (error) {
         const messg = error?.data?.message ? error?.data?.message : t("error");
         showError(messg);
       }
@@ -36,7 +52,7 @@ const SessionActions = () => {
 
   const fetchSessions = ({ startDate, endDate }) => {
     return async (dispatch) => {
-      setLoading(true);
+      setLoadingSkelton(true);
       try {
         const response = await sessionRepository.getSessions({
           startDate,
@@ -48,7 +64,7 @@ const SessionActions = () => {
         const messg = error?.data?.message ? error?.data?.message : t("error");
         showError(messg);
       }
-      setLoading(false);
+      setLoadingSkelton(false);
     };
   };
 
@@ -60,8 +76,6 @@ const SessionActions = () => {
         dispatch({ type: FETCH_INSTRUCTORS_SUCCESS, payload: response?.data });
       } catch (error) {
         console.log(error);
-        // const messg = error?.data?.message ? error?.data?.message : t("error");
-        // showError(messg);
       }
       setLoading(false);
     };
@@ -79,6 +93,24 @@ const SessionActions = () => {
         console.log(error?.data);
         const messg = error?.data?.message ? error?.data?.message : t("error");
         showError(messg);
+      }
+      setLoading(false);
+    };
+  };
+
+  const fetchSessionParticipants = ({ sessionId }) => {
+    return async (dispatch) => {
+      setLoading(true);
+      try {
+        const response = await sessionRepository.getSessionParticipants(
+          sessionId
+        );
+        dispatch({
+          type: FETCH_SESSION_PARTICIPANTS_SUCCESS,
+          payload: response?.data,
+        });
+      } catch (error) {
+        console.log(error);
       }
       setLoading(false);
     };
@@ -123,8 +155,10 @@ const SessionActions = () => {
   return {
     fetchSessions,
     fetchHistorySessions,
-    createSession,
     fetchInstructors,
+    fetchSessionParticipants,
+    createSession,
+    editSession,
     bookSession,
     unBookSession,
   };

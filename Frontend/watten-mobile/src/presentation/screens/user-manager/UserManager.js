@@ -116,13 +116,13 @@ const UserManager = ({ route }) => {
     );
   };
 
-  const ConfrimFunction = useMemo(() => {
-    return mode === Mode.Add ? handleCreateUser : handleUpdateUser;
-  }, [mode, inputItems, isActive, selectedRole]);
-
-  const IsAddMode = useMemo(() => {
+  const IsAddMode = () => {
     return mode === Mode.Add;
-  }, [mode]);
+  };
+  const ConfrimFunction = () => {
+    return IsAddMode() ? handleCreateUser : handleUpdateUser;
+  };
+
   return (
     <View className="flex-1">
       <CustomeStatusBar />
@@ -138,7 +138,7 @@ const UserManager = ({ route }) => {
           padding: 14,
         }}
       >
-        {!IsAddMode ? (
+        {!IsAddMode() ? (
           <CustomSwitch
             value={isActive}
             label={t("user_status")}
@@ -258,8 +258,12 @@ const UserManager = ({ route }) => {
               padding: 10,
               zIndex: 999,
             }}
+            placeholder={t("select")}
             style={globalStyles.dropDownInput}
             labelStyle={{ textAlign: "left" }}
+            listItemLabelStyle={{
+              textAlign: "left",
+            }}
             maxHeight={300}
             mode="BADGE"
             placeholderStyle={{
@@ -304,7 +308,7 @@ const UserManager = ({ route }) => {
         <View className="items-center w-full justify-end">
           <DefaultButton
             text={ManagerTitle}
-            onPress={handleSubmit(ConfrimFunction)}
+            onPress={handleSubmit(ConfrimFunction())}
           />
         </View>
       </ScrollView>

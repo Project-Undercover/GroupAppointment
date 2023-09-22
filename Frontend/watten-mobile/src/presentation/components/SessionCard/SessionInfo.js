@@ -13,6 +13,7 @@ const SessionInfo = ({
   locationName,
   instructor,
   title,
+  statusName,
 }) => {
   return (
     <View style={styles.container}>
@@ -20,7 +21,7 @@ const SessionInfo = ({
         <TextComponent mediumBold style={styles.infoTitle}>
           {title}
         </TextComponent>
-        <Status status={t("available")} />
+        <Status status={statusName} />
       </View>
       <Spacer space={5} />
       <View style={styles.colContainer}>
@@ -32,7 +33,7 @@ const SessionInfo = ({
               color={theme.COLORS.primary}
             />
           }
-          value={startTime + " - " + endTime}
+          value={endTime + " - " + startTime}
         />
         <InfoRow
           icon={
