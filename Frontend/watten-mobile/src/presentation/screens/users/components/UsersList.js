@@ -4,8 +4,7 @@ import UserCard from "./UserCard";
 import Spacer from "../../../components/Spacer";
 import theme from "../../../../utils/theme";
 import { useLoadingContext } from "../../../../hooks/useLoadingContext";
-const UsersList = ({ data, handleRefreshUsers }) => {
-  const { loading } = useLoadingContext();
+const UsersList = ({ data, handleRefreshUsers, loading }) => {
   return (
     <View className="flex-1">
       <FlatList
