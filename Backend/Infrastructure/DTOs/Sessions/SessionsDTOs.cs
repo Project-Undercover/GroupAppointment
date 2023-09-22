@@ -54,17 +54,30 @@ namespace Infrastructure.DTOs.Sessions
         public class Responses
         {
 
-            public class Instructor
+            public record Instructor
             {
                 public Guid id { get; set; }
                 public string name { get; set; }
             }
 
 
-            public class Child
+            public record SessionPaticipant
             {
-                public Guid id { get; set; }
-                public string name { get; set; }
+                public User user { get; set; }
+                public List<Child> children { get; set; }
+
+
+                public class User
+                {
+                    public Guid id { get; set; }
+                    public string name { get; set; }
+                }
+
+                public class Child
+                {
+                    public Guid id { get; set; }
+                    public string name { get; set; }
+                }
             }
 
 
@@ -119,11 +132,18 @@ namespace Infrastructure.DTOs.Sessions
                 public DateTimeOffset StartDate { get; set; }
                 public DateTimeOffset EndDate { get; set; }
                 public string? locationName { get; set; }
-                public string instructor { get; set; }
+                public List<Instructor> instructors { get; set; }
                 public bool isAvailable { get; set; }
+                public bool isParticipating { get => children.Count() > 0; }
                 public List<Child> children { get; set; }
 
                 public record Child
+                {
+                    public Guid id { get; set; }
+                    public string name { get; set; }
+                }
+
+                public record Instructor
                 {
                     public Guid id { get; set; }
                     public string name { get; set; }
@@ -140,7 +160,7 @@ namespace Infrastructure.DTOs.Sessions
                 public DateTimeOffset StartDate { get; set; }
                 public DateTimeOffset EndDate { get; set; }
                 public string? locationName { get; set; }
-                public string instructor { get; set; }
+                public List<string> instructors { get; set; }
                 public bool isAvailable { get; set; }
                 public List<Child> children { get; set; }
 

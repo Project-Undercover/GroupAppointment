@@ -94,7 +94,7 @@ namespace Infrastructure.DTOs.Users
                     public DateTimeOffset StartDate { get; set; }
                     public DateTimeOffset EndDate { get; set; }
                     public string? locationName { get; set; }
-                    public string instructor { get; set; }
+                    public List<string> instructors { get; set; }
                     public bool isAvailable { get; set; }
                     public List<Child> children { get; set; }
 

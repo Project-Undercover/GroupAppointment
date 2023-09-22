@@ -8,6 +8,14 @@ namespace Infrastructure.Enums
 {
     public class Enums
     {
+
+        public enum SessionStatus
+        {
+            Available,
+            Finished,
+            Canceled
+        }
+
         public enum Day
         {
             Sunady,
@@ -18,7 +26,6 @@ namespace Infrastructure.Enums
             Friday,
             Saturday,
         }
-
 
 
         public enum UserRole
@@ -35,6 +42,16 @@ namespace Infrastructure.Enums
             Default,
             SessionImages,
             UserImages,
+        }
+
+
+        public enum NotificationType
+        {
+            Notification, Data, DataAndNotification
+        }
+        public enum NotificationSendType
+        {
+            Token, Topic
         }
     }
 }

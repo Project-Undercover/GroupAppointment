@@ -6,10 +6,9 @@ using Infrastructure.DTOs.DataTables;
 using Infrastructure.DTOs.Sessions;
 using Infrastructure.Entities.Sessions;
 using Infrastructure.Entities.Users;
+using Infrastructure.Enums;
 using Infrastructure.Exceptions;
 using Infrastructure.Utils;
-using Infrastructure.Enums;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Services.Sessions
 {
@@ -58,7 +57,11 @@ namespace Services.Sessions
                 .SkipAndTake(dto.skip, dto.take);
 
             var (count, data) = await _unitOfWork.Repository<Session>().Find(specification);
-            data.ToList().ForEach(s => s.Participants = s.Participants.Where(s => s.UserId == user.Id).ToList()); // only user children 
+            data = data.ToList().Select(s =>
+            {
+                s.Participants = s.Participants.Where(s => s.UserId == user.Id).ToList();
+                return s;
+            }).ToList(); // only user children 
             var mappedData = _mapper.Map<List<SessionsDTOs.Responses.UserSession>>(data);
 
             return (count, mappedData);
@@ -71,10 +74,7 @@ namespace Services.Sessions
 
             if (dto.CustomSearch != null)
             {
-                var (userId, searchTerm, from, to) = dto.CustomSearch;
-
-                if (userId.HasValue)
-                    specification.Include(nameof(Session.Participants)).Where(s => s.Participants.Any(s => s.UserId == dto.CustomSearch.userId));
+                var (searchTerm, from, to) = dto.CustomSearch;
 
                 if (!string.IsNullOrEmpty(searchTerm))
                     specification
@@ -87,6 +87,9 @@ namespace Services.Sessions
 
                 if (to.HasValue)
                     specification.Where(s => s.EndDate <= to);
+
+                if (!user.IsAdmin)
+                    specification.Where(s => s.IsAvailable);
             }
 
             specification
@@ -99,10 +102,13 @@ namespace Services.Sessions
                 .SkipAndTake(dto.skip, dto.take);
 
             var (count, data) = await _unitOfWork.Repository<Session>().Find(specification);
-            data.ToList().ForEach(s => s.Participants = s.Participants.Where(s => s.UserId == user.Id).ToList()); // only user children 
+            data = data.ToList().Select(s =>
+            {
+                s.Participants = s.Participants.Where(s => s.UserId == user.Id).ToList();
+                return s;
+            }).ToList(); // only user children 
 
             var mappedData = _mapper.Map<List<SessionsDTOs.Responses.GetAllDT>>(data);
-
             return (count, mappedData);
         }
         public async Task<SessionsDTOs.Responses.GetById> GetById(Guid id)
@@ -128,10 +134,22 @@ namespace Services.Sessions
 
             return _mapper.Map<List<SessionsDTOs.Responses.Instructor>>(instructors);
         }
-        public async Task<List<SessionsDTOs.Responses.Child>> GetSessionParticipants(Guid sessionId)
+        public async Task<List<SessionsDTOs.Responses.SessionPaticipant>> GetSessionParticipants(Guid sessionId)
         {
-            var (count, participants) = await _unitOfWork.Repository<Participant>().Find(s => s.SessionId == sessionId, includes: new string[] { nameof(Participant.Child) });
-            return _mapper.Map<List<SessionsDTOs.Responses.Child>>(participants);
+            var (count, participants) = await _unitOfWork.Repository<Participant>().Find(s => s.SessionId == sessionId,
+                includes: new string[] { nameof(Participant.Child), nameof(Participant.User) });
+
+            var data = participants
+                .GroupBy(s => s.User)
+                .Select(s => new SessionsDTOs.Responses.SessionPaticipant
+                {
+                    user = _mapper.Map<SessionsDTOs.Responses.SessionPaticipant.User>(s.Key),
+                    children = _mapper.Map<List<SessionsDTOs.Responses.SessionPaticipant.Child>>(s.OrderBy(s => s.Child.Name).ToList())
+                })
+                .OrderBy(s => s.user.name)
+                .ToList();
+
+            return data;
         }
 
         public async Task ValidateSession(SessionsDTOs.Requests.Create dto)

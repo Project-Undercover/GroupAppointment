@@ -34,7 +34,7 @@ namespace Services.Users
 
             CreateMap<Session, UserDTOs.Responses.HomeData.Session>()
                 .ForMember(s => s.children, opt => opt.MapFrom(s => s.Participants.Select(s => new UserDTOs.Responses.HomeData.Session.Child { id = s.ChildId, name = s.Child.Name }).ToList()))
-                .ForMember(s => s.instructor, opt => opt.MapFrom(s => s.Instructors.Select(s => s.User.FirstName + " " + s.User.LastName).FirstOrDefault()));
+                .ForMember(s => s.instructors, opt => opt.MapFrom(s => s.Instructors.Select(s => s.User.FirstName + " " + s.User.LastName).ToList()));
 
 
         }
