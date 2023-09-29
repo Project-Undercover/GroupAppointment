@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Drawing;
+using static Infrastructure.Enums.Enums;
 
 namespace Infrastructure.Entities.Sessions
 {
@@ -16,8 +17,10 @@ namespace Infrastructure.Entities.Sessions
 
         public string? LocationName { get; set; }
         public Location? Location { get; set; }
-        public bool IsAvailable { get; set; } = true;
+        public bool isVisible { get; set; } = true;
 
+
+        public SessionStatus Status { get; set; } = SessionStatus.Available;
         public List<Participant> Participants { get; set; }
         public List<Instructor> Instructors { get; set; }
 

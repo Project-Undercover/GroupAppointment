@@ -8,6 +8,7 @@ using Infrastructure.DTOs.Users;
 using Infrastructure.Entities.Users;
 using Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
 using static API.Middlewares.Authorization;
 using static Infrastructure.Enums.Enums;
 
@@ -17,6 +18,8 @@ namespace API.Controllers
     [ProducesResponseType(200, Type = typeof(MessageResponse))]
     [ProducesResponseType(404, Type = typeof(MessageResponse))]
     [ProducesResponseType(400, Type = typeof(MessageResponse))]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
     [ApiController]
     [Route("/api/[controller]")]
     public class UsersController : ControllerBase
@@ -34,7 +37,7 @@ namespace API.Controllers
 
         [AuthorizeUser]
         [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<UserDTOs.Responses.HomeData>))]
-        [HttpPost, Route("HomeData")]
+        [HttpPost("HomeData")]
         public async Task<IActionResult> HomeData(UserDTOs.Requests.HomeData dto)
         {
             string langKey = Headers.GetLanguage(Request.Headers);
@@ -48,14 +51,10 @@ namespace API.Controllers
 
 
 
-        /// <summary>
-        /// Admin only
-        /// </summary>
-        /// <param name="dto"></param>
-        /// <returns></returns>
+     
         [AuthorizeUser(UserRole.Admin)]
         [ProducesResponseType(200, Type = typeof(MessageResponseWithDataTable<IEnumerable<UserDTOs.Responses.GetAllDT>>))]
-        [HttpPost, Route("GetAllDT")]
+        [HttpPost("GetAllDT")]
         public async Task<IActionResult> GetAllDT(DataTableDTOs.UsersDT dto)
         {
             string langKey = Headers.GetLanguage(Request.Headers);
@@ -71,14 +70,10 @@ namespace API.Controllers
 
 
 
-        /// <summary>
-        /// Get User Children
-        /// </summary>
-        /// <param name="dto"></param>
-        /// <returns></returns>
+       
         [AuthorizeUser]
         [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<List<UserDTOs.Responses.Child>>))]
-        [HttpPost, Route("GetChildren")]
+        [HttpPost("GetChildren")]
         public async Task<IActionResult> GetChildren()
         {
             string langKey = Headers.GetLanguage(Request.Headers);
@@ -93,15 +88,10 @@ namespace API.Controllers
 
 
 
-        /// <summary>
-        /// admin only
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        /// <exception cref="UnAuthorizedException"></exception>
+       
         [AuthorizeUser(UserRole.Admin)]
         [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<UserDTOs.Responses.GetById>))]
-        [HttpGet, Route("GetById/{id}")]
+        [HttpGet("GetById/{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
             string langKey = Headers.GetLanguage(Request.Headers);
@@ -114,7 +104,7 @@ namespace API.Controllers
 
         [AuthorizeUser]
         [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<UserDTOs.Responses.GetById>))]
-        [HttpGet, Route("GetProfile")]
+        [HttpGet("GetProfile")]
         public async Task<IActionResult> GetProfile()
         {
             User user = HttpContext.GetUser<User>();
@@ -127,13 +117,9 @@ namespace API.Controllers
 
 
 
-        /// <summary>
-        /// Admin only
-        /// </summary>
-        /// <param name="dto"></param>
-        /// <returns></returns>
+    
         [AuthorizeUser(UserRole.Admin)]
-        [HttpPost, Route("Create")]
+        [HttpPost("Create")]
         public async Task<IActionResult> Create(UserDTOs.Requests.Create dto)
         {
             string langKey = Headers.GetLanguage(Request.Headers);
@@ -147,7 +133,7 @@ namespace API.Controllers
 
 
         [AuthorizeUser]
-        [HttpPost, Route("Edit")]
+        [HttpPost("Edit")]
         public async Task<IActionResult> Edit(UserDTOs.Requests.Edit dto)
         {
             User user = HttpContext.GetUser<User>();
@@ -163,13 +149,9 @@ namespace API.Controllers
         }
 
 
-        /// <summary>
-        /// admin only
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        
         [AuthorizeUser(UserRole.Admin)]
-        [HttpDelete, Route("Delete/{id}")]
+        [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             string langKey = Headers.GetLanguage(Request.Headers);
@@ -183,7 +165,7 @@ namespace API.Controllers
 
 
         [AuthorizeUser]
-        [HttpPost, Route("AddChild")]
+        [HttpPost("AddChild")]
         public async Task<IActionResult> AddChild(UserDTOs.Requests.AddChild dto)
         {
             User user = HttpContext.GetUser<User>();
@@ -197,7 +179,7 @@ namespace API.Controllers
         }
 
         [AuthorizeUser]
-        [HttpDelete, Route("DeleteChild/{id}")]
+        [HttpDelete("DeleteChild/{id}")]
         public async Task<IActionResult> DeleteChild(Guid id)
         {
             User user = HttpContext.GetUser<User>();
@@ -211,7 +193,7 @@ namespace API.Controllers
 
 
         [AuthorizeUser]
-        [HttpPost, Route("EditProfileImage")]
+        [HttpPost("EditProfileImage")]
         public async Task<IActionResult> EditProfileImage(IFormFile imageFile)
         {
             User user = HttpContext.GetUser<User>();

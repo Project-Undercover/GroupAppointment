@@ -7,6 +7,7 @@ using Infrastructure.DTOs.Others;
 using Infrastructure.DTOs.Users;
 using Infrastructure.Entities.Users;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
 using static API.Middlewares.Authorization;
 using static Infrastructure.Enums.Enums;
 
@@ -15,6 +16,8 @@ namespace API.Controllers
     [ProducesResponseType(200, Type = typeof(MessageResponse))]
     [ProducesResponseType(404, Type = typeof(MessageResponse))]
     [ProducesResponseType(400, Type = typeof(MessageResponse))]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
     [AuthorizeUser(UserRole.Admin)]
     [Route("/api/[controller]")]
     [ApiController]
@@ -33,7 +36,7 @@ namespace API.Controllers
 
 
         [ProducesResponseType(200, Type = typeof(MessageResponse))]
-        [HttpPost, Route("SendNotification")]
+        [HttpPost("SendNotification")]
         public async Task<IActionResult> SendNotification(FCMDTOs.Request.SendNotification dto)
         {
             string langKey = Headers.GetLanguage(Request.Headers);

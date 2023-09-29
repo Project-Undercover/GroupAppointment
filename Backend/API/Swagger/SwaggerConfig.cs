@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi.Models;
 using System.Reflection;
 
 namespace API.Swagger
@@ -7,7 +6,6 @@ namespace API.Swagger
     public static class SwaggerConfig
     {
         public const string Version = "v1.0.0";
-        public const bool TokenSecurityEnabled = true;
 
 
         public static IServiceCollection AddSwaggerWithConfig(this IServiceCollection services, string env)
@@ -35,13 +33,10 @@ namespace API.Swagger
                 config.CustomSchemaIds(type => type.FullName?.Replace("+", "_"));
                 config.OperationFilter<AddAcceptLanguageHeaderParameter>();
                 config.OperationFilter<AuthResponsesOperationFilter>();
+                config.OperationFilter<DocumentOperationRoleRequirementsFilter>();
 
-                if (TokenSecurityEnabled)
-                {
-                    var jwtSecurityScheme = TokenSecurity();
-                    config.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
-                }
-
+                config.AddSecurityDefinition("bearerAuth", TokenSecurity());
+                config.AddSecurityDefinition("apiKeyAuth", ApiKeySecurity());
 
                 // for adding summary text, Add this "<GenerateDocumentationFile>true</GenerateDocumentationFile>" in PropertyGroup tag of .csproj file
                 var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -60,8 +55,20 @@ namespace API.Swagger
         private static OpenApiInfo ApiInfo(string env) => new OpenApiInfo
         {
             Title = "Watten Documentation",
+            Description = "",
             Version = $"{Version} - {env}",
-            License = new OpenApiLicense() { Name = "Tarik & Wissam" }
+            //TermsOfService = new Uri("https://blog.georgekosmidis.net/privacy-policy/"),
+            Contact = new OpenApiContact
+            {
+                Name = "Tarik Husin",
+                Email = "tarik.id.10@hotmail.com",
+                Url = new Uri("https://github.com/6arek212")
+            },
+            License = new OpenApiLicense
+            {
+                Name = "MIT License",
+                Url = new Uri("https://opensource.org/licenses/MIT")
+            }
         };
 
 
@@ -76,12 +83,18 @@ namespace API.Swagger
             Name = "JWT Authentication",
             In = ParameterLocation.Header,
             Type = SecuritySchemeType.Http,
-            Description = "Put **_ONLY_** your JWT Bearer token in the text box below!",
-            Reference = new OpenApiReference
-            {
-                Id = JwtBearerDefaults.AuthenticationScheme,
-                Type = ReferenceType.SecurityScheme,
-            }
+            Description = "Put **_ONLY_** your JWT Bearer token in the text box below!"
+        };
+
+
+
+        public static OpenApiSecurityScheme ApiKeySecurity() => new OpenApiSecurityScheme
+        {
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey,
+            Name = "ApiKey",
+            Scheme = "apikey",
+            Description = "Input apikey to access this API"
         };
     }
 }

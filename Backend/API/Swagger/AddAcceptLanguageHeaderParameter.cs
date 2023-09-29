@@ -1,16 +1,11 @@
 ﻿using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Extensions;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json.Schema;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System.ComponentModel;
-using System.Text.Json.Serialization;
 
 namespace API.Swagger
 {
     public class AddAcceptLanguageHeaderParameter : IOperationFilter
     {
-        [JsonConverter(typeof(JsonStringEnumConverter))]
         public enum SupportedLanguage
         {
             EN,
@@ -37,7 +32,9 @@ namespace API.Swagger
                     Type = "string",
                     Enum = Enum.GetNames(typeof(SupportedLanguage)).Select(lang => new OpenApiString(lang)).ToArray(),
                     Description = "Select language from the dropdown",
-                }
+                    Default = new OpenApiString(SupportedLanguage.HE.ToString())
+                },
+                Description = "The language of the API response",
             };
 
 

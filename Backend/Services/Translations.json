@@ -22,7 +22,7 @@
   },
   "NotFound": {
     "EN": "{0} was not found, please try again",
-    "HE": "{0} לא נמצאת במערכת, נסה שנית",
+    "HE": "{0} לא נמצא\\ת במערכת, נסה שנית",
     "AR": "{0} غير موجد في النظام, حاول مرة اخرى"
   },
   "NotActive": {
@@ -118,6 +118,54 @@
     "AR": "لا يوجد اماكن كافية"
   },
 
+  "SessionHasBeenStarted": {
+    "EN": "The session has beeen started, you cant participate in it",
+    "HE": "הפעילות התחילה, אינך יכול להרשם",
+    "AR": "الورشة قد بدأت, لا تستطيع التسجيل"
+  },
+
+  "InvalidSessionDuration": {
+    "EN": "The session must be at least {0}{0}",
+    "HE": "הפעילות חייבת להיות לפחות {0} {0}",
+    "AR": "يجب على الورشة ان تكون على الاقل {0}{0}"
+  },
+
+  "EndDateMustBeBiggerThanStartDate": {
+    "EN": "The end date must be bigger thant the started date",
+    "HE": "תאריך סיום חייב להיות גדול מתאריך התחלה",
+    "AR": "تاريخ النهاية يجب ان يكون اكبر من تاريخ البداية"
+  },
+
+  "OnlyAdminAndInstructorCanBeInstructors": {
+    "EN": "Only users with \"Admin,Instructor\" roles can be accepted",
+    "HE": "רק משתמשים עם תפקיד מנהל או מדריך יכולים להתקבל",
+    "AR": "فقظ المستخدمين الذين يملكون وظيفة المدير او المرشد يمكن قبولهم"
+  },
+
+  "SessionsOverlap": {
+    "EN": "There is a session during the selected times",
+    "HE": "יש פעילות בזמנים שנבחרו",
+    "AR": "يوجد ورشات خلال الاقوقات المختارة"
+  },
+
+  "StartDateCantBeOlderThanNow": {
+    "EN": "The start date cant be older than now",
+    "HE": "תאריך התחלה לא יכול להיות קטן מהזמן הנוכחי",
+    "AR": "وقت البداية لا يمكن ان يكون اقدم من الان"
+  },
+
+  "Participating": {
+    "EN": "Participating",
+    "HE": "משתתף",
+    "AR": "مشارك"
+  },
+
+  "Minute": {
+    "EN": "min",
+    "HE": "דק'",
+    "AR": "دق‘"
+  },
+
 
   "NotificationSent": {
     "EN": "Notification sent successfully",
@@ -210,5 +258,40 @@
     "EN": "Sending verification request",
     "HE": "שליחת בקשת אימות",
     "AR": "ارسال طلب التعريف"
+  },
+  "Available": {
+    "EN": "Available",
+    "HE": "זמין",
+    "AR": "متاح"
+  },
+  "Canceled": {
+    "EN": "Canceled",
+    "HE": "בוטל",
+    "AR": "الغي"
+  },
+  "Finished": {
+    "EN": "Finished",
+    "HE": "נגמר",
+    "AR": "انتهى"
+  },
+  "Full": {
+    "EN": "Full",
+    "HE": "מלא",
+    "AR": "ممتلئ"
+  },
+  "Started": {
+    "EN": "Started",
+    "HE": "התחיל",
+    "AR": "بدأ"
+  },
+  "SessionNotAvailable": {
+    "EN": "This session is not available",
+    "HE": "הפעילות אינה זמינה",
+    "AR": "الجلسة غير متاحة"
+  },
+  "SessionIsFull": {
+    "EN": "This session is full",
+    "HE": "הפעילות מלאה",
+    "AR": "الجلسة ممتلئة"
   }
 }

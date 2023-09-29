@@ -8,7 +8,8 @@ using Infrastructure.DTOs.Sessions;
 using Infrastructure.Entities.Users;
 using Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Net.Mime;
 using static API.Middlewares.Authorization;
 using static Infrastructure.DTOs.Sessions.SessionsDTOs.Requests;
 using static Infrastructure.DTOs.Sessions.SessionsDTOs.Responses;
@@ -19,6 +20,8 @@ namespace API.Controllers
     [ProducesResponseType(200, Type = typeof(MessageResponse))]
     [ProducesResponseType(404, Type = typeof(MessageResponse))]
     [ProducesResponseType(400, Type = typeof(MessageResponse))]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
     [Route("/api/[controller]")]
     [ApiController]
     public class SessionsController : ControllerBase
@@ -34,17 +37,29 @@ namespace API.Controllers
         }
 
 
+        //private string TranslateStatus(User user, bool isParticipating, SessionStatusDTO status, string langKey)
+        //{
+        //    if (user.IsAdmin)
+        //        return _translationService.GetByKey(status.name, langKey);
 
+        //    if (isParticipating && (status.value == SessionStatus.Available || status.value == SessionStatus.Full))
+        //        return _translationService.GetByKey("Participating", langKey);
 
+        //    return _translationService.GetByKey(status.name, langKey);
+        //}
+
+        
         [AuthorizeUser]
         [ProducesResponseType(200, Type = typeof(MessageResponseWithDataTable<IEnumerable<GetAllDT>>))]
-        [HttpPost, Route("GetAllDT")]
+        [HttpPost("GetAllDT")]
         public async Task<IActionResult> GetAllDT(DataTableDTOs.SessionDT dto)
         {
             string langKey = Headers.GetLanguage(Request.Headers);
             User user = HttpContext.GetUser<User>();
 
-            (int count, IEnumerable<GetAllDT> list) data = await _sessionService.GetAllDT(dto, user);
+            (int count, List<GetAllDT> list) data = await _sessionService.GetAllDT(dto, user);
+            data.list.ForEach(s => s.status.name = _translationService.GetByKey(s.status.name, langKey));
+
             string message = _translationService.GetByKey(TranslationKeys.SuccessFetch, langKey, nameof(Session));
             return Ok(MessageResponseFactory.Create(message, data, dto));
         }
@@ -52,13 +67,15 @@ namespace API.Controllers
 
         [AuthorizeUser]
         [ProducesResponseType(200, Type = typeof(MessageResponseWithDataTable<IEnumerable<GetAllDT>>))]
-        [HttpPost, Route("GetUserSessions")]
+        [HttpPost("GetUserSessions")]
         public async Task<IActionResult> GetUserSessions(DataTableDTOs.UserSessionDT dto)
         {
             string langKey = Headers.GetLanguage(Request.Headers);
 
             User user = HttpContext.GetUser<User>();
-            (int count, IEnumerable<UserSession> list) data = await _sessionService.GetUserSessions(dto, user);
+            (int count, List<UserSession> list) data = await _sessionService.GetUserSessions(dto, user);
+            data.list.ForEach(s => s.status.name = _translationService.GetByKey(s.status.name, langKey));
+
             string message = _translationService.GetByKey(TranslationKeys.SuccessFetch, langKey, nameof(Session));
             return Ok(MessageResponseFactory.Create(message, data, dto));
         }
@@ -66,7 +83,7 @@ namespace API.Controllers
 
         [AuthorizeUser(UserRole.Admin, UserRole.Instructor)]
         [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<IEnumerable<SessionPaticipant>>))]
-        [HttpGet, Route("GetSessionParticipants")]
+        [HttpGet("GetSessionParticipants")]
         public async Task<IActionResult> GetSessionParticipants(Guid sessionId)
         {
             string langKey = Headers.GetLanguage(Request.Headers);
@@ -77,33 +94,27 @@ namespace API.Controllers
         }
 
 
-        /// <summary>
-        /// Admin only
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        
         [AuthorizeUser(UserRole.Admin)]
         [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<GetById>))]
-        [HttpGet, Route("GetById/{id}")]
+        [HttpGet("GetById/{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
             string langKey = Headers.GetLanguage(Request.Headers);
 
             GetById data = await _sessionService.GetById(id);
+            data.status.name = _translationService.GetByKey(data.status.name, langKey);
+
             string message = _translationService.GetByKey(TranslationKeys.SuccessFetch, langKey, nameof(Session));
             return Ok(MessageResponseFactory.Create(message, data));
         }
 
 
 
-        /// <summary>
-        /// Admin only
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+   
         [AuthorizeUser(UserRole.Admin)]
         [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<List<SessionsDTOs.Responses.Instructor>>))]
-        [HttpGet, Route("GetInstructors")]
+        [HttpGet("GetInstructors")]
         public async Task<IActionResult> GetInstructors()
         {
             string langKey = Headers.GetLanguage(Request.Headers);
@@ -116,14 +127,9 @@ namespace API.Controllers
 
 
 
-        /// <summary>
-        /// Admin only
-        /// </summary>
-        /// <param name="imageFile"></param>
-        /// <param name="dto"></param>
-        /// <returns></returns>
+     
         [AuthorizeUser(UserRole.Admin)]
-        [HttpPost, Route("Create")]
+        [HttpPost("Create")]
         public async Task<IActionResult> Create(IFormFile? imageFile, [FromForm] Create dto)
         {
             string langKey = Headers.GetLanguage(Request.Headers);
@@ -135,14 +141,9 @@ namespace API.Controllers
             return Ok(MessageResponseFactory.Create(message));
         }
 
-        /// <summary>
-        /// Admin only
-        /// </summary>
-        /// <param name="imageFile"></param>
-        /// <param name="dto"></param>
-        /// <returns></returns>
+  
         [AuthorizeUser(UserRole.Admin)]
-        [HttpPost, Route("Edit")]
+        [HttpPost("Edit")]
         public async Task<IActionResult> Edit(IFormFile? imageFile, [FromForm] Edit dto)
         {
             string langKey = Headers.GetLanguage(Request.Headers);
@@ -155,13 +156,9 @@ namespace API.Controllers
         }
 
 
-        /// <summary>
-        /// Admin only
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+      
         [AuthorizeUser(UserRole.Admin)]
-        [HttpDelete, Route("Delete/{id}")]
+        [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             string langKey = Headers.GetLanguage(Request.Headers);
@@ -175,7 +172,7 @@ namespace API.Controllers
 
 
         [AuthorizeUser(allowAll = true)]
-        [HttpPost, Route("AddParticipants")]
+        [HttpPost("AddParticipants")]
         public async Task<IActionResult> AddParticipants(AddParticipant dto)
         {
             User user = HttpContext.GetUser<User>();
@@ -192,7 +189,7 @@ namespace API.Controllers
 
 
         [AuthorizeUser(allowAll = true)]
-        [HttpDelete, Route("DeleteParticipant/{id}")]
+        [HttpDelete("DeleteParticipant/{id}")]
         public async Task<IActionResult> DeleteParticipant(Guid id)
         {
             User user = HttpContext.GetUser<User>();
@@ -207,7 +204,7 @@ namespace API.Controllers
 
 
         [AuthorizeUser(allowAll = true)]
-        [HttpDelete, Route("DeleteUserSessionParticipants/{sessionId}")]
+        [HttpDelete("DeleteUserSessionParticipants/{sessionId}")]
         public async Task<IActionResult> DeleteUserSessionParticipants(Guid sessionId)
         {
             User user = HttpContext.GetUser<User>();

@@ -4,21 +4,16 @@ using Infrastructure.Entities.Sessions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Workers
 {
-    public class SessionReminder : IHostedService
+    public class SessionReminderHS : IHostedService
     {
-        private readonly ILogger<SessionReminder> _logger;
+        private readonly ILogger<SessionReminderHS> _logger;
         private Timer _timer;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public SessionReminder(ILogger<SessionReminder> logger, IServiceScopeFactory serviceScopeFactory)
+        public SessionReminderHS(ILogger<SessionReminderHS> logger, IServiceScopeFactory serviceScopeFactory)
         {
             _logger = logger;
             _serviceScopeFactory = serviceScopeFactory;

@@ -3,6 +3,7 @@ using Core.IUtils;
 using Infrastructure.DTOs;
 using Infrastructure.DTOs.Enums;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
 using static API.Middlewares.Authorization;
 using static Infrastructure.Enums.Enums;
 
@@ -11,6 +12,8 @@ namespace API.Controllers
     [ProducesResponseType(200, Type = typeof(MessageResponseWithObj<List<EnumDTOs.EnumValues>>))]
     [ProducesResponseType(404, Type = typeof(MessageResponse))]
     [ProducesResponseType(400, Type = typeof(MessageResponse))]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
     [AuthorizeUser(UserRole.Admin)]
     [Route("/api/[controller]")]
     [ApiController]
@@ -29,7 +32,7 @@ namespace API.Controllers
 
 
 
-        [HttpGet, Route("Roles")]
+        [HttpGet("Roles")]
         public async Task<IActionResult> Roles()
         {
             string langKey = Headers.GetLanguage(Request.Headers);
@@ -41,7 +44,7 @@ namespace API.Controllers
 
 
 
-        [HttpGet, Route("SessionStatuses")]
+        [HttpGet("SessionStatuses")]
         public async Task<IActionResult> SessionStatuses()
         {
             string langKey = Headers.GetLanguage(Request.Headers);

@@ -177,7 +177,7 @@ namespace Persistence.SQL.Repositories
             return Task.CompletedTask;
         }
 
-        public async Task UpdateAsync(TEntity entity, params string[] exclude)
+        public Task UpdateAsync(TEntity entity, params string[] exclude)
         {
             _context.Database.EnsureCreated();
 
@@ -189,7 +189,23 @@ namespace Persistence.SQL.Repositories
                 _context.Entry(entity).Property(property).IsModified = false;
             }
             _context.Entry(entity).CurrentValues.SetValues(entity);
+            return Task.CompletedTask;
         }
+
+        public Task UpdateRangeAsync(IEnumerable<TEntity> entities)
+        {
+            _context.Database.EnsureCreated();
+
+            foreach (var entity in entities)
+            {
+                _context.Entry(entity).Property(nameof(Entity.Id)).IsModified = false;
+                _context.Entry(entity).Property(nameof(Entity.CreatedAt)).IsModified = false;
+            }
+            _context.UpdateRange(entities);
+            return Task.CompletedTask;
+        }
+
+
         public async Task<bool> Exists(Expression<Func<TEntity, bool>> filter)
         {
             _context.Database.EnsureCreated();

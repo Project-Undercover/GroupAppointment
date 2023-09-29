@@ -28,8 +28,7 @@ namespace Services
 
 
             //services.AddHostedService<SessionReminder>();
-
-
+            services.AddHostedService<SessionsStatusHS>();
             return services;
         }
     }

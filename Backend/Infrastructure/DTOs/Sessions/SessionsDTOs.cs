@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
+using static Infrastructure.Enums.Enums;
 
 namespace Infrastructure.DTOs.Sessions
 {
@@ -28,7 +29,7 @@ namespace Infrastructure.DTOs.Sessions
                 [Range(1, 100), Required]
                 public int maxParticipants { get; set; }
 
-
+                public bool isVisible { get; set; } = true;
                 public string? locationName { get; set; }
                 public Location? location { get; set; }
 
@@ -45,7 +46,7 @@ namespace Infrastructure.DTOs.Sessions
             public record Edit : Create
             {
                 [Required] public Guid id { get; set; }
-                [Required] public bool isAvailable { get; set; }
+                [Required] public SessionStatus status { get; set; }
             };
             public record Delete(Guid id) : Create;
         }
@@ -59,8 +60,6 @@ namespace Infrastructure.DTOs.Sessions
                 public Guid id { get; set; }
                 public string name { get; set; }
             }
-
-
             public record SessionPaticipant
             {
                 public User user { get; set; }
@@ -80,6 +79,11 @@ namespace Infrastructure.DTOs.Sessions
                 }
             }
 
+            public record SessionStatusDTO
+            {
+                public SessionStatus value { get; set; }
+                public string name { get; set; }
+            }
 
             public record GetById : EntityDTO
             {
@@ -91,7 +95,8 @@ namespace Infrastructure.DTOs.Sessions
                 public DateTimeOffset EndDate { get; set; }
                 public string? locationName { get; set; }
                 public Location? location { get; set; }
-                public bool isAvailable { get; set; }
+                public bool isVisible { get; set; }
+                public SessionStatusDTO status { get; set; }
                 public List<Participant> Participants { get; set; }
                 public List<Instructor> Instructors { get; set; }
 
@@ -121,8 +126,6 @@ namespace Infrastructure.DTOs.Sessions
                     }
                 }
             }
-
-
             public record GetAllDT : EntityDTO
             {
                 public string title { get; set; }
@@ -132,9 +135,10 @@ namespace Infrastructure.DTOs.Sessions
                 public DateTimeOffset StartDate { get; set; }
                 public DateTimeOffset EndDate { get; set; }
                 public string? locationName { get; set; }
-                public List<Instructor> instructors { get; set; }
-                public bool isAvailable { get; set; }
+                public SessionStatusDTO status { get; set; }
+                public bool isVisible { get; set; }
                 public bool isParticipating { get => children.Count() > 0; }
+                public List<Instructor> instructors { get; set; }
                 public List<Child> children { get; set; }
 
                 public record Child
@@ -149,8 +153,6 @@ namespace Infrastructure.DTOs.Sessions
                     public string name { get; set; }
                 }
             }
-
-
             public record UserSession : EntityDTO
             {
                 public string title { get; set; }
@@ -160,8 +162,8 @@ namespace Infrastructure.DTOs.Sessions
                 public DateTimeOffset StartDate { get; set; }
                 public DateTimeOffset EndDate { get; set; }
                 public string? locationName { get; set; }
+                public SessionStatusDTO status { get; set; }
                 public List<string> instructors { get; set; }
-                public bool isAvailable { get; set; }
                 public List<Child> children { get; set; }
 
                 public record Child

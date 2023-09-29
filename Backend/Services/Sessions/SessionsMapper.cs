@@ -3,6 +3,7 @@ using Infrastructure.DTOs.Sessions;
 using Infrastructure.DTOs.Users;
 using Infrastructure.Entities.Sessions;
 using Infrastructure.Entities.Users;
+using static Infrastructure.Enums.Enums;
 
 namespace Services.Sessions
 {
@@ -25,7 +26,9 @@ namespace Services.Sessions
 
 
 
-
+            CreateMap<SessionStatus, SessionsDTOs.Responses.SessionStatusDTO>()
+                .ForMember(s => s.value, opt => opt.MapFrom(s => s))
+                .ForMember(s => s.name, opt => opt.MapFrom(s => s.ToString()));
 
             CreateMap<Session, SessionsDTOs.Responses.GetById>();
             CreateMap<Location, SessionsDTOs.Responses.GetById.Location>();
@@ -35,6 +38,7 @@ namespace Services.Sessions
 
             CreateMap<Participant, SessionsDTOs.Responses.GetById.Participant>()
                 .ForMember(s => s.participantName, opt => opt.MapFrom(s => s.Child.Name));
+
             CreateMap<User, SessionsDTOs.Responses.GetById.Participant.User>()
                 .ForMember(s => s.name, opt => opt.MapFrom(s => s.FirstName + " " + s.LastName));
 

@@ -1,16 +1,12 @@
 global using Infrastructure.Entities.Sessions;
-global using Infrastructure.Enums;
 global using Infrastructure.Utils;
-
 using API;
 using API.Middlewares;
 using API.Swagger;
-using Infrastructure;
-using Services;
 using API.Utils;
-using Microsoft.Extensions.FileProviders;
-using Infrastructure.DTOs;
+using Infrastructure;
 using Persistence.SQL;
+using Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,22 +42,18 @@ builder.Services.AddControllers(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.InDevelopment())
-//{
+
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.ConfigObject.AdditionalItems.Add("persistAuthorization", app.Environment.InDevelopment() ? "true" : null);
+    c.DisplayRequestDuration();
+    c.EnableFilter();
+    c.EnablePersistAuthorization();
+    c.EnableTryItOutByDefault();
+    c.DefaultModelsExpandDepth(-1);
+    //c.ConfigObject.AdditionalItems.Add("persistAuthorization", "true");
 });
-//}
 
-
-//app.UseStaticFiles(new StaticFileOptions()
-//{
-//    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Images")),
-//    RequestPath = new PathString("/Images")
-//});
 
 
 

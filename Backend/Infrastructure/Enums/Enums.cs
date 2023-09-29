@@ -12,6 +12,8 @@ namespace Infrastructure.Enums
         public enum SessionStatus
         {
             Available,
+            Full,
+            Started,
             Finished,
             Canceled
         }
