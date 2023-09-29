@@ -109,8 +109,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   img: {
-    width: 90,
-    height: 90,
+    minHeight: 90,
+    height: '100%',
+    width: '100%'
   },
   progressText: {
     fontSize: 11,
