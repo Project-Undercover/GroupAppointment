@@ -3,6 +3,9 @@
 This application allows parents to register their kids for Animals Therapy sessions, which are based on the sessions created by the business using the application.
 
 
+
+<img src= "https://github.com/Project-Undercover/Watten-App/assets/10331972/6be6ad62-05a3-408b-9e8b-45fcfc59111c" width=50 height=50>
+
 <img src= "https://github.com/Project-Undercover/Watten-App/assets/10331972/8d062996-c4de-4722-8830-008a73149f52" width=200>
 
 
